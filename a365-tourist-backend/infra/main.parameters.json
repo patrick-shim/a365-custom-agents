@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "seoultour-dev-kc-ae23"
+    },
+    "location": {
+      "value": "koreacentral"
+    },
+    "sessionId": {
+      "value": "<deployment-session-id>"
+    },
+    "deployedBy": {
+      "value": "<operator-or-automation-id>"
+    },
+    "createdAt": {
+      "value": "<ISO-8601-timestamp>"
+    }
+  }
+}

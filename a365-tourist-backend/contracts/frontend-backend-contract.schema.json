@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractId",
+    "contractVersion",
+    "backend",
+    "frontends",
+    "healthEndpoints",
+    "mcp"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contractId": {
+      "const": "seoul-tourist-shared-backend"
+    },
+    "contractVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "backend": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deployment",
+        "sourceAuthority",
+        "configurationOwnership"
+      ],
+      "properties": {
+        "deployment": {
+          "const": "shared-agent-host"
+        },
+        "sourceAuthority": {
+          "const": "a365-tourist-backend"
+        },
+        "configurationOwnership": {
+          "const": "protected-deployment-configuration"
+        }
+      }
+    },
+    "frontends": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "route",
+          "audienceConfiguration",
+          "identityBinding"
+        ],
+        "properties": {
+          "name": {
+            "enum": ["agentic-user", "on-behalf-of"]
+          },
+          "route": {
+            "enum": ["/api/messages", "/api/messages/obo"]
+          },
+          "audienceConfiguration": {
+            "type": "string",
+            "minLength": 1
+          },
+          "identityBinding": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "healthEndpoints": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "string",
+        "pattern": "^/api/health(?:/(?:live|ready))?$"
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["serviceCount", "transport", "authorization"],
+      "properties": {
+        "serviceCount": {
+          "const": 4
+        },
+        "transport": {
+          "const": "streamable-http"
+        },
+        "authorization": {
+          "const": "delegated Mcp.Invoke"
+        }
+      }
+    }
+  }
+}

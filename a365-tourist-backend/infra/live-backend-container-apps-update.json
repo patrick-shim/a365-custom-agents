@@ -1,0 +1,1668 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.46.1.21595",
+      "templateHash": "18064169187558209587"
+    }
+  },
+  "definitions": {
+    "Agent365AgentIds": {
+      "type": "object",
+      "properties": {
+        "agenticUser": {
+          "type": "string"
+        },
+        "onBehalfOf": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "hostImage": {
+      "type": "string",
+      "minLength": 1
+    },
+    "attractionsImage": {
+      "type": "string",
+      "minLength": 1
+    },
+    "weatherImage": {
+      "type": "string",
+      "minLength": 1
+    },
+    "accommodationImage": {
+      "type": "string",
+      "minLength": 1
+    },
+    "currencyImage": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36
+    },
+    "mcpApplicationId": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36
+    },
+    "mcpAudience": {
+      "type": "string",
+      "minLength": 1
+    },
+    "agent365BlueprintId": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36
+    },
+    "agent365AgentIds": {
+      "$ref": "#/definitions/Agent365AgentIds"
+    },
+    "oboChannelAppId": {
+      "type": "string",
+      "minLength": 36,
+      "maxLength": 36
+    },
+    "oboOAuthConnectionName": {
+      "type": "string",
+      "defaultValue": "seoul-tourist-obo"
+    }
+  },
+  "resources": {
+    "environment": {
+      "existing": true,
+      "type": "Microsoft.App/managedEnvironments",
+      "apiVersion": "2025-01-01",
+      "name": "cae-seoultour-dev-kc-ae23"
+    },
+    "registry": {
+      "existing": true,
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2025-11-01",
+      "name": "crseoultourdevkcae23"
+    },
+    "applicationInsights": {
+      "existing": true,
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "appi-seoultour-dev-kc-ae23"
+    },
+    "foundry": {
+      "existing": true,
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2026-05-01",
+      "name": "fdy-seoultour-dev-kc-ae23"
+    },
+    "azureMaps": {
+      "existing": true,
+      "type": "Microsoft.Maps/accounts",
+      "apiVersion": "2023-06-01",
+      "name": "maps-seoultour-dev-kc-ae23"
+    },
+    "hostIdentity": {
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2024-11-30",
+      "name": "id-agent-seoultour-dev-kc-ae23"
+    },
+    "attractionsIdentity": {
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2024-11-30",
+      "name": "id-attract-seoultour-dev-kc-ae23"
+    },
+    "weatherIdentity": {
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2024-11-30",
+      "name": "id-weather-seoultour-dev-kc-ae23"
+    },
+    "accommodationIdentity": {
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2024-11-30",
+      "name": "id-stay-seoultour-dev-kc-ae23"
+    },
+    "currencyIdentity": {
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2024-11-30",
+      "name": "id-fx-seoultour-dev-kc-ae23"
+    },
+    "currentHost": {
+      "existing": true,
+      "type": "Microsoft.App/containerApps",
+      "apiVersion": "2026-01-01",
+      "name": "ca-agent-seoultour-dev-kc-ae23"
+    },
+    "currentAttractions": {
+      "existing": true,
+      "type": "Microsoft.App/containerApps",
+      "apiVersion": "2026-01-01",
+      "name": "ca-attract-seoultour-dev-kc-ae23"
+    },
+    "currentWeather": {
+      "existing": true,
+      "type": "Microsoft.App/containerApps",
+      "apiVersion": "2026-01-01",
+      "name": "ca-weather-seoultour-dev-kc-ae23"
+    },
+    "currentAccommodation": {
+      "existing": true,
+      "type": "Microsoft.App/containerApps",
+      "apiVersion": "2026-01-01",
+      "name": "ca-stay-seoultour-dev-kc-ae23"
+    },
+    "currentCurrency": {
+      "existing": true,
+      "type": "Microsoft.App/containerApps",
+      "apiVersion": "2026-01-01",
+      "name": "ca-fx-seoultour-dev-kc-ae23"
+    },
+    "attractions": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "live-attractions",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "appName": {
+            "value": "ca-attract-seoultour-dev-kc-ae23"
+          },
+          "location": {
+            "value": "[resourceGroup().location]"
+          },
+          "environmentId": {
+            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-seoultour-dev-kc-ae23')]"
+          },
+          "managedIdentityResourceId": {
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-attract-seoultour-dev-kc-ae23')]"
+          },
+          "managedIdentityClientId": {
+            "value": "[reference('attractionsIdentity').clientId]"
+          },
+          "acrLoginServer": {
+            "value": "[reference('registry').loginServer]"
+          },
+          "containerImage": {
+            "value": "[parameters('attractionsImage')]"
+          },
+          "tenantId": {
+            "value": "[parameters('tenantId')]"
+          },
+          "mcpTokenAudience": {
+            "value": "[parameters('mcpApplicationId')]"
+          },
+          "azureMapsClientId": {
+            "value": "[reference('azureMaps').uniqueId]"
+          },
+          "applicationInsightsConnectionString": {
+            "value": "[reference('applicationInsights').ConnectionString]"
+          },
+          "tags": {
+            "value": "[coalesce(reference('currentAttractions', '2026-01-01', 'full').tags, createObject())]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.46.1.21595",
+              "templateHash": "10573164571263651305"
+            }
+          },
+          "parameters": {
+            "appName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "environmentId": {
+              "type": "string"
+            },
+            "managedIdentityResourceId": {
+              "type": "string"
+            },
+            "managedIdentityClientId": {
+              "type": "string"
+            },
+            "acrLoginServer": {
+              "type": "string"
+            },
+            "containerImage": {
+              "type": "string",
+              "defaultValue": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "mcpTokenAudience": {
+              "type": "string"
+            },
+            "azureMapsClientId": {
+              "type": "string"
+            },
+            "applicationInsightsConnectionString": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            }
+          },
+          "variables": {
+            "placeholderImage": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+            "isPlaceholder": "[equals(parameters('containerImage'), variables('placeholderImage'))]",
+            "effectivePort": "[if(variables('isPlaceholder'), 80, 8080)]",
+            "plainEnvironment": [
+              {
+                "name": "ASPNETCORE_ENVIRONMENT",
+                "value": "Production"
+              },
+              {
+                "name": "ASPNETCORE_HTTP_PORTS",
+                "value": "8080"
+              },
+              {
+                "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                "value": "[parameters('applicationInsightsConnectionString')]"
+              },
+              {
+                "name": "AZURE_CLIENT_ID",
+                "value": "[parameters('managedIdentityClientId')]"
+              },
+              {
+                "name": "McpAuthorization__TenantId",
+                "value": "[parameters('tenantId')]"
+              },
+              {
+                "name": "McpAuthorization__Audience",
+                "value": "[parameters('mcpTokenAudience')]"
+              },
+              {
+                "name": "McpAuthorization__RequiredScope",
+                "value": "Mcp.Invoke"
+              },
+              {
+                "name": "AzureMaps__ClientId",
+                "value": "[parameters('azureMapsClientId')]"
+              }
+            ]
+          },
+          "resources": [
+            {
+              "type": "Microsoft.App/containerApps",
+              "apiVersion": "2026-01-01",
+              "name": "[parameters('appName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('managedIdentityResourceId'))]": {}
+                }
+              },
+              "properties": {
+                "managedEnvironmentId": "[parameters('environmentId')]",
+                "configuration": {
+                  "activeRevisionsMode": "Single",
+                  "ingress": {
+                    "external": false,
+                    "targetPort": "[variables('effectivePort')]",
+                    "allowInsecure": false,
+                    "transport": "auto",
+                    "traffic": [
+                      {
+                        "latestRevision": true,
+                        "weight": 100
+                      }
+                    ]
+                  },
+                  "registries": "[if(variables('isPlaceholder'), createArray(), createArray(createObject('server', parameters('acrLoginServer'), 'identity', parameters('managedIdentityResourceId'))))]",
+                  "secrets": []
+                },
+                "template": {
+                  "containers": [
+                    {
+                      "name": "attractions",
+                      "image": "[parameters('containerImage')]",
+                      "env": "[if(variables('isPlaceholder'), createArray(), variables('plainEnvironment'))]",
+                      "resources": {
+                        "cpu": "0.25",
+                        "memory": "0.5Gi"
+                      },
+                      "probes": [
+                        {
+                          "type": "Liveness",
+                          "httpGet": {
+                            "path": "[if(variables('isPlaceholder'), '/', '/health')]",
+                            "port": "[variables('effectivePort')]",
+                            "scheme": "HTTP"
+                          },
+                          "initialDelaySeconds": 10,
+                          "periodSeconds": 30,
+                          "timeoutSeconds": 5,
+                          "failureThreshold": 3,
+                          "successThreshold": 1
+                        },
+                        {
+                          "type": "Readiness",
+                          "httpGet": {
+                            "path": "[if(variables('isPlaceholder'), '/', '/health')]",
+                            "port": "[variables('effectivePort')]",
+                            "scheme": "HTTP"
+                          },
+                          "initialDelaySeconds": 5,
+                          "periodSeconds": 10,
+                          "timeoutSeconds": 5,
+                          "failureThreshold": 6,
+                          "successThreshold": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "scale": {
+                    "minReplicas": 1,
+                    "maxReplicas": 3
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.App/containerApps', parameters('appName'))]"
+            },
+            "fqdn": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.App/containerApps', parameters('appName')), '2026-01-01').configuration.ingress.fqdn]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "applicationInsights",
+        "attractionsIdentity",
+        "azureMaps",
+        "currentAttractions",
+        "registry"
+      ]
+    },
+    "weather": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "live-weather",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "appName": {
+            "value": "ca-weather-seoultour-dev-kc-ae23"
+          },
+          "location": {
+            "value": "[resourceGroup().location]"
+          },
+          "environmentId": {
+            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-seoultour-dev-kc-ae23')]"
+          },
+          "managedIdentityResourceId": {
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-weather-seoultour-dev-kc-ae23')]"
+          },
+          "acrLoginServer": {
+            "value": "[reference('registry').loginServer]"
+          },
+          "containerImage": {
+            "value": "[parameters('weatherImage')]"
+          },
+          "tenantId": {
+            "value": "[parameters('tenantId')]"
+          },
+          "mcpTokenAudience": {
+            "value": "[parameters('mcpApplicationId')]"
+          },
+          "applicationInsightsConnectionString": {
+            "value": "[reference('applicationInsights').ConnectionString]"
+          },
+          "tags": {
+            "value": "[coalesce(reference('currentWeather', '2026-01-01', 'full').tags, createObject())]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.46.1.21595",
+              "templateHash": "16960830899936745417"
+            }
+          },
+          "parameters": {
+            "appName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "environmentId": {
+              "type": "string"
+            },
+            "managedIdentityResourceId": {
+              "type": "string"
+            },
+            "acrLoginServer": {
+              "type": "string"
+            },
+            "containerImage": {
+              "type": "string",
+              "defaultValue": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "mcpTokenAudience": {
+              "type": "string"
+            },
+            "applicationInsightsConnectionString": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            }
+          },
+          "variables": {
+            "placeholderImage": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+            "isPlaceholder": "[equals(parameters('containerImage'), variables('placeholderImage'))]",
+            "effectivePort": "[if(variables('isPlaceholder'), 80, 8080)]",
+            "plainEnvironment": [
+              {
+                "name": "ASPNETCORE_ENVIRONMENT",
+                "value": "Production"
+              },
+              {
+                "name": "ASPNETCORE_HTTP_PORTS",
+                "value": "8080"
+              },
+              {
+                "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                "value": "[parameters('applicationInsightsConnectionString')]"
+              },
+              {
+                "name": "McpAuthorization__TenantId",
+                "value": "[parameters('tenantId')]"
+              },
+              {
+                "name": "McpAuthorization__Audience",
+                "value": "[parameters('mcpTokenAudience')]"
+              },
+              {
+                "name": "McpAuthorization__RequiredScope",
+                "value": "Mcp.Invoke"
+              },
+              {
+                "name": "OpenMeteo__BaseAddress",
+                "value": "https://api.open-meteo.com/v1/"
+              },
+              {
+                "name": "OpenMeteo__RequireCommercialLicense",
+                "value": "false"
+              },
+              {
+                "name": "OpenWeather__Enabled",
+                "value": "false"
+              },
+              {
+                "name": "OpenWeather__BaseAddress",
+                "value": "https://api.openweathermap.org/data/4.0/"
+              },
+              {
+                "name": "OpenWeather__MaximumAlerts",
+                "value": "5"
+              }
+            ]
+          },
+          "resources": [
+            {
+              "type": "Microsoft.App/containerApps",
+              "apiVersion": "2026-01-01",
+              "name": "[parameters('appName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('managedIdentityResourceId'))]": {}
+                }
+              },
+              "properties": {
+                "managedEnvironmentId": "[parameters('environmentId')]",
+                "configuration": {
+                  "activeRevisionsMode": "Single",
+                  "ingress": {
+                    "external": false,
+                    "targetPort": "[variables('effectivePort')]",
+                    "allowInsecure": false,
+                    "transport": "auto",
+                    "traffic": [
+                      {
+                        "latestRevision": true,
+                        "weight": 100
+                      }
+                    ]
+                  },
+                  "registries": "[if(variables('isPlaceholder'), createArray(), createArray(createObject('server', parameters('acrLoginServer'), 'identity', parameters('managedIdentityResourceId'))))]",
+                  "secrets": []
+                },
+                "template": {
+                  "containers": [
+                    {
+                      "name": "weather",
+                      "image": "[parameters('containerImage')]",
+                      "env": "[if(variables('isPlaceholder'), createArray(), variables('plainEnvironment'))]",
+                      "resources": {
+                        "cpu": "0.25",
+                        "memory": "0.5Gi"
+                      },
+                      "probes": [
+                        {
+                          "type": "Liveness",
+                          "httpGet": {
+                            "path": "[if(variables('isPlaceholder'), '/', '/health')]",
+                            "port": "[variables('effectivePort')]",
+                            "scheme": "HTTP"
+                          },
+                          "initialDelaySeconds": 10,
+                          "periodSeconds": 30,
+                          "timeoutSeconds": 5,
+                          "failureThreshold": 3,
+                          "successThreshold": 1
+                        },
+                        {
+                          "type": "Readiness",
+                          "httpGet": {
+                            "path": "[if(variables('isPlaceholder'), '/', '/health')]",
+                            "port": "[variables('effectivePort')]",
+                            "scheme": "HTTP"
+                          },
+                          "initialDelaySeconds": 5,
+                          "periodSeconds": 10,
+                          "timeoutSeconds": 5,
+                          "failureThreshold": 6,
+                          "successThreshold": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "scale": {
+                    "minReplicas": 1,
+                    "maxReplicas": 3
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.App/containerApps', parameters('appName'))]"
+            },
+            "fqdn": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.App/containerApps', parameters('appName')), '2026-01-01').configuration.ingress.fqdn]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "applicationInsights",
+        "currentWeather",
+        "registry"
+      ]
+    },
+    "accommodation": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "live-accommodation",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "appName": {
+            "value": "ca-stay-seoultour-dev-kc-ae23"
+          },
+          "location": {
+            "value": "[resourceGroup().location]"
+          },
+          "environmentId": {
+            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-seoultour-dev-kc-ae23')]"
+          },
+          "managedIdentityResourceId": {
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-stay-seoultour-dev-kc-ae23')]"
+          },
+          "managedIdentityClientId": {
+            "value": "[reference('accommodationIdentity').clientId]"
+          },
+          "acrLoginServer": {
+            "value": "[reference('registry').loginServer]"
+          },
+          "containerImage": {
+            "value": "[parameters('accommodationImage')]"
+          },
+          "tenantId": {
+            "value": "[parameters('tenantId')]"
+          },
+          "mcpTokenAudience": {
+            "value": "[parameters('mcpApplicationId')]"
+          },
+          "azureMapsClientId": {
+            "value": "[reference('azureMaps').uniqueId]"
+          },
+          "applicationInsightsConnectionString": {
+            "value": "[reference('applicationInsights').ConnectionString]"
+          },
+          "tags": {
+            "value": "[coalesce(reference('currentAccommodation', '2026-01-01', 'full').tags, createObject())]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.46.1.21595",
+              "templateHash": "10610086548072792319"
+            }
+          },
+          "parameters": {
+            "appName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "environmentId": {
+              "type": "string"
+            },
+            "managedIdentityResourceId": {
+              "type": "string"
+            },
+            "managedIdentityClientId": {
+              "type": "string"
+            },
+            "acrLoginServer": {
+              "type": "string"
+            },
+            "containerImage": {
+              "type": "string",
+              "defaultValue": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "mcpTokenAudience": {
+              "type": "string"
+            },
+            "azureMapsClientId": {
+              "type": "string"
+            },
+            "applicationInsightsConnectionString": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            }
+          },
+          "variables": {
+            "placeholderImage": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+            "isPlaceholder": "[equals(parameters('containerImage'), variables('placeholderImage'))]",
+            "effectivePort": "[if(variables('isPlaceholder'), 80, 8080)]",
+            "plainEnvironment": [
+              {
+                "name": "ASPNETCORE_ENVIRONMENT",
+                "value": "Production"
+              },
+              {
+                "name": "ASPNETCORE_HTTP_PORTS",
+                "value": "8080"
+              },
+              {
+                "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                "value": "[parameters('applicationInsightsConnectionString')]"
+              },
+              {
+                "name": "AZURE_CLIENT_ID",
+                "value": "[parameters('managedIdentityClientId')]"
+              },
+              {
+                "name": "McpAuthorization__TenantId",
+                "value": "[parameters('tenantId')]"
+              },
+              {
+                "name": "McpAuthorization__Audience",
+                "value": "[parameters('mcpTokenAudience')]"
+              },
+              {
+                "name": "McpAuthorization__RequiredScope",
+                "value": "Mcp.Invoke"
+              },
+              {
+                "name": "AzureMaps__ClientId",
+                "value": "[parameters('azureMapsClientId')]"
+              }
+            ]
+          },
+          "resources": [
+            {
+              "type": "Microsoft.App/containerApps",
+              "apiVersion": "2026-01-01",
+              "name": "[parameters('appName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('managedIdentityResourceId'))]": {}
+                }
+              },
+              "properties": {
+                "managedEnvironmentId": "[parameters('environmentId')]",
+                "configuration": {
+                  "activeRevisionsMode": "Single",
+                  "ingress": {
+                    "external": false,
+                    "targetPort": "[variables('effectivePort')]",
+                    "allowInsecure": false,
+                    "transport": "auto",
+                    "traffic": [
+                      {
+                        "latestRevision": true,
+                        "weight": 100
+                      }
+                    ]
+                  },
+                  "registries": "[if(variables('isPlaceholder'), createArray(), createArray(createObject('server', parameters('acrLoginServer'), 'identity', parameters('managedIdentityResourceId'))))]",
+                  "secrets": []
+                },
+                "template": {
+                  "containers": [
+                    {
+                      "name": "accommodation",
+                      "image": "[parameters('containerImage')]",
+                      "env": "[if(variables('isPlaceholder'), createArray(), variables('plainEnvironment'))]",
+                      "resources": {
+                        "cpu": "0.25",
+                        "memory": "0.5Gi"
+                      },
+                      "probes": [
+                        {
+                          "type": "Liveness",
+                          "httpGet": {
+                            "path": "[if(variables('isPlaceholder'), '/', '/health')]",
+                            "port": "[variables('effectivePort')]",
+                            "scheme": "HTTP"
+                          },
+                          "initialDelaySeconds": 10,
+                          "periodSeconds": 30,
+                          "timeoutSeconds": 5,
+                          "failureThreshold": 3,
+                          "successThreshold": 1
+                        },
+                        {
+                          "type": "Readiness",
+                          "httpGet": {
+                            "path": "[if(variables('isPlaceholder'), '/', '/health')]",
+                            "port": "[variables('effectivePort')]",
+                            "scheme": "HTTP"
+                          },
+                          "initialDelaySeconds": 5,
+                          "periodSeconds": 10,
+                          "timeoutSeconds": 5,
+                          "failureThreshold": 6,
+                          "successThreshold": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "scale": {
+                    "minReplicas": 1,
+                    "maxReplicas": 3
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.App/containerApps', parameters('appName'))]"
+            },
+            "fqdn": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.App/containerApps', parameters('appName')), '2026-01-01').configuration.ingress.fqdn]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "accommodationIdentity",
+        "applicationInsights",
+        "azureMaps",
+        "currentAccommodation",
+        "registry"
+      ]
+    },
+    "currency": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "live-currency",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "appName": {
+            "value": "ca-fx-seoultour-dev-kc-ae23"
+          },
+          "location": {
+            "value": "[resourceGroup().location]"
+          },
+          "environmentId": {
+            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-seoultour-dev-kc-ae23')]"
+          },
+          "managedIdentityResourceId": {
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-fx-seoultour-dev-kc-ae23')]"
+          },
+          "acrLoginServer": {
+            "value": "[reference('registry').loginServer]"
+          },
+          "containerImage": {
+            "value": "[parameters('currencyImage')]"
+          },
+          "tenantId": {
+            "value": "[parameters('tenantId')]"
+          },
+          "mcpTokenAudience": {
+            "value": "[parameters('mcpApplicationId')]"
+          },
+          "applicationInsightsConnectionString": {
+            "value": "[reference('applicationInsights').ConnectionString]"
+          },
+          "tags": {
+            "value": "[coalesce(reference('currentCurrency', '2026-01-01', 'full').tags, createObject())]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.46.1.21595",
+              "templateHash": "5189863414734566717"
+            }
+          },
+          "parameters": {
+            "appName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "environmentId": {
+              "type": "string"
+            },
+            "managedIdentityResourceId": {
+              "type": "string"
+            },
+            "acrLoginServer": {
+              "type": "string"
+            },
+            "containerImage": {
+              "type": "string",
+              "defaultValue": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "mcpTokenAudience": {
+              "type": "string"
+            },
+            "applicationInsightsConnectionString": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            }
+          },
+          "variables": {
+            "placeholderImage": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+            "isPlaceholder": "[equals(parameters('containerImage'), variables('placeholderImage'))]",
+            "effectivePort": "[if(variables('isPlaceholder'), 80, 8080)]",
+            "plainEnvironment": [
+              {
+                "name": "ASPNETCORE_ENVIRONMENT",
+                "value": "Production"
+              },
+              {
+                "name": "ASPNETCORE_HTTP_PORTS",
+                "value": "8080"
+              },
+              {
+                "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                "value": "[parameters('applicationInsightsConnectionString')]"
+              },
+              {
+                "name": "McpAuthorization__TenantId",
+                "value": "[parameters('tenantId')]"
+              },
+              {
+                "name": "McpAuthorization__Audience",
+                "value": "[parameters('mcpTokenAudience')]"
+              },
+              {
+                "name": "McpAuthorization__RequiredScope",
+                "value": "Mcp.Invoke"
+              },
+              {
+                "name": "KoreaEximbank__Enabled",
+                "value": "false"
+              },
+              {
+                "name": "KoreaEximbank__BaseAddress",
+                "value": "https://oapi.koreaexim.go.kr/"
+              },
+              {
+                "name": "KoreaEximbank__MaximumLookbackDays",
+                "value": "7"
+              },
+              {
+                "name": "ForexRateApi__Enabled",
+                "value": "false"
+              },
+              {
+                "name": "ForexRateApi__BaseAddress",
+                "value": "https://api.forexrateapi.com/v1/"
+              },
+              {
+                "name": "Frankfurter__Enabled",
+                "value": "true"
+              },
+              {
+                "name": "Frankfurter__BaseAddress",
+                "value": "https://api.frankfurter.dev/v1/"
+              }
+            ]
+          },
+          "resources": [
+            {
+              "type": "Microsoft.App/containerApps",
+              "apiVersion": "2026-01-01",
+              "name": "[parameters('appName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('managedIdentityResourceId'))]": {}
+                }
+              },
+              "properties": {
+                "managedEnvironmentId": "[parameters('environmentId')]",
+                "configuration": {
+                  "activeRevisionsMode": "Single",
+                  "ingress": {
+                    "external": false,
+                    "targetPort": "[variables('effectivePort')]",
+                    "allowInsecure": false,
+                    "transport": "auto",
+                    "traffic": [
+                      {
+                        "latestRevision": true,
+                        "weight": 100
+                      }
+                    ]
+                  },
+                  "registries": "[if(variables('isPlaceholder'), createArray(), createArray(createObject('server', parameters('acrLoginServer'), 'identity', parameters('managedIdentityResourceId'))))]",
+                  "secrets": []
+                },
+                "template": {
+                  "containers": [
+                    {
+                      "name": "currency",
+                      "image": "[parameters('containerImage')]",
+                      "env": "[if(variables('isPlaceholder'), createArray(), variables('plainEnvironment'))]",
+                      "resources": {
+                        "cpu": "0.25",
+                        "memory": "0.5Gi"
+                      },
+                      "probes": [
+                        {
+                          "type": "Liveness",
+                          "httpGet": {
+                            "path": "[if(variables('isPlaceholder'), '/', '/health')]",
+                            "port": "[variables('effectivePort')]",
+                            "scheme": "HTTP"
+                          },
+                          "initialDelaySeconds": 10,
+                          "periodSeconds": 30,
+                          "timeoutSeconds": 5,
+                          "failureThreshold": 3,
+                          "successThreshold": 1
+                        },
+                        {
+                          "type": "Readiness",
+                          "httpGet": {
+                            "path": "[if(variables('isPlaceholder'), '/', '/health')]",
+                            "port": "[variables('effectivePort')]",
+                            "scheme": "HTTP"
+                          },
+                          "initialDelaySeconds": 5,
+                          "periodSeconds": 10,
+                          "timeoutSeconds": 5,
+                          "failureThreshold": 6,
+                          "successThreshold": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "scale": {
+                    "minReplicas": 1,
+                    "maxReplicas": 3
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.App/containerApps', parameters('appName'))]"
+            },
+            "fqdn": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.App/containerApps', parameters('appName')), '2026-01-01').configuration.ingress.fqdn]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "applicationInsights",
+        "currentCurrency",
+        "registry"
+      ]
+    },
+    "host": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2025-04-01",
+      "name": "live-agent-host",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "appName": {
+            "value": "ca-agent-seoultour-dev-kc-ae23"
+          },
+          "location": {
+            "value": "[resourceGroup().location]"
+          },
+          "environmentId": {
+            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-seoultour-dev-kc-ae23')]"
+          },
+          "managedIdentityResourceId": {
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-agent-seoultour-dev-kc-ae23')]"
+          },
+          "managedIdentityClientId": {
+            "value": "[reference('hostIdentity').clientId]"
+          },
+          "acrLoginServer": {
+            "value": "[reference('registry').loginServer]"
+          },
+          "containerImage": {
+            "value": "[parameters('hostImage')]"
+          },
+          "foundryEndpoint": {
+            "value": "[reference('foundry').endpoint]"
+          },
+          "tenantId": {
+            "value": "[parameters('tenantId')]"
+          },
+          "mcpAudience": {
+            "value": "[parameters('mcpAudience')]"
+          },
+          "attractionsFqdn": {
+            "value": "[reference('currentAttractions').configuration.ingress.fqdn]"
+          },
+          "weatherFqdn": {
+            "value": "[reference('currentWeather').configuration.ingress.fqdn]"
+          },
+          "accommodationFqdn": {
+            "value": "[reference('currentAccommodation').configuration.ingress.fqdn]"
+          },
+          "currencyFqdn": {
+            "value": "[reference('currentCurrency').configuration.ingress.fqdn]"
+          },
+          "agent365BlueprintId": {
+            "value": "[parameters('agent365BlueprintId')]"
+          },
+          "agent365AgentIds": {
+            "value": "[parameters('agent365AgentIds')]"
+          },
+          "oboChannelAppId": {
+            "value": "[parameters('oboChannelAppId')]"
+          },
+          "oboOAuthConnectionName": {
+            "value": "[parameters('oboOAuthConnectionName')]"
+          },
+          "applicationInsightsConnectionString": {
+            "value": "[reference('applicationInsights').ConnectionString]"
+          },
+          "tags": {
+            "value": "[coalesce(reference('currentHost', '2026-01-01', 'full').tags, createObject())]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.46.1.21595",
+              "templateHash": "1798822300582454369"
+            }
+          },
+          "definitions": {
+            "Agent365AgentIds": {
+              "type": "object",
+              "properties": {
+                "agenticUser": {
+                  "type": "string"
+                },
+                "onBehalfOf": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "appName": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "environmentId": {
+              "type": "string"
+            },
+            "managedIdentityResourceId": {
+              "type": "string"
+            },
+            "managedIdentityClientId": {
+              "type": "string"
+            },
+            "acrLoginServer": {
+              "type": "string"
+            },
+            "containerImage": {
+              "type": "string",
+              "defaultValue": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest"
+            },
+            "foundryEndpoint": {
+              "type": "string"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "mcpAudience": {
+              "type": "string"
+            },
+            "attractionsFqdn": {
+              "type": "string"
+            },
+            "weatherFqdn": {
+              "type": "string"
+            },
+            "accommodationFqdn": {
+              "type": "string"
+            },
+            "currencyFqdn": {
+              "type": "string"
+            },
+            "agent365BlueprintId": {
+              "type": "string"
+            },
+            "agent365AgentIds": {
+              "$ref": "#/definitions/Agent365AgentIds"
+            },
+            "oboChannelAppId": {
+              "type": "string"
+            },
+            "oboOAuthConnectionName": {
+              "type": "string",
+              "defaultValue": "seoul-tourist-obo"
+            },
+            "applicationInsightsConnectionString": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            }
+          },
+          "variables": {
+            "placeholderImage": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+            "isPlaceholder": "[equals(parameters('containerImage'), variables('placeholderImage'))]",
+            "effectivePort": "[if(variables('isPlaceholder'), 80, 8080)]",
+            "productionEnvironment": [
+              {
+                "name": "ASPNETCORE_ENVIRONMENT",
+                "value": "Production"
+              },
+              {
+                "name": "ASPNETCORE_HTTP_PORTS",
+                "value": "8080"
+              },
+              {
+                "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                "value": "[parameters('applicationInsightsConnectionString')]"
+              },
+              {
+                "name": "AZURE_CLIENT_ID",
+                "value": "[parameters('managedIdentityClientId')]"
+              },
+              {
+                "name": "ENABLE_A365_OBSERVABILITY_EXPORTER",
+                "value": "true"
+              },
+              {
+                "name": "OTEL_LOG_LEVEL",
+                "value": "INFO"
+              },
+              {
+                "name": "A365_OBSERVABILITY_LOG_LEVEL",
+                "value": "info|warn|error"
+              },
+              {
+                "name": "AgentHost__AzureOpenAIEndpoint",
+                "value": "[parameters('foundryEndpoint')]"
+              },
+              {
+                "name": "AgentHost__AzureOpenAIDeployment",
+                "value": "gpt-5.6-sol"
+              },
+              {
+                "name": "AgentHost__AzureOpenAIModel",
+                "value": "gpt-5.6-sol"
+              },
+              {
+                "name": "Agent365__EnableWorkIq",
+                "value": "false"
+              },
+              {
+                "name": "PurviewDlp__Enabled",
+                "value": "true"
+              },
+              {
+                "name": "PurviewDlp__TenantId",
+                "value": "[parameters('tenantId')]"
+              },
+              {
+                "name": "PurviewDlp__ApplicationId",
+                "value": "[parameters('agent365BlueprintId')]"
+              },
+              {
+                "name": "PurviewDlp__UseCompatibilityProxy",
+                "value": "true"
+              },
+              {
+                "name": "TokenValidation__Enabled",
+                "value": "true"
+              },
+              {
+                "name": "TokenValidation__TenantId",
+                "value": "[parameters('tenantId')]"
+              },
+              {
+                "name": "TokenValidation__Audiences__AgenticUser",
+                "value": "[parameters('agent365BlueprintId')]"
+              },
+              {
+                "name": "TokenValidation__Audiences__OnBehalfOf",
+                "value": "[parameters('oboChannelAppId')]"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__agentic-foundry__Type",
+                "value": "AgenticUserAuthorization"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__agentic-foundry__Settings__Scopes__0",
+                "value": "https://cognitiveservices.azure.com/.default"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__agentic-foundry__Settings__AlternateBlueprintConnectionName",
+                "value": "ServiceConnection"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__agentic-purview__Type",
+                "value": "AgenticUserAuthorization"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__agentic-purview__Settings__Scopes__0",
+                "value": "https://graph.microsoft.com/Content.Process.User"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__agentic-purview__Settings__Scopes__1",
+                "value": "https://graph.microsoft.com/ProtectionScopes.Compute.User"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__agentic-purview__Settings__Scopes__2",
+                "value": "https://graph.microsoft.com/ContentActivity.Write"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__agentic-purview__Settings__AlternateBlueprintConnectionName",
+                "value": "ServiceConnection"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__agentic-mcp__Type",
+                "value": "AgenticUserAuthorization"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__agentic-mcp__Settings__Scopes__0",
+                "value": "[format('{0}/Mcp.Invoke', parameters('mcpAudience'))]"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__agentic-mcp__Settings__AlternateBlueprintConnectionName",
+                "value": "ServiceConnection"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__obo-user__Type",
+                "value": "AzureBotUserAuthorization"
+              },
+              {
+                "name": "AgentApplication__UserAuthorization__Handlers__obo-user__Settings__AzureBotOAuthConnectionName",
+                "value": "[parameters('oboOAuthConnectionName')]"
+              },
+              {
+                "name": "Connections__ServiceConnection__Settings__AuthType",
+                "value": "FederatedCredentials"
+              },
+              {
+                "name": "Connections__ServiceConnection__Settings__AuthorityEndpoint",
+                "value": "[format('{0}{1}', environment().authentication.loginEndpoint, parameters('tenantId'))]"
+              },
+              {
+                "name": "Connections__ServiceConnection__Settings__ClientId",
+                "value": "[parameters('agent365BlueprintId')]"
+              },
+              {
+                "name": "Connections__ServiceConnection__Settings__FederatedClientId",
+                "value": "[parameters('managedIdentityClientId')]"
+              },
+              {
+                "name": "Connections__ServiceConnection__Settings__Scopes__0",
+                "value": "5a807f24-c9de-44ee-a3a7-329e88a00ffc/.default"
+              },
+              {
+                "name": "Connections__OboServiceConnection__Settings__AuthType",
+                "value": "FederatedCredentials"
+              },
+              {
+                "name": "Connections__OboServiceConnection__Settings__AuthorityEndpoint",
+                "value": "[format('{0}{1}', environment().authentication.loginEndpoint, parameters('tenantId'))]"
+              },
+              {
+                "name": "Connections__OboServiceConnection__Settings__ClientId",
+                "value": "[parameters('agent365BlueprintId')]"
+              },
+              {
+                "name": "Connections__OboServiceConnection__Settings__FederatedClientId",
+                "value": "[parameters('managedIdentityClientId')]"
+              },
+              {
+                "name": "Connections__OboServiceConnection__Settings__Scopes__0",
+                "value": "5a807f24-c9de-44ee-a3a7-329e88a00ffc/.default"
+              },
+              {
+                "name": "Connections__OboChannelConnection__Settings__AuthType",
+                "value": "FederatedCredentials"
+              },
+              {
+                "name": "Connections__OboChannelConnection__Settings__AuthorityEndpoint",
+                "value": "[format('{0}{1}', environment().authentication.loginEndpoint, parameters('tenantId'))]"
+              },
+              {
+                "name": "Connections__OboChannelConnection__Settings__ClientId",
+                "value": "[parameters('oboChannelAppId')]"
+              },
+              {
+                "name": "Connections__OboChannelConnection__Settings__FederatedClientId",
+                "value": "[parameters('managedIdentityClientId')]"
+              },
+              {
+                "name": "Connections__OboChannelConnection__Settings__Scopes__0",
+                "value": "https://api.botframework.com/.default"
+              },
+              {
+                "name": "AgentIdentityObo__AgentId",
+                "value": "[parameters('agent365AgentIds').onBehalfOf]"
+              },
+              {
+                "name": "AgentIdentityObo__BlueprintConnectionName",
+                "value": "OboServiceConnection"
+              },
+              {
+                "name": "ConnectionsMap__0__ServiceUrl",
+                "value": "*"
+              },
+              {
+                "name": "ConnectionsMap__0__Audience",
+                "value": "[parameters('agent365BlueprintId')]"
+              },
+              {
+                "name": "ConnectionsMap__0__Connection",
+                "value": "ServiceConnection"
+              },
+              {
+                "name": "ConnectionsMap__1__ServiceUrl",
+                "value": "*"
+              },
+              {
+                "name": "ConnectionsMap__1__Audience",
+                "value": "[parameters('oboChannelAppId')]"
+              },
+              {
+                "name": "ConnectionsMap__1__Connection",
+                "value": "OboChannelConnection"
+              },
+              {
+                "name": "Agent365Observability__TenantId",
+                "value": "[parameters('tenantId')]"
+              },
+              {
+                "name": "Agent365Observability__AgentBlueprintId",
+                "value": "[parameters('agent365BlueprintId')]"
+              },
+              {
+                "name": "Agent365Observability__ClientId",
+                "value": "[parameters('agent365BlueprintId')]"
+              },
+              {
+                "name": "InternalMcp__Enabled",
+                "value": "true"
+              },
+              {
+                "name": "InternalMcp__UseAuthentication",
+                "value": "true"
+              },
+              {
+                "name": "InternalMcp__Audience",
+                "value": "[parameters('mcpAudience')]"
+              },
+              {
+                "name": "InternalMcp__AttractionsEndpoint",
+                "value": "[format('https://{0}/mcp', parameters('attractionsFqdn'))]"
+              },
+              {
+                "name": "InternalMcp__WeatherEndpoint",
+                "value": "[format('https://{0}/mcp', parameters('weatherFqdn'))]"
+              },
+              {
+                "name": "InternalMcp__AccommodationEndpoint",
+                "value": "[format('https://{0}/mcp', parameters('accommodationFqdn'))]"
+              },
+              {
+                "name": "InternalMcp__CurrencyEndpoint",
+                "value": "[format('https://{0}/mcp', parameters('currencyFqdn'))]"
+              },
+              {
+                "name": "InternalMcp__MaximumContentCharacters",
+                "value": "65536"
+              }
+            ]
+          },
+          "resources": {
+            "app": {
+              "type": "Microsoft.App/containerApps",
+              "apiVersion": "2026-01-01",
+              "name": "[parameters('appName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', parameters('managedIdentityResourceId'))]": {}
+                }
+              },
+              "properties": {
+                "managedEnvironmentId": "[parameters('environmentId')]",
+                "configuration": {
+                  "activeRevisionsMode": "Single",
+                  "ingress": {
+                    "external": true,
+                    "targetPort": "[variables('effectivePort')]",
+                    "allowInsecure": false,
+                    "transport": "auto",
+                    "traffic": [
+                      {
+                        "latestRevision": true,
+                        "weight": 100
+                      }
+                    ]
+                  },
+                  "registries": "[if(variables('isPlaceholder'), createArray(), createArray(createObject('server', parameters('acrLoginServer'), 'identity', parameters('managedIdentityResourceId'))))]",
+                  "secrets": []
+                },
+                "template": {
+                  "containers": [
+                    {
+                      "name": "agent-host",
+                      "image": "[parameters('containerImage')]",
+                      "env": "[if(variables('isPlaceholder'), createArray(), variables('productionEnvironment'))]",
+                      "resources": {
+                        "cpu": "0.5",
+                        "memory": "1Gi"
+                      },
+                      "probes": [
+                        {
+                          "type": "Liveness",
+                          "httpGet": {
+                            "path": "[if(variables('isPlaceholder'), '/', '/api/health/live')]",
+                            "port": "[variables('effectivePort')]",
+                            "scheme": "HTTP"
+                          },
+                          "initialDelaySeconds": 15,
+                          "periodSeconds": 30,
+                          "timeoutSeconds": 5,
+                          "failureThreshold": 3,
+                          "successThreshold": 1
+                        },
+                        {
+                          "type": "Readiness",
+                          "httpGet": {
+                            "path": "[if(variables('isPlaceholder'), '/', '/api/health/ready')]",
+                            "port": "[variables('effectivePort')]",
+                            "scheme": "HTTP"
+                          },
+                          "initialDelaySeconds": 10,
+                          "periodSeconds": 10,
+                          "timeoutSeconds": 5,
+                          "failureThreshold": 6,
+                          "successThreshold": 1
+                        }
+                      ]
+                    }
+                  ],
+                  "scale": {
+                    "minReplicas": 1,
+                    "maxReplicas": 1
+                  }
+                }
+              }
+            }
+          },
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.App/containerApps', parameters('appName'))]"
+            },
+            "fqdn": {
+              "type": "string",
+              "value": "[reference('app').configuration.ingress.fqdn]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "accommodation",
+        "applicationInsights",
+        "attractions",
+        "currency",
+        "currentAccommodation",
+        "currentAttractions",
+        "currentCurrency",
+        "currentHost",
+        "currentWeather",
+        "foundry",
+        "hostIdentity",
+        "registry",
+        "weather"
+      ]
+    }
+  },
+  "outputs": {
+    "hostUrl": {
+      "type": "string",
+      "value": "[format('https://{0}', reference('host').outputs.fqdn.value)]"
+    },
+    "updatedContainerAppIds": {
+      "type": "array",
+      "value": [
+        "[reference('host').outputs.id.value]",
+        "[reference('attractions').outputs.id.value]",
+        "[reference('weather').outputs.id.value]",
+        "[reference('accommodation').outputs.id.value]",
+        "[reference('currency').outputs.id.value]"
+      ]
+    }
+  }
+}

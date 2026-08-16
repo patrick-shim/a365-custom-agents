@@ -1,0 +1,55 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0.302 AS source
+WORKDIR /src
+
+COPY Directory.Build.props Directory.Packages.props ./
+COPY server/ server/
+
+FROM source AS attractions-build
+RUN dotnet publish server/mcp/attractions/SeoulTourist.Mcp.Attractions/SeoulTourist.Mcp.Attractions.csproj \
+    --configuration Release \
+    --output /app/publish \
+    /p:UseAppHost=false
+
+FROM source AS weather-build
+RUN dotnet publish server/mcp/weather/SeoulTourist.Mcp.Weather/SeoulTourist.Mcp.Weather.csproj \
+    --configuration Release \
+    --output /app/publish \
+    /p:UseAppHost=false
+
+FROM source AS accommodation-build
+RUN dotnet publish server/mcp/accommodation/SeoulTourist.Mcp.Accommodation/SeoulTourist.Mcp.Accommodation.csproj \
+    --configuration Release \
+    --output /app/publish \
+    /p:UseAppHost=false
+
+FROM source AS currency-build
+RUN dotnet publish server/mcp/currency/SeoulTourist.Mcp.Currency/SeoulTourist.Mcp.Currency.csproj \
+    --configuration Release \
+    --output /app/publish \
+    /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
+WORKDIR /app
+
+ENV ASPNETCORE_HTTP_PORTS=8080 \
+    ASPNETCORE_ENVIRONMENT=Production \
+    DOTNET_EnableDiagnostics=0
+
+EXPOSE 8080
+USER $APP_UID
+
+FROM runtime AS attractions
+COPY --from=attractions-build /app/publish .
+ENTRYPOINT ["dotnet", "SeoulTourist.Mcp.Attractions.dll"]
+
+FROM runtime AS weather
+COPY --from=weather-build /app/publish .
+ENTRYPOINT ["dotnet", "SeoulTourist.Mcp.Weather.dll"]
+
+FROM runtime AS accommodation
+COPY --from=accommodation-build /app/publish .
+ENTRYPOINT ["dotnet", "SeoulTourist.Mcp.Accommodation.dll"]
+
+FROM runtime AS currency
+COPY --from=currency-build /app/publish .
+ENTRYPOINT ["dotnet", "SeoulTourist.Mcp.Currency.dll"]

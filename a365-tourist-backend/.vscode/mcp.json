@@ -1,0 +1,20 @@
+{
+  "servers": {
+    "seoul-attractions": {
+      "type": "http",
+      "url": "http://localhost:3981/mcp"
+    },
+    "seoul-weather": {
+      "type": "http",
+      "url": "http://localhost:3982/mcp"
+    },
+    "seoul-accommodation": {
+      "type": "http",
+      "url": "http://localhost:3983/mcp"
+    },
+    "seoul-currency": {
+      "type": "http",
+      "url": "http://localhost:3984/mcp"
+    }
+  }
+}

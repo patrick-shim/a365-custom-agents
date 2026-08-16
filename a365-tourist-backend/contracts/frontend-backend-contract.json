@@ -1,0 +1,34 @@
+{
+  "$schema": "./frontend-backend-contract.schema.json",
+  "contractId": "seoul-tourist-shared-backend",
+  "contractVersion": "1.0.0",
+  "backend": {
+    "deployment": "shared-agent-host",
+    "sourceAuthority": "a365-tourist-backend",
+    "configurationOwnership": "protected-deployment-configuration"
+  },
+  "frontends": [
+    {
+      "name": "agentic-user",
+      "route": "/api/messages",
+      "audienceConfiguration": "TokenValidation__Audiences__AgenticUser",
+      "identityBinding": "dynamic-child-agent-identity"
+    },
+    {
+      "name": "on-behalf-of",
+      "route": "/api/messages/obo",
+      "audienceConfiguration": "TokenValidation__Audiences__OnBehalfOf",
+      "identityBinding": "configured-obo-child-agent-identity"
+    }
+  ],
+  "healthEndpoints": [
+    "/api/health",
+    "/api/health/live",
+    "/api/health/ready"
+  ],
+  "mcp": {
+    "serviceCount": 4,
+    "transport": "streamable-http",
+    "authorization": "delegated Mcp.Invoke"
+  }
+}

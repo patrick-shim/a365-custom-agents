@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="../../../integrations/SeoulTourist.AzureMaps/SeoulTourist.AzureMaps.csproj" />
+    <ProjectReference Include="../../../integrations/SeoulTourist.Tourism/SeoulTourist.Tourism.csproj" />
+    <ProjectReference Include="../../shared/SeoulTourist.Mcp.Hosting/SeoulTourist.Mcp.Hosting.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol.AspNetCore" />
+  </ItemGroup>
+</Project>

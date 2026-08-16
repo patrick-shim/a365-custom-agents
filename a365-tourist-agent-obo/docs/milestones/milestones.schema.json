@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["protocolVersion", "currentMilestone", "milestones"],
+  "properties": {
+    "$schema": { "type": "string", "minLength": 1 },
+    "protocolVersion": { "type": "integer", "minimum": 1 },
+    "currentMilestone": { "type": "string", "pattern": "^M[0-9]+$" },
+    "milestones": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "status", "allowsTenantReads", "allowsTenantMutations", "scope"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^M[0-9]+$" },
+          "name": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["planned", "active", "complete", "blocked"] },
+          "allowsTenantReads": { "type": "boolean" },
+          "allowsTenantMutations": { "type": "boolean" },
+          "requiresExplicitUserActivation": { "type": "boolean" },
+          "activationPhrase": { "type": "string" },
+          "scope": { "type": "array", "items": { "type": "string" } },
+          "prohibited": { "type": "array", "items": { "type": "string" } },
+          "acceptanceEvidence": { "type": "array", "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

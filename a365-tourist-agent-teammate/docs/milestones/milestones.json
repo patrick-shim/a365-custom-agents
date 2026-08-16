@@ -1,0 +1,36 @@
+{
+  "$schema": "./milestones.schema.json",
+  "protocolVersion": 1,
+  "currentMilestone": "M7",
+  "milestones": [
+    {
+      "id": "M7",
+      "name": "AI Teammate end-to-end production alignment",
+      "status": "active",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": true,
+      "scope": [
+        "preserve the completed AI Teammate package-only frontend extraction and protected CLI-owned state",
+        "eliminate all unexplained AI Teammate package, route, Blueprint audience, child-identity, authentication, Purview, and installed-channel drift from the canonical backend contract",
+        "validate the AI Teammate package and /api/messages contract against the shared deployed backend",
+        "rehydrate, validate, publish, update, or install the AI Teammate package only through approved Agent 365 CLI workflows when required",
+        "prove live AI Teammate authentication, governed responses, Purview enforcement, sanitized observability, and shared-backend compatibility"
+      ],
+      "prohibited": [
+        "recreating server, infra, tests, tools, Docker, Teams Toolkit package, or backend deployment files",
+        "copying, hand-editing, committing, or deleting a365.config.json, a365.generated.config.json, generated manifests, packages, identities, secrets, or tenant-bound evidence",
+        "using the historical OBO-side AI Teammate snapshot as publication authority",
+        "changing /api/messages, its Blueprint audience, child identity model, consent, package registration, Purview, or Insider Risk Management policy without a reviewed dry run, rollback boundary, and explicit approval",
+        "tenant mutation or package publication without a successful reviewed dry run and explicit approval"
+      ],
+      "acceptanceEvidence": [
+        "the AI Teammate tree contains no backend source or deployment residue",
+        "authoritative CLI-owned source state, the supported generated package, installed channel, and live backend contract have no unexplained drift",
+        "the contract pin matches the canonical backend contract",
+        "the approved CLI-owned manifest validation contains one Agentic User template without committing generated state",
+        "the supported CLI workflow reconciles authoritative package state without hand edits",
+        "the installed AI Teammate targets /api/messages with the shared Blueprint audience and passes live governed-response, Purview, and sanitized observability checks against the same backend revision as OBO"
+      ]
+    }
+  ]
+}
