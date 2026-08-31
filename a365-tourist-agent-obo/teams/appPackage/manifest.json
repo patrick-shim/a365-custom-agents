@@ -14,8 +14,8 @@
     "outline": "outline.png"
   },
   "name": {
-    "short": "${{APP_SHORT_NAME}}",
-    "full": "${{APP_FULL_NAME}}"
+    "short": "Korea Tour Assistant (OBO)",
+    "full": "Korea Tour Assistant (OBO)"
   },
   "description": {
     "short": "Plans Korea travel around your schedule and current local conditions.",
