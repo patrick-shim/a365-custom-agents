@@ -43,64 +43,73 @@ param oboChannelAppId string
 
 param oboOAuthConnectionName string = 'korea-expert-obo'
 
+@minLength(3)
+@maxLength(20)
+param resourceBaseName string = 'koreaexpert'
+
+// Shared Microsoft Foundry account, referenced in place from its own resource group.
+param foundryResourceGroupName string = 'rg-ai-foundry'
+param foundryAccountName string = 'a365-ai-foundry'
+
 resource environment 'Microsoft.App/managedEnvironments@2025-01-01' existing = {
-  name: 'cae-koreaexpert-dev-kc-ae23'
+  name: 'cae-${resourceBaseName}'
 }
 
 resource registry 'Microsoft.ContainerRegistry/registries@2025-11-01' existing = {
-  name: 'crkoreaexpertdevkcae23'
+  name: 'cr${resourceBaseName}'
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = {
-  name: 'appi-koreaexpert-dev-kc-ae23'
+  name: 'appi-${resourceBaseName}'
 }
 
 resource foundry 'Microsoft.CognitiveServices/accounts@2026-05-01' existing = {
-  name: 'fdy-koreaexpert-dev-kc-ae23'
+  name: foundryAccountName
+  scope: resourceGroup(foundryResourceGroupName)
 }
 
 resource azureMaps 'Microsoft.Maps/accounts@2023-06-01' existing = {
-  name: 'maps-koreaexpert-dev-kc-ae23'
+  name: 'maps-${resourceBaseName}'
 }
 
 resource hostIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
-  name: 'id-agent-koreaexpert-dev-kc-ae23'
+  name: 'id-agent-${resourceBaseName}'
 }
 
 resource attractionsIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
-  name: 'id-attract-koreaexpert-dev-kc-ae23'
+  name: 'id-attract-${resourceBaseName}'
 }
 
 resource weatherIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
-  name: 'id-weather-koreaexpert-dev-kc-ae23'
+  name: 'id-weather-${resourceBaseName}'
 }
 
 resource accommodationIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
-  name: 'id-stay-koreaexpert-dev-kc-ae23'
+  name: 'id-stay-${resourceBaseName}'
 }
 
 resource currencyIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
-  name: 'id-fx-koreaexpert-dev-kc-ae23'
+  name: 'id-fx-${resourceBaseName}'
 }
 
 resource currentHost 'Microsoft.App/containerApps@2026-01-01' existing = {
-  name: 'ca-agent-koreaexpert-dev-kc-ae23'
+  name: 'ca-agent-${resourceBaseName}'
 }
 
 resource currentAttractions 'Microsoft.App/containerApps@2026-01-01' existing = {
-  name: 'ca-attract-koreaexpert-dev-kc-ae23'
+  name: 'ca-attract-${resourceBaseName}'
 }
 
 resource currentWeather 'Microsoft.App/containerApps@2026-01-01' existing = {
-  name: 'ca-weather-koreaexpert-dev-kc-ae23'
+  name: 'ca-weather-${resourceBaseName}'
 }
 
 resource currentAccommodation 'Microsoft.App/containerApps@2026-01-01' existing = {
-  name: 'ca-stay-koreaexpert-dev-kc-ae23'
+  name: 'ca-stay-${resourceBaseName}'
 }
 
 resource currentCurrency 'Microsoft.App/containerApps@2026-01-01' existing = {
-  name: 'ca-fx-koreaexpert-dev-kc-ae23'
+  name: 'ca-fx-${resourceBaseName}'
 }
 
 module attractions './modules/attractions-mcp-container-app.bicep' = {
