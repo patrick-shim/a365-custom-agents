@@ -1,11 +1,18 @@
 {
   "$schema": "./frontend-backend-contract.schema.json",
   "contractId": "korea-expert-shared-backend",
-  "contractVersion": "1.0.0",
+  "contractVersion": "2.0.0",
+  "product": {
+    "name": "Korea Expert",
+    "geography": "Korea",
+    "defaultTimeZone": "Asia/Seoul",
+    "defaultCurrency": "KRW"
+  },
   "backend": {
-    "deployment": "shared-agent-host",
+    "deployment": "korea-expert-shared-agent-host",
     "sourceAuthority": "a365-tourist-backend",
-    "configurationOwnership": "protected-deployment-configuration"
+    "configurationOwnership": "protected-deployment-configuration",
+    "inferenceProtocol": "foundry-responses"
   },
   "frontends": [
     {
@@ -28,6 +35,12 @@
   ],
   "mcp": {
     "serviceCount": 4,
+    "services": [
+      "attractions",
+      "accommodation",
+      "weather",
+      "currency"
+    ],
     "transport": "streamable-http",
     "authorization": "delegated Mcp.Invoke"
   }

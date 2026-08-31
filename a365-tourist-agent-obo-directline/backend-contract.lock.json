@@ -1,6 +1,9 @@
 {
   "contractId": "korea-expert-shared-backend",
-  "contractVersion": "1.0.0",
+  "contractVersion": "2.0.0",
+  "productName": "Korea Expert",
+  "defaultTimeZone": "Asia/Seoul",
+  "defaultCurrency": "KRW",
   "frontend": "on-behalf-of",
   "route": "/api/messages/obo",
   "audienceConfiguration": "TokenValidation__Audiences__OnBehalfOf",

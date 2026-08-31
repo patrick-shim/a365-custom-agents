@@ -5,6 +5,7 @@
   "required": [
     "contractId",
     "contractVersion",
+    "product",
     "backend",
     "frontends",
     "healthEndpoints",
@@ -22,23 +23,46 @@
       "type": "string",
       "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
     },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "geography", "defaultTimeZone", "defaultCurrency"],
+      "properties": {
+        "name": {
+          "const": "Korea Expert"
+        },
+        "geography": {
+          "const": "Korea"
+        },
+        "defaultTimeZone": {
+          "const": "Asia/Seoul"
+        },
+        "defaultCurrency": {
+          "const": "KRW"
+        }
+      }
+    },
     "backend": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "deployment",
         "sourceAuthority",
-        "configurationOwnership"
+        "configurationOwnership",
+        "inferenceProtocol"
       ],
       "properties": {
         "deployment": {
-          "const": "shared-agent-host"
+          "const": "korea-expert-shared-agent-host"
         },
         "sourceAuthority": {
           "const": "a365-tourist-backend"
         },
         "configurationOwnership": {
           "const": "protected-deployment-configuration"
+        },
+        "inferenceProtocol": {
+          "const": "foundry-responses"
         }
       }
     },
@@ -84,10 +108,14 @@
     "mcp": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["serviceCount", "transport", "authorization"],
+      "required": ["serviceCount", "services", "transport", "authorization"],
       "properties": {
         "serviceCount": {
           "const": 4
+        },
+        "services": {
+          "type": "array",
+          "const": ["attractions", "accommodation", "weather", "currency"]
         },
         "transport": {
           "const": "streamable-http"

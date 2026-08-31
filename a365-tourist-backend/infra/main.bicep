@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
 type Agent365AgentIds = {
   agenticUser: string
@@ -14,8 +14,30 @@ type Agent365AgentPrincipalIds = {
 @maxLength(64)
 param environmentName string
 
+// Korea Expert deploys into the same shared resource group and subscription as Japan Expert.
+// Only the resource names differ. This template never creates the resource group.
 @minLength(1)
-param location string
+param targetResourceGroupName string = 'rg-a365-custom-agents'
+
+var approvedDeploymentScopes = {
+  '${toLower(targetResourceGroupName)}': targetResourceGroupName
+}
+var approvedDeploymentScope = approvedDeploymentScopes[toLower(resourceGroup().name)]
+
+@minLength(3)
+@maxLength(20)
+param resourceBaseName string = 'koreaexpert'
+
+@minLength(1)
+param location string = resourceGroup().location
+
+// Existing Microsoft Foundry (different resource group, same subscription).
+// Referenced only; this template never creates, moves, or changes Foundry.
+param foundryResourceGroupName string = 'rg-ai-foundry'
+param foundryAccountName string = 'a365-ai-foundry'
+param foundryProjectName string = 'default'
+param foundryModelDeploymentName string = 'gpt-5.6-sol'
+param foundryProjectEndpoint string = ''
 
 param sessionId string
 param deployedBy string
@@ -47,6 +69,22 @@ param agent365AgentPrincipalIds Agent365AgentPrincipalIds = {
 param oboChannelAppId string = ''
 param oboOAuthConnectionName string = 'korea-expert-obo'
 
+// Azure Bot registration for the OBO Teams and Direct Line channels. Opt-in: the bot is only
+// deployed when deployAzureBot is true and every channel prerequisite has been supplied.
+param deployAzureBot bool = false
+param azureBotName string = 'bot-${resourceBaseName}'
+param azureBotDisplayName string = 'Korea Expert'
+param azureBotSkuName string = 'F0'
+param deployDirectLineChannel bool = true
+param deployTeamsChannel bool = true
+param deployOboOAuthConnection bool = true
+param directLineSiteName string = 'korea-expert-directline'
+param directLineTrustedOrigins array = []
+
+@secure()
+param oboChannelAppClientSecret string = ''
+param oboOAuthScope string = ''
+
 @secure()
 param ktoServiceKey string = ''
 
@@ -62,13 +100,13 @@ param koreaEximbankAuthKey string = ''
 @secure()
 param forexRateApiKey string = ''
 
-var resourceGroupName = 'rg-koreaexpert-dev-kc-ae23'
 var tags = {
   'app-onboard-skill': 'true'
   'app-onboard-session-id': sessionId
   'created-at': createdAt
   environment: environmentName
   'deployed-by': deployedBy
+  'deployment-scope': approvedDeploymentScope
 }
 var graphTags = [
   'app-onboard-skill:true'
@@ -77,17 +115,37 @@ var graphTags = [
   'environment:${environmentName}'
   'deployed-by:${deployedBy}'
 ]
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
-  name: resourceGroupName
-  location: location
-  tags: tags
+var resolvedFoundryProjectEndpoint = empty(foundryProjectEndpoint)
+  ? 'https://${foundryAccountName}.services.ai.azure.com'
+  : foundryProjectEndpoint
+
+// Deploying the bot without a channel prerequisite resolves an absent key and fails the
+// deployment early rather than registering a half-configured bot.
+var botPhaseKeys = {
+  valid: azureBotName
+}
+var botPhaseReady = deployDirectLineChannel && deployTeamsChannel && deployOboOAuthConnection && !empty(oboChannelAppId) && !empty(oboChannelAppClientSecret) && !empty(oboOAuthScope)
+var validatedAzureBotName = deployAzureBot ? botPhaseKeys[botPhaseReady ? 'valid' : 'invalid'] : azureBotName
+
+resource existingFoundryAccount 'Microsoft.CognitiveServices/accounts@2026-05-01' existing = {
+  name: foundryAccountName
+  scope: resourceGroup(foundryResourceGroupName)
+}
+
+resource existingFoundryProject 'Microsoft.CognitiveServices/accounts/projects@2026-05-01' existing = {
+  parent: existingFoundryAccount
+  name: foundryProjectName
+}
+
+resource existingFoundryModelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2026-05-01' existing = {
+  parent: existingFoundryAccount
+  name: foundryModelDeploymentName
 }
 
 module logAnalytics './modules/log-analytics.bicep' = {
   name: 'log-analytics'
-  scope: resourceGroup
   params: {
-    workspaceName: 'log-koreaexpert-dev-kc-ae23'
+    workspaceName: 'log-${resourceBaseName}'
     location: location
     tags: tags
   }
@@ -95,9 +153,8 @@ module logAnalytics './modules/log-analytics.bicep' = {
 
 module applicationInsights './modules/application-insights.bicep' = {
   name: 'application-insights'
-  scope: resourceGroup
   params: {
-    componentName: 'appi-koreaexpert-dev-kc-ae23'
+    componentName: 'appi-${resourceBaseName}'
     location: location
     workspaceResourceId: logAnalytics.outputs.id
     tags: tags
@@ -106,9 +163,8 @@ module applicationInsights './modules/application-insights.bicep' = {
 
 module containerRegistry './modules/container-registry.bicep' = {
   name: 'container-registry'
-  scope: resourceGroup
   params: {
-    registryName: 'crkoreaexpertdevkcae23'
+    registryName: 'cr${resourceBaseName}'
     location: location
     workspaceResourceId: logAnalytics.outputs.id
     tags: tags
@@ -117,9 +173,8 @@ module containerRegistry './modules/container-registry.bicep' = {
 
 module keyVault './modules/key-vault.bicep' = {
   name: 'key-vault'
-  scope: resourceGroup
   params: {
-    vaultName: 'kv-koreaexpert-dev-kc-ae23'
+    vaultName: 'kv-${resourceBaseName}'
     location: location
     tenantId: tenantId
     workspaceResourceId: logAnalytics.outputs.id
@@ -139,11 +194,10 @@ module keyVault './modules/key-vault.bicep' = {
 
 module containerAppEnvironment './modules/container-app-environment.bicep' = {
   name: 'container-app-environment'
-  scope: resourceGroup
   params: {
-    environmentName: 'cae-koreaexpert-dev-kc-ae23'
+    environmentName: 'cae-${resourceBaseName}'
     location: location
-    workspaceName: 'log-koreaexpert-dev-kc-ae23'
+    workspaceName: 'log-${resourceBaseName}'
     tags: tags
   }
   dependsOn: [
@@ -153,18 +207,16 @@ module containerAppEnvironment './modules/container-app-environment.bicep' = {
 
 module azureMaps './modules/azure-maps.bicep' = {
   name: 'azure-maps'
-  scope: resourceGroup
   params: {
-    accountName: 'maps-koreaexpert-dev-kc-ae23'
+    accountName: 'maps-${resourceBaseName}'
     tags: tags
   }
 }
 
 module hostManagedIdentity './modules/host-managed-identity.bicep' = {
   name: 'host-managed-identity'
-  scope: resourceGroup
   params: {
-    identityName: 'id-agent-koreaexpert-dev-kc-ae23'
+    identityName: 'id-agent-${resourceBaseName}'
     location: location
     tags: tags
   }
@@ -172,9 +224,8 @@ module hostManagedIdentity './modules/host-managed-identity.bicep' = {
 
 module attractionsManagedIdentity './modules/attractions-managed-identity.bicep' = {
   name: 'attractions-managed-identity'
-  scope: resourceGroup
   params: {
-    identityName: 'id-attract-koreaexpert-dev-kc-ae23'
+    identityName: 'id-attract-${resourceBaseName}'
     location: location
     tags: tags
   }
@@ -182,9 +233,8 @@ module attractionsManagedIdentity './modules/attractions-managed-identity.bicep'
 
 module weatherManagedIdentity './modules/weather-managed-identity.bicep' = {
   name: 'weather-managed-identity'
-  scope: resourceGroup
   params: {
-    identityName: 'id-weather-koreaexpert-dev-kc-ae23'
+    identityName: 'id-weather-${resourceBaseName}'
     location: location
     tags: tags
   }
@@ -192,9 +242,8 @@ module weatherManagedIdentity './modules/weather-managed-identity.bicep' = {
 
 module accommodationManagedIdentity './modules/accommodation-managed-identity.bicep' = {
   name: 'accommodation-managed-identity'
-  scope: resourceGroup
   params: {
-    identityName: 'id-stay-koreaexpert-dev-kc-ae23'
+    identityName: 'id-stay-${resourceBaseName}'
     location: location
     tags: tags
   }
@@ -202,57 +251,18 @@ module accommodationManagedIdentity './modules/accommodation-managed-identity.bi
 
 module currencyManagedIdentity './modules/currency-managed-identity.bicep' = {
   name: 'currency-managed-identity'
-  scope: resourceGroup
   params: {
-    identityName: 'id-fx-koreaexpert-dev-kc-ae23'
+    identityName: 'id-fx-${resourceBaseName}'
     location: location
     tags: tags
   }
-}
-
-module foundryResource './modules/foundry-resource.bicep' = {
-  name: 'foundry-resource'
-  scope: resourceGroup
-  params: {
-    accountName: 'fdy-koreaexpert-dev-kc-ae23'
-    location: location
-    tags: tags
-  }
-}
-
-module foundryProject './modules/foundry-project.bicep' = {
-  name: 'foundry-project'
-  scope: resourceGroup
-  params: {
-    accountName: 'fdy-koreaexpert-dev-kc-ae23'
-    projectName: 'proj-koreaexpert-dev-kc-ae23'
-    location: location
-    tags: tags
-  }
-  dependsOn: [
-    foundryResource
-  ]
-}
-
-module foundryModelDeployment './modules/foundry-model-deployment.bicep' = {
-  name: 'foundry-model-deployment'
-  scope: resourceGroup
-  params: {
-    accountName: 'fdy-koreaexpert-dev-kc-ae23'
-    deploymentName: 'gpt-5.6-sol'
-    tags: tags
-  }
-  dependsOn: [
-    foundryResource
-  ]
 }
 
 module mcpApiApplication './modules/mcp-api-application.bicep' = {
   name: 'mcp-api-application'
-  scope: resourceGroup
   params: {
-    applicationName: 'api-koreaexpert-dev-kc-ae23'
-    displayName: 'api-koreaexpert-dev-kc-ae23'
+    applicationName: 'api-${resourceBaseName}'
+    displayName: 'api-${resourceBaseName}'
     tenantId: tenantId
     graphTags: graphTags
   }
@@ -260,12 +270,11 @@ module mcpApiApplication './modules/mcp-api-application.bicep' = {
 
 module roleAssignments './modules/role-assignments.bicep' = {
   name: 'role-assignments'
-  scope: resourceGroup
   params: {
-    registryName: 'crkoreaexpertdevkcae23'
-    vaultName: 'kv-koreaexpert-dev-kc-ae23'
-    mapsAccountName: 'maps-koreaexpert-dev-kc-ae23'
-    foundryAccountName: 'fdy-koreaexpert-dev-kc-ae23'
+    registryName: 'cr${resourceBaseName}'
+    vaultName: 'kv-${resourceBaseName}'
+    mapsAccountName: 'maps-${resourceBaseName}'
+    foundryAccountName: foundryAccountName
     deployerObjectId: deployerObjectId
     hostPrincipalId: hostManagedIdentity.outputs.principalId
     attractionsPrincipalId: attractionsManagedIdentity.outputs.principalId
@@ -280,16 +289,14 @@ module roleAssignments './modules/role-assignments.bicep' = {
   dependsOn: [
     containerRegistry
     keyVault
-    foundryResource
     azureMaps
   ]
 }
 
 module attractionsMcpContainerApp './modules/attractions-mcp-container-app.bicep' = {
   name: 'attractions-mcp-container-app'
-  scope: resourceGroup
   params: {
-    appName: 'ca-attract-koreaexpert-dev-kc-ae23'
+    appName: 'ca-attract-${resourceBaseName}'
     location: location
     environmentId: containerAppEnvironment.outputs.id
     managedIdentityResourceId: attractionsManagedIdentity.outputs.id
@@ -309,9 +316,8 @@ module attractionsMcpContainerApp './modules/attractions-mcp-container-app.bicep
 
 module weatherMcpContainerApp './modules/weather-mcp-container-app.bicep' = {
   name: 'weather-mcp-container-app'
-  scope: resourceGroup
   params: {
-    appName: 'ca-weather-koreaexpert-dev-kc-ae23'
+    appName: 'ca-weather-${resourceBaseName}'
     location: location
     environmentId: containerAppEnvironment.outputs.id
     managedIdentityResourceId: weatherManagedIdentity.outputs.id
@@ -329,9 +335,8 @@ module weatherMcpContainerApp './modules/weather-mcp-container-app.bicep' = {
 
 module accommodationMcpContainerApp './modules/accommodation-mcp-container-app.bicep' = {
   name: 'accommodation-mcp-container-app'
-  scope: resourceGroup
   params: {
-    appName: 'ca-stay-koreaexpert-dev-kc-ae23'
+    appName: 'ca-stay-${resourceBaseName}'
     location: location
     environmentId: containerAppEnvironment.outputs.id
     managedIdentityResourceId: accommodationManagedIdentity.outputs.id
@@ -351,9 +356,8 @@ module accommodationMcpContainerApp './modules/accommodation-mcp-container-app.b
 
 module currencyMcpContainerApp './modules/currency-mcp-container-app.bicep' = {
   name: 'currency-mcp-container-app'
-  scope: resourceGroup
   params: {
-    appName: 'ca-fx-koreaexpert-dev-kc-ae23'
+    appName: 'ca-fx-${resourceBaseName}'
     location: location
     environmentId: containerAppEnvironment.outputs.id
     managedIdentityResourceId: currencyManagedIdentity.outputs.id
@@ -371,16 +375,15 @@ module currencyMcpContainerApp './modules/currency-mcp-container-app.bicep' = {
 
 module agentHostContainerApp './modules/agent-host-container-app.bicep' = {
   name: 'agent-host-container-app'
-  scope: resourceGroup
   params: {
-    appName: 'ca-agent-koreaexpert-dev-kc-ae23'
+    appName: 'ca-agent-${resourceBaseName}'
     location: location
     environmentId: containerAppEnvironment.outputs.id
     managedIdentityResourceId: hostManagedIdentity.outputs.id
     managedIdentityClientId: hostManagedIdentity.outputs.clientId
     acrLoginServer: containerRegistry.outputs.loginServer
     containerImage: containerImage
-    foundryEndpoint: foundryResource.outputs.endpoint
+    foundryEndpoint: resolvedFoundryProjectEndpoint
     tenantId: tenantId
     mcpAudience: mcpApiApplication.outputs.audience
     attractionsFqdn: attractionsMcpContainerApp.outputs.fqdn
@@ -399,11 +402,40 @@ module agentHostContainerApp './modules/agent-host-container-app.bicep' = {
   ]
 }
 
-output resourceGroupName string = resourceGroup.name
+var oboMessagingEndpoint = 'https://${agentHostContainerApp.outputs.fqdn}/api/messages/obo'
+
+module azureBot './modules/azure-bot.bicep' = if (deployAzureBot) {
+  name: 'azure-bot'
+  params: {
+    botName: validatedAzureBotName
+    displayName: azureBotDisplayName
+    messagingEndpoint: oboMessagingEndpoint
+    msaAppId: oboChannelAppId
+    msaAppTenantId: tenantId
+    skuName: azureBotSkuName
+    deployDirectLineChannel: deployDirectLineChannel
+    deployTeamsChannel: deployTeamsChannel
+    deployOAuthConnection: deployOboOAuthConnection
+    directLineSiteName: directLineSiteName
+    directLineTrustedOrigins: directLineTrustedOrigins
+    oauthConnectionName: oboOAuthConnectionName
+    oauthClientId: oboChannelAppId
+    oauthClientSecret: oboChannelAppClientSecret
+    oauthScopes: oboOAuthScope
+    tags: tags
+  }
+}
+
+output resourceGroupName string = resourceGroup().name
+output deploymentScope string = approvedDeploymentScope
 output agentHostUrl string = 'https://${agentHostContainerApp.outputs.fqdn}'
+output oboMessagingEndpoint string = oboMessagingEndpoint
 output containerRegistryLoginServer string = containerRegistry.outputs.loginServer
 output keyVaultName string = keyVault.outputs.name
-output foundryProjectId string = foundryProject.outputs.id
+output existingFoundryAccountId string = existingFoundryAccount.id
+output existingFoundryProjectId string = existingFoundryProject.id
+output existingFoundryModelDeploymentId string = existingFoundryModelDeployment.id
+output existingFoundryProjectEndpoint string = resolvedFoundryProjectEndpoint
 output hostManagedIdentityClientId string = hostManagedIdentity.outputs.clientId
 output hostManagedIdentityPrincipalId string = hostManagedIdentity.outputs.principalId
 output mcpApiApplicationId string = mcpApiApplication.outputs.applicationId
