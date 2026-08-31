@@ -47,8 +47,7 @@ param oboOAuthConnectionName string = 'korea-expert-obo'
 @maxLength(20)
 param resourceBaseName string = 'koreaexpert'
 
-// Shared Microsoft Foundry account, referenced in place from its own resource group.
-param foundryResourceGroupName string = 'rg-ai-foundry'
+// Shared Microsoft Foundry account name; the Responses base URL is derived from it.
 param foundryAccountName string = 'a365-ai-foundry'
 
 resource environment 'Microsoft.App/managedEnvironments@2025-01-01' existing = {
@@ -61,11 +60,6 @@ resource registry 'Microsoft.ContainerRegistry/registries@2025-11-01' existing =
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: 'appi-${resourceBaseName}'
-}
-
-resource foundry 'Microsoft.CognitiveServices/accounts@2026-05-01' existing = {
-  name: foundryAccountName
-  scope: resourceGroup(foundryResourceGroupName)
 }
 
 resource azureMaps 'Microsoft.Maps/accounts@2023-06-01' existing = {
@@ -190,7 +184,9 @@ module host './modules/agent-host-container-app.bicep' = {
     managedIdentityClientId: hostIdentity.properties.clientId
     acrLoginServer: registry.properties.loginServer
     containerImage: hostImage
-    foundryEndpoint: foundry.properties.endpoint
+    // The account's published endpoint is the cognitiveservices form, which does not
+    // serve /openai/v1. The Responses client needs the services.ai.azure.com base.
+    foundryEndpoint: 'https://${foundryAccountName}.services.ai.azure.com'
     tenantId: tenantId
     mcpAudience: mcpAudience
     attractionsFqdn: currentAttractions.properties.configuration.ingress.fqdn

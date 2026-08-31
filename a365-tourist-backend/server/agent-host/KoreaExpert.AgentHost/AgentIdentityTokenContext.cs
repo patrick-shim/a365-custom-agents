@@ -6,7 +6,7 @@ namespace KoreaExpert.AgentHost;
 
 public static class AgentIdentityAuthorizationScopes
 {
-    public const string Foundry = "https://cognitiveservices.azure.com/.default";
+    public const string Foundry = "https://ai.azure.com/.default";
     public const string Purview = "https://graph.microsoft.com/Content.Process.User";
     public const string PurviewProtectionScopes =
         "https://graph.microsoft.com/ProtectionScopes.Compute.User";

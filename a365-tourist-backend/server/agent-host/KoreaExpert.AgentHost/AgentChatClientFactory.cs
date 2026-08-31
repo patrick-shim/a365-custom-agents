@@ -1,9 +1,11 @@
-using Azure.AI.OpenAI;
+using System.ClientModel.Primitives;
 using Azure.Core;
 using Azure.Identity;
 using Microsoft.Agents.AI.Purview;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Options;
+using OpenAI;
+using OpenAI.Responses;
 
 namespace KoreaExpert.AgentHost;
 
@@ -61,6 +63,16 @@ public sealed class AgentChatClientFactory : IDisposable
 
     public void Dispose() => _clientRegistry.Dispose();
 
+    // The Foundry account endpoint is the OpenAI-compatible base; the Responses client appends its
+    // own route below /openai/v1, so no request path or api-version belongs in configuration. The
+    // project-scoped /api/projects/<name> form does not publish /openai/v1 and must not be used.
+    internal static Uri BuildResponsesEndpoint(string foundryProjectEndpoint)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(foundryProjectEndpoint);
+
+        return new Uri($"{foundryProjectEndpoint.TrimEnd('/')}/openai/v1");
+    }
+
     private IChatClient CreateClient(string applicationId)
     {
         TokenCredential credential = _tokenContext.Current is not null
@@ -69,12 +81,21 @@ public sealed class AgentChatClientFactory : IDisposable
                 ?? throw new InvalidOperationException(
                     "An Agent Identity token context is required outside local development.");
 
-        var chatClientBuilder = new AzureOpenAIClient(
-                new Uri(_agentHostOptions.AzureOpenAIEndpoint),
-                credential)
-            .GetChatClient(_agentHostOptions.AzureOpenAIDeployment)
-            .AsIChatClient()
+        // gpt-5.6-sol is a Responses API model, so the host resolves it through the Foundry
+        // project Responses endpoint rather than the legacy chat-completions client. Stored
+        // output is disabled so no prompt or response content is retained service-side.
+        // The per-turn Agent Identity credential is carried by a bearer token policy.
+#pragma warning disable OPENAI001, MAAI001 // Responses client and adapter are evaluation APIs.
+        var chatClientBuilder = new OpenAIClient(
+                new BearerTokenPolicy(credential, AgentIdentityAuthorizationScopes.Foundry),
+                new OpenAIClientOptions
+                {
+                    Endpoint = BuildResponsesEndpoint(_agentHostOptions.FoundryProjectEndpoint)
+                })
+            .GetResponsesClient()
+            .AsIChatClientWithStoredOutputDisabled(_agentHostOptions.FoundryModelDeployment)
             .AsBuilder();
+#pragma warning restore OPENAI001, MAAI001
 
         if (_purviewOptions.Enabled)
         {
@@ -112,11 +133,26 @@ public sealed class AgentChatClientFactory : IDisposable
     }
 }
 
-internal sealed class AgentChatClientRegistry(Func<string, IChatClient> clientFactory) : IDisposable
+internal sealed class AgentChatClientRegistry : IDisposable
 {
-    private readonly List<IChatClient> _clients = [];
+    // This exceeds the supported per-replica concurrent-turn envelope, so eviction bounds long-lived
+    // revisions without disposing a wrapper that can still belong to an active turn.
+    private const int DefaultRetainedClientCapacity = 4096;
+    private readonly Func<string, IChatClient> _clientFactory;
+    private readonly Queue<IChatClient> _clients = [];
     private readonly object _sync = new();
+    private readonly int _retainedClientCapacity;
     private bool _disposed;
+
+    internal AgentChatClientRegistry(
+        Func<string, IChatClient> clientFactory,
+        int retainedClientCapacity = DefaultRetainedClientCapacity)
+    {
+        ArgumentNullException.ThrowIfNull(clientFactory);
+        ArgumentOutOfRangeException.ThrowIfLessThan(retainedClientCapacity, 1);
+        _clientFactory = clientFactory;
+        _retainedClientCapacity = retainedClientCapacity;
+    }
 
     public IChatClient Create(string applicationId)
     {
@@ -125,14 +161,40 @@ internal sealed class AgentChatClientRegistry(Func<string, IChatClient> clientFa
         lock (_sync)
         {
             ObjectDisposedException.ThrowIf(_disposed, this);
-            var client = clientFactory(applicationId);
-            _clients.Add(client);
-            return client;
         }
+
+        var client = _clientFactory(applicationId);
+        IChatClient? evictedClient = null;
+        var registryDisposed = false;
+        lock (_sync)
+        {
+            if (_disposed)
+            {
+                registryDisposed = true;
+            }
+            else
+            {
+                _clients.Enqueue(client);
+                if (_clients.Count > _retainedClientCapacity)
+                {
+                    evictedClient = _clients.Dequeue();
+                }
+            }
+        }
+
+        if (registryDisposed)
+        {
+            client.Dispose();
+            throw new ObjectDisposedException(nameof(AgentChatClientRegistry));
+        }
+
+        evictedClient?.Dispose();
+        return client;
     }
 
     public void Dispose()
     {
+        IChatClient[] clients;
         lock (_sync)
         {
             if (_disposed)
@@ -140,13 +202,14 @@ internal sealed class AgentChatClientRegistry(Func<string, IChatClient> clientFa
                 return;
             }
 
-            foreach (var client in _clients)
-            {
-                client.Dispose();
-            }
-
+            clients = [.. _clients];
             _clients.Clear();
             _disposed = true;
+        }
+
+        foreach (var client in clients)
+        {
+            client.Dispose();
         }
     }
 }

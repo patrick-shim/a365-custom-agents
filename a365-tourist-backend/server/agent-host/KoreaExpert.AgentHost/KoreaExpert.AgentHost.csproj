@@ -6,7 +6,6 @@
     <ProjectReference Include="../../agent/KoreaExpert.Agent/KoreaExpert.Agent.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Azure.AI.OpenAI" />
     <PackageReference Include="Azure.Core" />
     <PackageReference Include="Azure.Identity" />
 
@@ -22,6 +21,10 @@
 
     <PackageReference Include="Microsoft.Agents.Authentication.Msal" />
     <PackageReference Include="Microsoft.Agents.Hosting.AspNetCore" />
+    <PackageReference Include="Microsoft.Agents.AI.OpenAI" />
+    <PackageReference Include="OpenAI" />
+    <PackageReference Include="System.ClientModel" />
+    <PackageReference Include="Microsoft.Extensions.AI" />
     <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
     <PackageReference Include="Microsoft.Identity.Client" />
     <PackageReference Include="ModelContextProtocol" />

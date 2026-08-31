@@ -3,7 +3,6 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Azure.AI.OpenAI" Version="2.7.0-beta.2" />
     <PackageVersion Include="Azure.Core" Version="1.61.0" />
     <PackageVersion Include="Azure.Identity" Version="1.21.0" />
 
@@ -19,7 +18,9 @@
 
     <!-- ==================== PURVIEW DLP: AGENT FRAMEWORK PROMPT/RESPONSE MIDDLEWARE ================ -->
     <PackageVersion Include="Microsoft.Agents.AI" Version="1.17.0" />
+    <PackageVersion Include="Microsoft.Agents.AI.OpenAI" Version="1.17.0" />
     <PackageVersion Include="Microsoft.Agents.AI.Purview" Version="1.17.0-rc1" />
+    <PackageVersion Include="Microsoft.Extensions.AI" Version="10.7.0" />
     <PackageVersion Include="Microsoft.Extensions.AI.OpenAI" Version="10.8.3" />
     <!-- ==================== END PURVIEW DLP ========================================================= -->
 
@@ -30,6 +31,8 @@
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.19.2" />
     <PackageVersion Include="ModelContextProtocol" Version="2.1.0" />
     <PackageVersion Include="ModelContextProtocol.AspNetCore" Version="2.1.0" />
+    <PackageVersion Include="OpenAI" Version="2.12.0" />
+    <PackageVersion Include="System.ClientModel" Version="1.15.0" />
     <PackageVersion Include="MSTest" Version="4.0.1" />
   </ItemGroup>
 </Project>

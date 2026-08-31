@@ -57,15 +57,11 @@ var productionEnvironment = [
     value: 'info|warn|error'
   }
   {
-    name: 'AgentHost__AzureOpenAIEndpoint'
+    name: 'AgentHost__FoundryProjectEndpoint'
     value: foundryEndpoint
   }
   {
-    name: 'AgentHost__AzureOpenAIDeployment'
-    value: 'gpt-5.6-sol'
-  }
-  {
-    name: 'AgentHost__AzureOpenAIModel'
+    name: 'AgentHost__FoundryModelDeployment'
     value: 'gpt-5.6-sol'
   }
   {
