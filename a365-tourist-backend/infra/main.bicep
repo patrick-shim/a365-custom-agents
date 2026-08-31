@@ -89,6 +89,7 @@ param directLineTrustedOrigins array = []
 
 @secure()
 param oboChannelAppClientSecret string = ''
+@description('Space-delimited delegated scopes requested by the OBO Aadv2 connection. Defaults to the Blueprint access_agent_as_user scope, which is what the child Agent Identity exchange expects. The MCP API scope does not work here: the user assertion must be addressed to the Blueprint.')
 param oboOAuthScope string = ''
 
 @secure()
@@ -130,7 +131,10 @@ var resolvedFoundryProjectEndpoint = empty(foundryProjectEndpoint)
 var botPhaseKeys = {
   valid: azureBotName
 }
-var botPhaseReady = deployDirectLineChannel && deployTeamsChannel && deployOboOAuthConnection && !empty(oboChannelAppId) && !empty(oboChannelAppClientSecret) && !empty(oboOAuthScope)
+var resolvedOboOAuthScope = empty(oboOAuthScope)
+  ? 'api://${agent365BlueprintId}/access_agent_as_user'
+  : oboOAuthScope
+var botPhaseReady = deployDirectLineChannel && deployTeamsChannel && deployOboOAuthConnection && !empty(oboChannelAppId) && !empty(oboChannelAppClientSecret) && !empty(resolvedOboOAuthScope)
 var validatedAzureBotName = deployAzureBot ? botPhaseKeys[botPhaseReady ? 'valid' : 'invalid'] : azureBotName
 
 resource existingFoundryAccount 'Microsoft.CognitiveServices/accounts@2026-05-01' existing = {
@@ -440,7 +444,7 @@ module azureBot './modules/azure-bot.bicep' = if (deployAzureBot) {
     oauthConnectionName: oboOAuthConnectionName
     oauthClientId: oboChannelAppId
     oauthClientSecret: oboChannelAppClientSecret
-    oauthScopes: oboOAuthScope
+    oauthScopes: resolvedOboOAuthScope
     tags: tags
   }
 }
