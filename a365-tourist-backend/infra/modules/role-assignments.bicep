@@ -1,19 +1,12 @@
 param registryName string
 param vaultName string
 param mapsAccountName string
-param foundryAccountName string
 param deployerObjectId string
 param hostPrincipalId string
 param attractionsPrincipalId string
 param weatherPrincipalId string
 param accommodationPrincipalId string
 param currencyPrincipalId string
-type Agent365AgentPrincipalIds = {
-  agenticUser: string
-  onBehalfOf: string
-}
-
-param agent365AgentPrincipalIds Agent365AgentPrincipalIds
 param grantAttractionsSecretAccess bool
 param grantWeatherSecretAccess bool
 param grantCurrencySecretAccess bool
@@ -22,7 +15,6 @@ var acrPullRoleId = '7f951dda-4ed3-4680-a7ca-43fe172d538d'
 var keyVaultSecretsOfficerRoleId = 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
 var keyVaultSecretsUserRoleId = '4633458b-17de-408a-b874-0445c86b69e6'
 var azureMapsSearchAndRenderDataReaderRoleId = '6be48352-4f82-47c9-ad5e-0acacefdb005'
-var cognitiveServicesOpenAIUserRoleId = '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
 
 resource registry 'Microsoft.ContainerRegistry/registries@2025-11-01' existing = {
   name: registryName
@@ -59,10 +51,6 @@ resource forexRateApiKeySecret 'Microsoft.KeyVault/vaults/secrets@2026-02-01' ex
 
 resource mapsAccount 'Microsoft.Maps/accounts@2023-06-01' existing = {
   name: mapsAccountName
-}
-
-resource foundryAccount 'Microsoft.CognitiveServices/accounts@2026-05-01' existing = {
-  name: foundryAccountName
 }
 
 resource deployerKeyVaultSecretsOfficer 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
@@ -195,22 +183,6 @@ resource attractionsMapsReader 'Microsoft.Authorization/roleAssignments@2022-04-
   }
 }
 
-resource agenticUserFoundryUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(agent365AgentPrincipalIds.agenticUser)) {
-  name: guid(foundryAccount.id, agent365AgentPrincipalIds.agenticUser, cognitiveServicesOpenAIUserRoleId)
-  scope: foundryAccount
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cognitiveServicesOpenAIUserRoleId)
-    principalId: agent365AgentPrincipalIds.agenticUser
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource onBehalfOfFoundryUser 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (!empty(agent365AgentPrincipalIds.onBehalfOf)) {
-  name: guid(foundryAccount.id, agent365AgentPrincipalIds.onBehalfOf, cognitiveServicesOpenAIUserRoleId)
-  scope: foundryAccount
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cognitiveServicesOpenAIUserRoleId)
-    principalId: agent365AgentPrincipalIds.onBehalfOf
-    principalType: 'ServicePrincipal'
-  }
-}
+// Foundry role assignments live in modules/foundry-role-assignments.bicep because the
+// shared Foundry account is in a different resource group and must be assigned at that
+// scope. Assigning it here would silently target this product's resource group.

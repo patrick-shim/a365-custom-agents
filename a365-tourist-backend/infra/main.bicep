@@ -39,6 +39,12 @@ param foundryProjectName string = 'default'
 param foundryModelDeploymentName string = 'gpt-5.6-sol'
 param foundryProjectEndpoint string = ''
 
+@description('Object IDs allowed to reach the Foundry model through a delegated OBO turn. Prefer one group object ID.')
+param agentUserPrincipalIds string[] = []
+
+@allowed(['User', 'Group', 'ServicePrincipal'])
+param agentUserPrincipalType string = 'Group'
+
 param sessionId string
 param deployedBy string
 param createdAt string
@@ -274,14 +280,12 @@ module roleAssignments './modules/role-assignments.bicep' = {
     registryName: 'cr${resourceBaseName}'
     vaultName: 'kv-${resourceBaseName}'
     mapsAccountName: 'maps-${resourceBaseName}'
-    foundryAccountName: foundryAccountName
     deployerObjectId: deployerObjectId
     hostPrincipalId: hostManagedIdentity.outputs.principalId
     attractionsPrincipalId: attractionsManagedIdentity.outputs.principalId
     weatherPrincipalId: weatherManagedIdentity.outputs.principalId
     accommodationPrincipalId: accommodationManagedIdentity.outputs.principalId
     currencyPrincipalId: currencyManagedIdentity.outputs.principalId
-    agent365AgentPrincipalIds: agent365AgentPrincipalIds
     grantAttractionsSecretAccess: false
     grantWeatherSecretAccess: false
     grantCurrencySecretAccess: false
@@ -400,6 +404,21 @@ module agentHostContainerApp './modules/agent-host-container-app.bicep' = {
   dependsOn: [
     roleAssignments
   ]
+}
+
+// Foundry data-plane roles are assigned in the shared Foundry resource group.
+// The OBO turn calls the model with a delegated token, so it is attributed to the
+// signed-in user; every caller therefore needs Foundry data-plane access. Supply a
+// group object ID in agentUserPrincipalIds rather than listing individual users.
+module foundryRoleAssignments './modules/foundry-role-assignments.bicep' = {
+  name: 'foundry-role-assignments'
+  scope: resourceGroup(foundryResourceGroupName)
+  params: {
+    foundryAccountName: foundryAccountName
+    agent365AgentPrincipalIds: agent365AgentPrincipalIds
+    agentUserPrincipalIds: agentUserPrincipalIds
+    agentUserPrincipalType: agentUserPrincipalType
+  }
 }
 
 var oboMessagingEndpoint = 'https://${agentHostContainerApp.outputs.fqdn}/api/messages/obo'
