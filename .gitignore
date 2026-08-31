@@ -36,6 +36,10 @@
 **/.a365-workspace-detection.local.json
 **/a365.config.json
 **/a365.generated.config.json
+# Agent 365 CLI writes timestamped rollback copies alongside the generated config
+# (for example a365.generated.config.before-newblueprint-*.json). These carry the
+# previous blueprint client secret and must never be committed.
+**/a365.generated.config.*.json
 **/ToolingManifest.json
 **/manifest/
 **/manifest.zip
