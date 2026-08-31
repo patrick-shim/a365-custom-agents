@@ -116,9 +116,9 @@ Captured on 2026-08-10 from read-only production inspection:
       Application enforcement plane with all three expected rules enabled in Enforce mode and
       `UploadText=Block`. The rules use high-confidence, minimum-count-one credit-card, South Korean
       passport, and South Korean resident-registration classifications.
-- Root cause: the policy still has only the `KoreaExpert Blueprint` Enterprise application
+- Root cause: the policy still has only the `SeoulTourist Blueprint` Enterprise application
       location and its distribution status remains Pending. OBO Direct Line identifies the distinct
-      `Korea Expert OBO Channel` application, so the blocking rules do not apply to those turns.
+      `Seoul Tourist OBO Channel` application, so the blocking rules do not apply to those turns.
 - Proposed mutation dry run: replace this policy's application-location document with exactly its
       existing Blueprint location plus the existing OBO Channel location, retain Tenant/All,
       Application enforcement, policy mode, and all rule definitions, then read back status. If the
@@ -133,7 +133,7 @@ Captured on 2026-08-10 from read-only production inspection:
 
 - The user explicitly approved the recorded M2 DLP scope update.
 - Updated only `a365-custom-obo-agent-direct`: preserved the existing Blueprint Enterprise
-      application and Tenant/All inclusion, added the existing `Korea Expert OBO Channel`
+      application and Tenant/All inclusion, added the existing `Seoul Tourist OBO Channel`
       Enterprise application with Tenant/All inclusion, and retained Application enforcement.
 - Immediate read-back confirms both locations, policy mode Enable, three rules, and all three
       expected rules enabled in Enforce mode with their existing definitions.
@@ -258,17 +258,17 @@ Captured on 2026-08-10 from read-only production inspection:
 
 ### 2026-08-10 - Deployed observability and portal activity
 
-- Revision `ca-agent-koreaexpert-dev-kc-ae23--0000020` is healthy on the M2 image with one replica and
+- Revision `ca-agent-seoultour-dev-kc-ae23--0000020` is healthy on the M2 image with one replica and
       100% traffic.
 - Live `ENABLE_A365_OBSERVABILITY_EXPORTER=true`; production selects `ExportTarget.Agent365` and
       explicitly uses the S2S exporter endpoint.
 - Active logs contain accepted Agent 365 exports to OBO child `a27ae7df-...` with HTTP 200 and zero
       no-token, skipped-export, or missing-identity-group failures.
-- Microsoft 365 admin center maps `Korea Expert Assistant (OBO)` to Entra Agent Identity
+- Microsoft 365 admin center maps `Seoul Tourist Assistant (OBO)` to Entra Agent Identity
       `a27ae7df-...`; its Activity view shows one active user, two successful sessions, zero exceptions,
       two total sessions, and last activity on August 10.
-- The `Korea Expert Agent` template/Blueprint roll-up shows one active user and one indexed session
-      in the registry. `Korea Expert OBO` is the Teams/Bot channel app (`f433...`), not the runtime
+- The `Seoul Tourist Agent` template/Blueprint roll-up shows one active user and one indexed session
+      in the registry. `Seoul Tourist OBO` is the Teams/Bot channel app (`f433...`), not the runtime
       Agent Identity, so its 0/0 row is not an exporter failure.
 
 ### 2026-08-10 - Purview and Direct Line evidence
@@ -277,7 +277,7 @@ Captured on 2026-08-10 from read-only production inspection:
       `a27ae7df-...` and the authenticated user.
 - Teams produced a high-severity incident: policy `a365-custom-obo-agent` matched the governed Teams
       conversation with two alerts. This is an actual DLP rule match, not only SIT classification.
-- Direct Line reuses stable user `dl_korea_expert_cli`; sign-in is cached and not required for each
+- Direct Line reuses stable user `dl_seoul_tourist_cli`; sign-in is cached and not required for each
       message.
 - One fresh Direct Line SIT test completed without login. Purview classification/content activity
       and Agent 365 export succeeded, no model endpoint was called, and no synthetic values appeared in
@@ -292,7 +292,7 @@ Captured on 2026-08-10 from read-only production inspection:
 ### 2026-08-10 - Enterprise AI DLP policy dry run pending approval
 
 - Proposed policy: `a365-custom-obo-agent-direct`.
-- Scope: `EnforcementPlanes=Application`, Enterprise application location `KoreaExpert Blueprint`
+- Scope: `EnforcementPlanes=Application`, Enterprise application location `SeoulTourist Blueprint`
       (`bb09cd36-...`), all users interacting with this application, mode Enable.
 - Proposed High/Enforce rules and `UploadText=Block` action:
       - `a365-custom-obo-agent-direct-card-block-high`
@@ -310,7 +310,7 @@ Captured on 2026-08-10 from read-only production inspection:
 
 - The user explicitly approved the reviewed policy and three blocking rules after the dry run.
 - Created `a365-custom-obo-agent-direct` with mode Enable, `EnforcementPlanes=Application`,
-      application location `KoreaExpert Blueprint` (`bb09cd36-...`), and Tenant/All inclusion.
+      application location `SeoulTourist Blueprint` (`bb09cd36-...`), and Tenant/All inclusion.
 - Created three enabled Enforce/High rules using `UploadText=Block`:
       - `a365-custom-obo-agent-direct-card-block-high`
       - `a365-custom-obo-agent-direct-passport-block-high`
@@ -429,7 +429,7 @@ Captured on 2026-08-10 from read-only production inspection:
 
 ### 2026-08-10 - Host-only rollout verified
 
-- Deployment `koreaexpert-m2-observability-20260810-01` succeeded with correlation
+- Deployment `seoultour-m2-observability-20260810-01` succeeded with correlation
       `129cd775-b629-4eeb-9791-f525b271737c`.
 - Revision `0000020` is healthy, provisioned, one replica, and receives 100% traffic.
 - Health returned 200; anonymous OBO returned 401; candidate digest is unchanged.

@@ -2,9 +2,19 @@
 
 This directory contains two backend-owned deployment paths:
 
-- `main.bicep` is the subscription-scope bootstrap and initial five-application deployment.
+- `main.bicep` is the resource-group-scope deployment of the five applications and their shared
+  infrastructure.
 - `live-backend-container-apps-update.bicep` is the resource-group-scope wrapper for updating the
   five existing Container Apps without recreating shared infrastructure.
+
+Korea Expert deploys into the same subscription and the same `rg-a365-custom-agents` resource group
+as Japan Expert; only the resource names differ, and they all derive from `resourceBaseName`
+(`koreaexpert`). `main.bicep` never creates the resource group, and it refuses to deploy into any
+group other than `targetResourceGroupName`.
+
+The existing `a365-ai-foundry` account, its `default` project, and the `gpt-5.6-sol` deployment in
+`rg-ai-foundry` are referenced in place. This template never creates, moves, or changes Foundry, and
+Korea Expert does not provision a Foundry account of its own.
 
 > M7 is active. This is the only infrastructure and deployment source; the frontend projects are
 > channel-only frontends. The deployment commands below are historical and operational reference only;
@@ -15,8 +25,8 @@ This directory contains two backend-owned deployment paths:
 
 | Path | Role |
 | --- | --- |
-| `main.bicep` | `targetScope = 'subscription'`; creates the resource group and orchestrates all 21 modules |
-| `main.parameters.json` | Checked-in non-secret parameters: `environmentName` `koreaexpert-dev-kc-ae23`, `location` `koreacentral`, and placeholder provenance values |
+| `main.bicep` | `targetScope = 'resourceGroup'`; deploys into the existing shared resource group and orchestrates all modules |
+| `main.parameters.json` | Checked-in non-secret parameters: `targetResourceGroupName` `rg-a365-custom-agents`, `resourceBaseName` `koreaexpert`, `location` `koreacentral`, the shared Foundry references, and placeholder provenance values |
 | `live-backend-container-apps-update.bicep` | `targetScope = 'resourceGroup'`; updates only the five existing Container Apps |
 | `live-backend-container-apps-update.json` | Checked-in compiled ARM form of the wrapper; must stay synchronized with its Bicep source |
 | `bicepconfig.json` | Linter and analyzer configuration for both templates |
@@ -89,7 +99,7 @@ flowchart LR
   Host & Attractions & Weather & Accommodation & Currency --> AppI[Application Insights]
 ```
 
-Only `ca-agent-koreaexpert-dev-kc-ae23` has external ingress. The four MCP apps use internal
+Only `ca-agent-koreaexpert` has external ingress. The four MCP apps use internal
 ingress and validate the shared delegated `Mcp.Invoke` scope. Agent identity is never the host
 UAMI: `a365` owns the Blueprint, BlueprintPrincipal, and each Agent Identity/Agentic User.
 
@@ -113,7 +123,7 @@ $deploymentSessionId = '<deployment-session-id>'
 $deploymentActor = '<operator-or-automation-id>'
 $deploymentCreatedAt = '<ISO-8601-timestamp>'
 az deployment sub create `
-  --name koreaexpert-dev-kc-ae23-infra `
+  --name koreaexpert-infra `
   --location koreacentral `
   --template-file infra/main.bicep `
   --parameters '@infra/main.parameters.json' `
@@ -126,11 +136,11 @@ targets from `Dockerfile.mcp`.
 
 ```powershell
 $tag = '<immutable-tag>'
-az acr build --registry crkoreaexpertdevkcae23 --image "korea-expert-agent:$tag" --file Dockerfile .
-az acr build --registry crkoreaexpertdevkcae23 --image "korea-expert-attractions:$tag" --file Dockerfile.mcp --target attractions .
-az acr build --registry crkoreaexpertdevkcae23 --image "korea-expert-weather:$tag" --file Dockerfile.mcp --target weather .
-az acr build --registry crkoreaexpertdevkcae23 --image "korea-expert-accommodation:$tag" --file Dockerfile.mcp --target accommodation .
-az acr build --registry crkoreaexpertdevkcae23 --image "korea-expert-currency:$tag" --file Dockerfile.mcp --target currency .
+az acr build --registry crkoreaexpert --image "korea-expert-agent:$tag" --file Dockerfile .
+az acr build --registry crkoreaexpert --image "korea-expert-attractions:$tag" --file Dockerfile.mcp --target attractions .
+az acr build --registry crkoreaexpert --image "korea-expert-weather:$tag" --file Dockerfile.mcp --target weather .
+az acr build --registry crkoreaexpert --image "korea-expert-accommodation:$tag" --file Dockerfile.mcp --target accommodation .
+az acr build --registry crkoreaexpert --image "korea-expert-currency:$tag" --file Dockerfile.mcp --target currency .
 ```
 
 Agent 365 setup state and package commands belong only to their respective channel frontend
@@ -148,7 +158,7 @@ four contracts before the model call, so scale-to-zero cold starts can exceed th
 channel deadline even when each service is otherwise healthy.
 
 ```powershell
-$acr = 'crkoreaexpertdevkcae23.azurecr.io'
+$acr = 'crkoreaexpert.azurecr.io'
 $agent365AgentIds = @{
   agenticUser = ''
   onBehalfOf = $env:AGENT365_OBO_AGENT_ID
@@ -159,7 +169,7 @@ $agent365AgentPrincipalIds = @{
 } | ConvertTo-Json -Compress
 
 az deployment sub create `
-  --name koreaexpert-dev-kc-ae23-app `
+  --name koreaexpert-app `
   --location koreacentral `
   --template-file infra/main.bicep `
   --parameters '@infra/main.parameters.json' `
@@ -222,7 +232,7 @@ rollback set through the same compile, ARM validation, and what-if boundary befo
 - The host UAMI has AcrPull only. It has no direct Foundry, Purview, or MCP agent permission.
   Attractions and accommodation have Azure Maps Search and Render Data Reader. Other MCP workload
   roles are scoped to ACR.
-- ACR and Key Vault diagnostics flow to `log-koreaexpert-dev-kc-ae23`. Application telemetry uses
+- ACR and Key Vault diagnostics flow to `log-koreaexpert`. Application telemetry uses
   workspace-based Application Insights without local authentication.
 - The MCP resource API is a separate application with a delegated `Mcp.Invoke` scope; it is not the
   agent application. A365 CLI owns Blueprint/Agent Identity permissions and consent.
