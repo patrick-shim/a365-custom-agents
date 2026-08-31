@@ -72,7 +72,7 @@
     },
     "oboOAuthConnectionName": {
       "type": "string",
-      "defaultValue": "seoul-tourist-obo"
+      "defaultValue": "korea-expert-obo"
     }
   },
   "resources": {
@@ -80,91 +80,91 @@
       "existing": true,
       "type": "Microsoft.App/managedEnvironments",
       "apiVersion": "2025-01-01",
-      "name": "cae-seoultour-dev-kc-ae23"
+      "name": "cae-koreaexpert-dev-kc-ae23"
     },
     "registry": {
       "existing": true,
       "type": "Microsoft.ContainerRegistry/registries",
       "apiVersion": "2025-11-01",
-      "name": "crseoultourdevkcae23"
+      "name": "crkoreaexpertdevkcae23"
     },
     "applicationInsights": {
       "existing": true,
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02",
-      "name": "appi-seoultour-dev-kc-ae23"
+      "name": "appi-koreaexpert-dev-kc-ae23"
     },
     "foundry": {
       "existing": true,
       "type": "Microsoft.CognitiveServices/accounts",
       "apiVersion": "2026-05-01",
-      "name": "fdy-seoultour-dev-kc-ae23"
+      "name": "fdy-koreaexpert-dev-kc-ae23"
     },
     "azureMaps": {
       "existing": true,
       "type": "Microsoft.Maps/accounts",
       "apiVersion": "2023-06-01",
-      "name": "maps-seoultour-dev-kc-ae23"
+      "name": "maps-koreaexpert-dev-kc-ae23"
     },
     "hostIdentity": {
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "name": "id-agent-seoultour-dev-kc-ae23"
+      "name": "id-agent-koreaexpert-dev-kc-ae23"
     },
     "attractionsIdentity": {
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "name": "id-attract-seoultour-dev-kc-ae23"
+      "name": "id-attract-koreaexpert-dev-kc-ae23"
     },
     "weatherIdentity": {
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "name": "id-weather-seoultour-dev-kc-ae23"
+      "name": "id-weather-koreaexpert-dev-kc-ae23"
     },
     "accommodationIdentity": {
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "name": "id-stay-seoultour-dev-kc-ae23"
+      "name": "id-stay-koreaexpert-dev-kc-ae23"
     },
     "currencyIdentity": {
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "name": "id-fx-seoultour-dev-kc-ae23"
+      "name": "id-fx-koreaexpert-dev-kc-ae23"
     },
     "currentHost": {
       "existing": true,
       "type": "Microsoft.App/containerApps",
       "apiVersion": "2026-01-01",
-      "name": "ca-agent-seoultour-dev-kc-ae23"
+      "name": "ca-agent-koreaexpert-dev-kc-ae23"
     },
     "currentAttractions": {
       "existing": true,
       "type": "Microsoft.App/containerApps",
       "apiVersion": "2026-01-01",
-      "name": "ca-attract-seoultour-dev-kc-ae23"
+      "name": "ca-attract-koreaexpert-dev-kc-ae23"
     },
     "currentWeather": {
       "existing": true,
       "type": "Microsoft.App/containerApps",
       "apiVersion": "2026-01-01",
-      "name": "ca-weather-seoultour-dev-kc-ae23"
+      "name": "ca-weather-koreaexpert-dev-kc-ae23"
     },
     "currentAccommodation": {
       "existing": true,
       "type": "Microsoft.App/containerApps",
       "apiVersion": "2026-01-01",
-      "name": "ca-stay-seoultour-dev-kc-ae23"
+      "name": "ca-stay-koreaexpert-dev-kc-ae23"
     },
     "currentCurrency": {
       "existing": true,
       "type": "Microsoft.App/containerApps",
       "apiVersion": "2026-01-01",
-      "name": "ca-fx-seoultour-dev-kc-ae23"
+      "name": "ca-fx-koreaexpert-dev-kc-ae23"
     },
     "attractions": {
       "type": "Microsoft.Resources/deployments",
@@ -177,16 +177,16 @@
         "mode": "Incremental",
         "parameters": {
           "appName": {
-            "value": "ca-attract-seoultour-dev-kc-ae23"
+            "value": "ca-attract-koreaexpert-dev-kc-ae23"
           },
           "location": {
             "value": "[resourceGroup().location]"
           },
           "environmentId": {
-            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-seoultour-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-koreaexpert-dev-kc-ae23')]"
           },
           "managedIdentityResourceId": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-attract-seoultour-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-attract-koreaexpert-dev-kc-ae23')]"
           },
           "managedIdentityClientId": {
             "value": "[reference('attractionsIdentity').clientId]"
@@ -412,16 +412,16 @@
         "mode": "Incremental",
         "parameters": {
           "appName": {
-            "value": "ca-weather-seoultour-dev-kc-ae23"
+            "value": "ca-weather-koreaexpert-dev-kc-ae23"
           },
           "location": {
             "value": "[resourceGroup().location]"
           },
           "environmentId": {
-            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-seoultour-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-koreaexpert-dev-kc-ae23')]"
           },
           "managedIdentityResourceId": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-weather-seoultour-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-weather-koreaexpert-dev-kc-ae23')]"
           },
           "acrLoginServer": {
             "value": "[reference('registry').loginServer]"
@@ -645,16 +645,16 @@
         "mode": "Incremental",
         "parameters": {
           "appName": {
-            "value": "ca-stay-seoultour-dev-kc-ae23"
+            "value": "ca-stay-koreaexpert-dev-kc-ae23"
           },
           "location": {
             "value": "[resourceGroup().location]"
           },
           "environmentId": {
-            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-seoultour-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-koreaexpert-dev-kc-ae23')]"
           },
           "managedIdentityResourceId": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-stay-seoultour-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-stay-koreaexpert-dev-kc-ae23')]"
           },
           "managedIdentityClientId": {
             "value": "[reference('accommodationIdentity').clientId]"
@@ -880,16 +880,16 @@
         "mode": "Incremental",
         "parameters": {
           "appName": {
-            "value": "ca-fx-seoultour-dev-kc-ae23"
+            "value": "ca-fx-koreaexpert-dev-kc-ae23"
           },
           "location": {
             "value": "[resourceGroup().location]"
           },
           "environmentId": {
-            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-seoultour-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-koreaexpert-dev-kc-ae23')]"
           },
           "managedIdentityResourceId": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-fx-seoultour-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-fx-koreaexpert-dev-kc-ae23')]"
           },
           "acrLoginServer": {
             "value": "[reference('registry').loginServer]"
@@ -1121,16 +1121,16 @@
         "mode": "Incremental",
         "parameters": {
           "appName": {
-            "value": "ca-agent-seoultour-dev-kc-ae23"
+            "value": "ca-agent-koreaexpert-dev-kc-ae23"
           },
           "location": {
             "value": "[resourceGroup().location]"
           },
           "environmentId": {
-            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-seoultour-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-koreaexpert-dev-kc-ae23')]"
           },
           "managedIdentityResourceId": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-agent-seoultour-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-agent-koreaexpert-dev-kc-ae23')]"
           },
           "managedIdentityClientId": {
             "value": "[reference('hostIdentity').clientId]"
@@ -1260,7 +1260,7 @@
             },
             "oboOAuthConnectionName": {
               "type": "string",
-              "defaultValue": "seoul-tourist-obo"
+              "defaultValue": "korea-expert-obo"
             },
             "applicationInsightsConnectionString": {
               "type": "string"

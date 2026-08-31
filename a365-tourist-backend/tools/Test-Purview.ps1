@@ -20,7 +20,7 @@ param(
 
     [string] $AccessTokenEnvironmentVariable = 'PURVIEW_GRAPH_ACCESS_TOKEN',
 
-    [string] $ProbeText = 'Seoul Tourist Assistant synthetic Purview validation probe.',
+    [string] $ProbeText = 'Korea Expert Assistant synthetic Purview validation probe.',
 
     [switch] $ExpectBlock,
 
@@ -33,7 +33,7 @@ param(
     [switch] $Strict
 )
 
-$modulePath = Join-Path $PSScriptRoot 'modules\SeoulTourist.Validation\SeoulTourist.Validation.psm1'
+$modulePath = Join-Path $PSScriptRoot 'modules\KoreaExpert.Validation\KoreaExpert.Validation.psm1'
 Import-Module $modulePath -Force
 
 $results = @(Invoke-StaValidationSafely -Check 'Purview validation' -Operation {

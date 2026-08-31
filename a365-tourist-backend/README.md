@@ -1,6 +1,6 @@
-# Seoul Tourist Assistant Backend
+# Korea Expert Assistant Backend
 
-A Microsoft-first C# shared backend for a Seoul travel assistant. Microsoft Agent Framework owns
+A Microsoft-first C# shared backend for a Korea travel assistant. Microsoft Agent Framework owns
 orchestration, Agent 365 owns runtime identity and transport, Microsoft Purview protects prompt and
 response content, and custom travel data is exposed through standalone MCP services. The OBO Teams,
 OBO Direct Line, and AI Teammate frontend projects own their respective channel assets and
@@ -56,16 +56,16 @@ integration references another integration. Only the host composes them.
 
 ### Solution layout
 
-[`SeoulTouristAgent.slnx`](SeoulTouristAgent.slnx) contains 19 projects — 11 under `server/`, 8 under
+[`KoreaExpertAgent.slnx`](KoreaExpertAgent.slnx) contains 19 projects — 11 under `server/`, 8 under
 `tests/`:
 
 | Area | Projects |
 | --- | --- |
-| Agent core | `SeoulTourist.Agent` |
-| Host | `SeoulTourist.AgentHost` |
-| Integrations | `SeoulTourist.AzureMaps`, `SeoulTourist.ExchangeRates`, `SeoulTourist.Tourism`, `SeoulTourist.Weather` |
-| MCP services | `SeoulTourist.Mcp.Hosting`, `SeoulTourist.Mcp.Attractions`, `SeoulTourist.Mcp.Weather`, `SeoulTourist.Mcp.Accommodation`, `SeoulTourist.Mcp.Currency` |
-| Tests | `SeoulTourist.Agent.Tests`, `SeoulTourist.AgentHost.Tests`, `SeoulTourist.AzureMaps.Tests`, `SeoulTourist.ExchangeRates.Tests`, `SeoulTourist.Mcp.Currency.Tests`, `SeoulTourist.Mcp.Hosting.Tests`, `SeoulTourist.Tourism.Tests`, `SeoulTourist.Weather.Tests` |
+| Agent core | `KoreaExpert.Agent` |
+| Host | `KoreaExpert.AgentHost` |
+| Integrations | `KoreaExpert.AzureMaps`, `KoreaExpert.ExchangeRates`, `KoreaExpert.Tourism`, `KoreaExpert.Weather` |
+| MCP services | `KoreaExpert.Mcp.Hosting`, `KoreaExpert.Mcp.Attractions`, `KoreaExpert.Mcp.Weather`, `KoreaExpert.Mcp.Accommodation`, `KoreaExpert.Mcp.Currency` |
+| Tests | `KoreaExpert.Agent.Tests`, `KoreaExpert.AgentHost.Tests`, `KoreaExpert.AzureMaps.Tests`, `KoreaExpert.ExchangeRates.Tests`, `KoreaExpert.Mcp.Currency.Tests`, `KoreaExpert.Mcp.Hosting.Tests`, `KoreaExpert.Tourism.Tests`, `KoreaExpert.Weather.Tests` |
 
 Build settings are centralized: [`global.json`](global.json) pins SDK `10.0.110` with
 `rollForward: latestPatch` and `allowPrerelease: false`; [`Directory.Build.props`](Directory.Build.props)
@@ -141,8 +141,8 @@ MCP 2.1 client.
 ## Build And Test
 
 ```powershell
-dotnet build SeoulTouristAgent.slnx
-dotnet test SeoulTouristAgent.slnx
+dotnet build KoreaExpertAgent.slnx
+dotnet test KoreaExpertAgent.slnx
 ./tools/Invoke-Validation.ps1
 ./tools/Invoke-LocalCi.ps1
 ./tools/tests/Invoke-ToolsSelfTest.ps1
@@ -156,14 +156,14 @@ Current per-assembly test counts:
 
 | Test project | Tests |
 | --- | --- |
-| `SeoulTourist.AgentHost.Tests` | 93 |
-| `SeoulTourist.Mcp.Hosting.Tests` | 10 |
-| `SeoulTourist.Weather.Tests` | 9 |
-| `SeoulTourist.ExchangeRates.Tests` | 6 |
-| `SeoulTourist.Mcp.Currency.Tests` | 4 |
-| `SeoulTourist.Agent.Tests` | 3 |
-| `SeoulTourist.Tourism.Tests` | 3 |
-| `SeoulTourist.AzureMaps.Tests` | 2 |
+| `KoreaExpert.AgentHost.Tests` | 93 |
+| `KoreaExpert.Mcp.Hosting.Tests` | 10 |
+| `KoreaExpert.Weather.Tests` | 9 |
+| `KoreaExpert.ExchangeRates.Tests` | 6 |
+| `KoreaExpert.Mcp.Currency.Tests` | 4 |
+| `KoreaExpert.Agent.Tests` | 3 |
+| `KoreaExpert.Tourism.Tests` | 3 |
+| `KoreaExpert.AzureMaps.Tests` | 2 |
 | **Total** | **135** |
 
 For production diagnosis and safe evidence collection, see
@@ -202,7 +202,7 @@ Five workspace-level GitHub workflows live in [`.github/workflows`](../.github/w
 
 ## Host surface
 
-[`server/agent-host/SeoulTourist.AgentHost`](server/agent-host/SeoulTourist.AgentHost) is composed in
+[`server/agent-host/KoreaExpert.AgentHost`](server/agent-host/KoreaExpert.AgentHost) is composed in
 `Program.cs` and exposes:
 
 | Route | Auth | Purpose |
@@ -227,12 +227,12 @@ than failing mid-turn. WorkIQ is enforced in code, not merely by configuration: 
 `.Validate(options => !options.EnableWorkIq, ...)`, so setting `EnableWorkIq=true` aborts startup.
 
 Four Agent 365 authentication handlers are configured in
-[`appsettings.json`](server/agent-host/SeoulTourist.AgentHost/appsettings.json): `agentic-foundry`,
+[`appsettings.json`](server/agent-host/KoreaExpert.AgentHost/appsettings.json): `agentic-foundry`,
 `agentic-purview`, `agentic-mcp`, and `obo-user`. The checked-in non-secret defaults include
 Foundry deployment and model `gpt-5.6-sol`, `MaximumPromptCharacters: 32768`, `EnableWorkIq: false`,
 `InternalMcp.Enabled: false`, and `PurviewDlp.Enabled: true`.
 
-`SeoulTouristApplication` derives from `AgentApplication` and takes 18 constructor dependencies,
+`KoreaExpertApplication` derives from `AgentApplication` and takes 18 constructor dependencies,
 including `AgentChatClientFactory`, `InternalMcpToolCatalog`, `AgentTurnCoordinator`,
 `AgentFrontendIdentityBinding`, `AgentIdentityTokenContext`, `ToolUserContext`,
 `IExporterTokenCache<string>`, and `IAgentIdentityOboTokenExchange`. It emits A365 Observability
@@ -246,7 +246,7 @@ user secrets; never add a bearer token or API key to an appsettings file.
 
 ```powershell
 # Authenticate with a local developer credential recognized by DefaultAzureCredential first.
-dotnet run --project server/agent-host/SeoulTourist.AgentHost --launch-profile Playground
+dotnet run --project server/agent-host/KoreaExpert.AgentHost --launch-profile Playground
 ```
 
 `Development` and `Playground` are both treated as local environments by the host.
@@ -265,10 +265,10 @@ $env:ForexRateApi__ApiKey = "<optional-forexrateapi-key>"
 $env:Frankfurter__Enabled = "true"
 $env:Frankfurter__BaseAddress = "https://api.frankfurter.dev/v1/"
 
-dotnet run --project server/mcp/attractions/SeoulTourist.Mcp.Attractions --launch-profile http
-dotnet run --project server/mcp/weather/SeoulTourist.Mcp.Weather --launch-profile http
-dotnet run --project server/mcp/accommodation/SeoulTourist.Mcp.Accommodation --launch-profile http
-dotnet run --project server/mcp/currency/SeoulTourist.Mcp.Currency --launch-profile http
+dotnet run --project server/mcp/attractions/KoreaExpert.Mcp.Attractions --launch-profile http
+dotnet run --project server/mcp/weather/KoreaExpert.Mcp.Weather --launch-profile http
+dotnet run --project server/mcp/accommodation/KoreaExpert.Mcp.Accommodation --launch-profile http
+dotnet run --project server/mcp/currency/KoreaExpert.Mcp.Currency --launch-profile http
 ```
 
 Local MCP loopback ports are `3981` attractions, `3982` weather, `3983` accommodation, and `3984`
@@ -287,16 +287,16 @@ required-parameter set equality, and a canonical SHA-256 schema fingerprint. Any
 
 | Server | Tool | Parameters | Required |
 | --- | --- | --- | --- |
-| attractions | `search_seoul_attractions` | `query, latitude, longitude, radiusMeters, limit` | `query` |
-| weather | `get_seoul_current_weather` | `latitude, longitude` | — |
-| weather | `get_seoul_weather_forecast` | `latitude, longitude, days` | — |
-| weather | `get_seoul_weather_alerts` | `latitude, longitude` | — |
-| accommodation | `search_seoul_accommodation` | `query, latitude, longitude, radiusMeters, limit` | — |
+| attractions | `search_korea_attractions` | `query, latitude, longitude, radiusMeters, limit` | `query` |
+| weather | `get_korea_current_weather` | `latitude, longitude` | — |
+| weather | `get_korea_weather_forecast` | `latitude, longitude, days` | — |
+| weather | `get_korea_weather_alerts` | `latitude, longitude` | — |
+| accommodation | `search_korea_accommodation` | `query, latitude, longitude, radiusMeters, limit` | — |
 | currency | `convert_currency_with_rate` | `amount, sourceCurrency, targetCurrency, exchangeRate, rateObservedAt` | `amount, sourceCurrency, targetCurrency, exchangeRate` |
 | currency | `get_exchange_rate` | `sourceCurrency, targetCurrency, date` | `sourceCurrency, targetCurrency` |
 | currency | `convert_currency` | `amount, sourceCurrency, targetCurrency, date` | `amount, sourceCurrency, targetCurrency` |
 
-`get_seoul_current_weather` and `get_seoul_weather_alerts` share a fingerprint because their schemas
+`get_korea_current_weather` and `get_korea_weather_alerts` share a fingerprint because their schemas
 are byte-identical; that is expected, not a collision. An unrecognized server name throws
 `ArgumentOutOfRangeException` with `"Unknown internal MCP server."`
 
@@ -359,14 +359,14 @@ four per-service build stages, a shared `runtime` stage with `ASPNETCORE_HTTP_PO
 named final targets.
 
 ```powershell
-docker build --tag seoul-tourist-agent:local .
-docker build --file Dockerfile.mcp --target attractions --tag seoul-tourist-attractions:local .
-docker build --file Dockerfile.mcp --target weather --tag seoul-tourist-weather:local .
-docker build --file Dockerfile.mcp --target accommodation --tag seoul-tourist-accommodation:local .
-docker build --file Dockerfile.mcp --target currency --tag seoul-tourist-currency:local .
+docker build --tag korea-expert-agent:local .
+docker build --file Dockerfile.mcp --target attractions --tag korea-expert-attractions:local .
+docker build --file Dockerfile.mcp --target weather --tag korea-expert-weather:local .
+docker build --file Dockerfile.mcp --target accommodation --tag korea-expert-accommodation:local .
+docker build --file Dockerfile.mcp --target currency --tag korea-expert-currency:local .
 docker run --rm --publish 8080:8080 `
   --env ASPNETCORE_ENVIRONMENT=Development `
-  seoul-tourist-agent:local
+  korea-expert-agent:local
 Invoke-RestMethod http://localhost:8080/api/health
 ```
 
@@ -393,7 +393,7 @@ and child identity values only through protected configuration, never from front
 state.
 
 [`contracts/frontend-backend-contract.json`](contracts/frontend-backend-contract.json) declares
-`contractId: seoul-tourist-shared-backend`, `contractVersion: 1.0.0`, both frontend bindings, the
+`contractId: korea-expert-shared-backend`, `contractVersion: 1.0.0`, both frontend bindings, the
 three health endpoints, and the MCP boundary (`serviceCount: 4`, `transport: streamable-http`,
 `authorization: delegated Mcp.Invoke`). Each frontend repeats the matching subset in its own
 `backend-contract.lock.json`; `contract-alignment-ci.yml` fails the build if any of them drifts.

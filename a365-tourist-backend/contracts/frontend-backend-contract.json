@@ -1,6 +1,6 @@
 {
   "$schema": "./frontend-backend-contract.schema.json",
-  "contractId": "seoul-tourist-shared-backend",
+  "contractId": "korea-expert-shared-backend",
   "contractVersion": "1.0.0",
   "backend": {
     "deployment": "shared-agent-host",

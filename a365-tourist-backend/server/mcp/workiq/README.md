@@ -14,10 +14,10 @@ The prohibition is executable, not advisory. Four independent sites hold it in p
 
 | Site | Mechanism |
 | --- | --- |
-| `SeoulTourist.AgentHost/Agent365Options.cs` | `public bool EnableWorkIq { get; init; }` — defaults to `false` |
-| `SeoulTourist.AgentHost/Program.cs` | Options `.Validate(options => !options.EnableWorkIq, …)` combined with `.ValidateOnStart()` |
-| `SeoulTourist.AgentHost/SeoulTouristApplication.cs` | Runtime guard `if (!_agent365Options.EnableWorkIq)` around the tooling path |
-| `SeoulTourist.AgentHost.Tests/PurviewDlpMiddlewareTests.cs` | Two assertions covering tool arguments and tool results |
+| `KoreaExpert.AgentHost/Agent365Options.cs` | `public bool EnableWorkIq { get; init; }` — defaults to `false` |
+| `KoreaExpert.AgentHost/Program.cs` | Options `.Validate(options => !options.EnableWorkIq, …)` combined with `.ValidateOnStart()` |
+| `KoreaExpert.AgentHost/KoreaExpertApplication.cs` | Runtime guard `if (!_agent365Options.EnableWorkIq)` around the tooling path |
+| `KoreaExpert.AgentHost.Tests/PurviewDlpMiddlewareTests.cs` | Two assertions covering tool arguments and tool results |
 
 The startup validation message is the authoritative wording:
 

@@ -1,4 +1,4 @@
-# Seoul Tourist Workspace Guide
+# Korea Expert Workspace Guide
 
 This workspace contains one canonical shared backend and three channel-only frontend projects.
 

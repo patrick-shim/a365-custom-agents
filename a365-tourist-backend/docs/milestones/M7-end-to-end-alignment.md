@@ -77,8 +77,8 @@ frontend or moving frontend package state into the backend.
   returned a current weather-grounded walking recommendation, proving the `/api/messages/obo`
   channel and weather MCP path. A bounded synthetic sensitive-data turn was blocked by the Teams
   client with no bot reply; the corresponding sanitized host interval contained zero model requests.
-- Microsoft 365 Admin Center identifies `SeoulTourist Blueprint` version `1.1.5` with three active
-  instances. The authoritative `Seoul Tourist Assistant` instance is available, but its Activity
+- Microsoft 365 Admin Center identifies `KoreaExpert Blueprint` version `1.1.5` with three active
+  instances. The authoritative `Korea Expert Assistant` instance is available, but its Activity
   view contains no usage for the last 30 days. A live Teams message remained delivered without a
   response, and the matching host interval contained health probes only, with no inbound agent turn.
 - The authoritative AI Teammate source still pins the correct production `/api/messages` endpoint,
@@ -139,7 +139,7 @@ frontend or moving frontend package state into the backend.
   App modifications, 15 ignored dependencies, and zero creates or deletes. The four MCP images were
   pinned to their existing revision `0000005` digests; the only intentional runtime change was the
   host image plus the two missing Purview handler scope settings.
-- Deployment `seoultour-m7-purview-scopes-20260817-01` succeeded. Host revision `0000026` is healthy,
+- Deployment `koreaexpert-m7-purview-scopes-20260817-01` succeeded. Host revision `0000026` is healthy,
   active, running at 100% traffic, and both health endpoints return HTTP 200. Live environment
   read-back contains all three delegated Purview scopes.
 - Live Direct Line acceptance against revision `0000026` passed. A normal weather turn returned a

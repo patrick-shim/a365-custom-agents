@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "environmentName": {
-      "value": "seoultour-dev-kc-ae23"
+      "value": "koreaexpert-dev-kc-ae23"
     },
     "location": {
       "value": "koreacentral"

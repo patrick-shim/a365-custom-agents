@@ -1,4 +1,4 @@
-# Seoul Tourist Agent infrastructure
+# Korea Expert Agent infrastructure
 
 This directory contains two backend-owned deployment paths:
 
@@ -16,7 +16,7 @@ This directory contains two backend-owned deployment paths:
 | Path | Role |
 | --- | --- |
 | `main.bicep` | `targetScope = 'subscription'`; creates the resource group and orchestrates all 21 modules |
-| `main.parameters.json` | Checked-in non-secret parameters: `environmentName` `seoultour-dev-kc-ae23`, `location` `koreacentral`, and placeholder provenance values |
+| `main.parameters.json` | Checked-in non-secret parameters: `environmentName` `koreaexpert-dev-kc-ae23`, `location` `koreacentral`, and placeholder provenance values |
 | `live-backend-container-apps-update.bicep` | `targetScope = 'resourceGroup'`; updates only the five existing Container Apps |
 | `live-backend-container-apps-update.json` | Checked-in compiled ARM form of the wrapper; must stay synchronized with its Bicep source |
 | `bicepconfig.json` | Linter and analyzer configuration for both templates |
@@ -44,7 +44,7 @@ parameters (`containerImage`, `attractionsImage`, `weatherImage`, `accommodation
 bootstrap phase can run before any application image exists. Agent 365 binding uses
 `agent365BlueprintId`, the `Agent365AgentIds` and `Agent365AgentPrincipalIds` typed objects (each with
 `agenticUser` and `onBehalfOf` members), `oboChannelAppId`, and `oboOAuthConnectionName`
-(default `seoul-tourist-obo`). Five provider-secret parameters — `ktoServiceKey`, `openMeteoApiKey`,
+(default `korea-expert-obo`). Five provider-secret parameters — `ktoServiceKey`, `openMeteoApiKey`,
 `openWeatherApiKey`, `koreaEximbankAuthKey`, `forexRateApiKey` — all default to empty and are inactive
 in the current deployment.
 
@@ -89,7 +89,7 @@ flowchart LR
   Host & Attractions & Weather & Accommodation & Currency --> AppI[Application Insights]
 ```
 
-Only `ca-agent-seoultour-dev-kc-ae23` has external ingress. The four MCP apps use internal
+Only `ca-agent-koreaexpert-dev-kc-ae23` has external ingress. The four MCP apps use internal
 ingress and validate the shared delegated `Mcp.Invoke` scope. Agent identity is never the host
 UAMI: `a365` owns the Blueprint, BlueprintPrincipal, and each Agent Identity/Agentic User.
 
@@ -113,7 +113,7 @@ $deploymentSessionId = '<deployment-session-id>'
 $deploymentActor = '<operator-or-automation-id>'
 $deploymentCreatedAt = '<ISO-8601-timestamp>'
 az deployment sub create `
-  --name seoultour-dev-kc-ae23-infra `
+  --name koreaexpert-dev-kc-ae23-infra `
   --location koreacentral `
   --template-file infra/main.bicep `
   --parameters '@infra/main.parameters.json' `
@@ -126,11 +126,11 @@ targets from `Dockerfile.mcp`.
 
 ```powershell
 $tag = '<immutable-tag>'
-az acr build --registry crseoultourdevkcae23 --image "seoul-tourist-agent:$tag" --file Dockerfile .
-az acr build --registry crseoultourdevkcae23 --image "seoul-tourist-attractions:$tag" --file Dockerfile.mcp --target attractions .
-az acr build --registry crseoultourdevkcae23 --image "seoul-tourist-weather:$tag" --file Dockerfile.mcp --target weather .
-az acr build --registry crseoultourdevkcae23 --image "seoul-tourist-accommodation:$tag" --file Dockerfile.mcp --target accommodation .
-az acr build --registry crseoultourdevkcae23 --image "seoul-tourist-currency:$tag" --file Dockerfile.mcp --target currency .
+az acr build --registry crkoreaexpertdevkcae23 --image "korea-expert-agent:$tag" --file Dockerfile .
+az acr build --registry crkoreaexpertdevkcae23 --image "korea-expert-attractions:$tag" --file Dockerfile.mcp --target attractions .
+az acr build --registry crkoreaexpertdevkcae23 --image "korea-expert-weather:$tag" --file Dockerfile.mcp --target weather .
+az acr build --registry crkoreaexpertdevkcae23 --image "korea-expert-accommodation:$tag" --file Dockerfile.mcp --target accommodation .
+az acr build --registry crkoreaexpertdevkcae23 --image "korea-expert-currency:$tag" --file Dockerfile.mcp --target currency .
 ```
 
 Agent 365 setup state and package commands belong only to their respective channel frontend
@@ -148,7 +148,7 @@ four contracts before the model call, so scale-to-zero cold starts can exceed th
 channel deadline even when each service is otherwise healthy.
 
 ```powershell
-$acr = 'crseoultourdevkcae23.azurecr.io'
+$acr = 'crkoreaexpertdevkcae23.azurecr.io'
 $agent365AgentIds = @{
   agenticUser = ''
   onBehalfOf = $env:AGENT365_OBO_AGENT_ID
@@ -159,22 +159,22 @@ $agent365AgentPrincipalIds = @{
 } | ConvertTo-Json -Compress
 
 az deployment sub create `
-  --name seoultour-dev-kc-ae23-app `
+  --name koreaexpert-dev-kc-ae23-app `
   --location koreacentral `
   --template-file infra/main.bicep `
   --parameters '@infra/main.parameters.json' `
   --parameters deployerObjectId=$deployerObjectId tenantId=$tenantId `
   --parameters sessionId=$deploymentSessionId deployedBy=$deploymentActor createdAt=$deploymentCreatedAt `
-  --parameters containerImage="$acr/seoul-tourist-agent:$tag" `
-  --parameters attractionsImage="$acr/seoul-tourist-attractions:$tag" `
-  --parameters weatherImage="$acr/seoul-tourist-weather:$tag" `
-  --parameters accommodationImage="$acr/seoul-tourist-accommodation:$tag" `
-  --parameters currencyImage="$acr/seoul-tourist-currency:$tag" `
+  --parameters containerImage="$acr/korea-expert-agent:$tag" `
+  --parameters attractionsImage="$acr/korea-expert-attractions:$tag" `
+  --parameters weatherImage="$acr/korea-expert-weather:$tag" `
+  --parameters accommodationImage="$acr/korea-expert-accommodation:$tag" `
+  --parameters currencyImage="$acr/korea-expert-currency:$tag" `
   --parameters agent365BlueprintId="$env:AGENT365_BLUEPRINT_ID" `
   --parameters agent365AgentIds="$agent365AgentIds" `
   --parameters agent365AgentPrincipalIds="$agent365AgentPrincipalIds" `
   --parameters oboChannelAppId="$env:OBO_CHANNEL_APP_ID" `
-  --parameters oboOAuthConnectionName='seoul-tourist-obo' `
+  --parameters oboOAuthConnectionName='korea-expert-obo' `
   --parameters forexRateApiKey=''
 ```
 
@@ -222,7 +222,7 @@ rollback set through the same compile, ARM validation, and what-if boundary befo
 - The host UAMI has AcrPull only. It has no direct Foundry, Purview, or MCP agent permission.
   Attractions and accommodation have Azure Maps Search and Render Data Reader. Other MCP workload
   roles are scoped to ACR.
-- ACR and Key Vault diagnostics flow to `log-seoultour-dev-kc-ae23`. Application telemetry uses
+- ACR and Key Vault diagnostics flow to `log-koreaexpert-dev-kc-ae23`. Application telemetry uses
   workspace-based Application Insights without local authentication.
 - The MCP resource API is a separate application with a delegated `Mcp.Invoke` scope; it is not the
   agent application. A365 CLI owns Blueprint/Agent Identity permissions and consent.
@@ -232,7 +232,7 @@ rollback set through the same compile, ARM validation, and what-if boundary befo
 - Both connection profiles use `FederatedCredentials`: the shared Blueprint is `ClientId` and the
   host UAMI is `FederatedClientId`. Agentic User auth resolves its child dynamically;
   `AgentIdentityObo.AgentId` selects the OBO child for `fmi_path` and child OBO.
-- The Azure Bot OAuth connection `seoul-tourist-obo` must return an exchangeable user token for the
+- The Azure Bot OAuth connection `korea-expert-obo` must return an exchangeable user token for the
   delegated scope exposed by the shared Blueprint. Agent Framework must return that raw assertion;
   the host performs the child-bound parent-token and resource `/.default` exchanges explicitly.
 - Review and minimize existing Blueprint Graph grants before creating the OBO child; inherited

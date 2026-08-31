@@ -4,15 +4,15 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0.302 AS build
 WORKDIR /src
 
 COPY Directory.Build.props Directory.Packages.props ./
-COPY server/agent/SeoulTourist.Agent/SeoulTourist.Agent.csproj server/agent/SeoulTourist.Agent/
-COPY server/agent-host/SeoulTourist.AgentHost/SeoulTourist.AgentHost.csproj server/agent-host/SeoulTourist.AgentHost/
+COPY server/agent/KoreaExpert.Agent/KoreaExpert.Agent.csproj server/agent/KoreaExpert.Agent/
+COPY server/agent-host/KoreaExpert.AgentHost/KoreaExpert.AgentHost.csproj server/agent-host/KoreaExpert.AgentHost/
 
-RUN dotnet restore server/agent-host/SeoulTourist.AgentHost/SeoulTourist.AgentHost.csproj
+RUN dotnet restore server/agent-host/KoreaExpert.AgentHost/KoreaExpert.AgentHost.csproj
 
-COPY server/agent/SeoulTourist.Agent/ server/agent/SeoulTourist.Agent/
-COPY server/agent-host/SeoulTourist.AgentHost/ server/agent-host/SeoulTourist.AgentHost/
+COPY server/agent/KoreaExpert.Agent/ server/agent/KoreaExpert.Agent/
+COPY server/agent-host/KoreaExpert.AgentHost/ server/agent-host/KoreaExpert.AgentHost/
 
-RUN dotnet publish server/agent-host/SeoulTourist.AgentHost/SeoulTourist.AgentHost.csproj \
+RUN dotnet publish server/agent-host/KoreaExpert.AgentHost/KoreaExpert.AgentHost.csproj \
     --configuration Release \
     --no-restore \
     --output /app/publish \
@@ -30,4 +30,4 @@ EXPOSE 8080
 COPY --from=build /app/publish .
 
 USER $APP_UID
-ENTRYPOINT ["dotnet", "SeoulTourist.AgentHost.dll"]
+ENTRYPOINT ["dotnet", "KoreaExpert.AgentHost.dll"]

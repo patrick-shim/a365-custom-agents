@@ -16,8 +16,8 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2026-05-01' = {
     type: 'SystemAssigned'
   }
   properties: {
-    displayName: 'Seoul Tourist Agent'
-    description: 'Korea Central Microsoft Foundry project for the Seoul Tourist Agent.'
+    displayName: 'Korea Expert Agent'
+    description: 'Korea Central Microsoft Foundry project for the Korea Expert Agent.'
   }
 }
 

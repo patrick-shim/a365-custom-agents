@@ -41,66 +41,66 @@ param agent365AgentIds Agent365AgentIds
 @maxLength(36)
 param oboChannelAppId string
 
-param oboOAuthConnectionName string = 'seoul-tourist-obo'
+param oboOAuthConnectionName string = 'korea-expert-obo'
 
 resource environment 'Microsoft.App/managedEnvironments@2025-01-01' existing = {
-  name: 'cae-seoultour-dev-kc-ae23'
+  name: 'cae-koreaexpert-dev-kc-ae23'
 }
 
 resource registry 'Microsoft.ContainerRegistry/registries@2025-11-01' existing = {
-  name: 'crseoultourdevkcae23'
+  name: 'crkoreaexpertdevkcae23'
 }
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = {
-  name: 'appi-seoultour-dev-kc-ae23'
+  name: 'appi-koreaexpert-dev-kc-ae23'
 }
 
 resource foundry 'Microsoft.CognitiveServices/accounts@2026-05-01' existing = {
-  name: 'fdy-seoultour-dev-kc-ae23'
+  name: 'fdy-koreaexpert-dev-kc-ae23'
 }
 
 resource azureMaps 'Microsoft.Maps/accounts@2023-06-01' existing = {
-  name: 'maps-seoultour-dev-kc-ae23'
+  name: 'maps-koreaexpert-dev-kc-ae23'
 }
 
 resource hostIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
-  name: 'id-agent-seoultour-dev-kc-ae23'
+  name: 'id-agent-koreaexpert-dev-kc-ae23'
 }
 
 resource attractionsIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
-  name: 'id-attract-seoultour-dev-kc-ae23'
+  name: 'id-attract-koreaexpert-dev-kc-ae23'
 }
 
 resource weatherIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
-  name: 'id-weather-seoultour-dev-kc-ae23'
+  name: 'id-weather-koreaexpert-dev-kc-ae23'
 }
 
 resource accommodationIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
-  name: 'id-stay-seoultour-dev-kc-ae23'
+  name: 'id-stay-koreaexpert-dev-kc-ae23'
 }
 
 resource currencyIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
-  name: 'id-fx-seoultour-dev-kc-ae23'
+  name: 'id-fx-koreaexpert-dev-kc-ae23'
 }
 
 resource currentHost 'Microsoft.App/containerApps@2026-01-01' existing = {
-  name: 'ca-agent-seoultour-dev-kc-ae23'
+  name: 'ca-agent-koreaexpert-dev-kc-ae23'
 }
 
 resource currentAttractions 'Microsoft.App/containerApps@2026-01-01' existing = {
-  name: 'ca-attract-seoultour-dev-kc-ae23'
+  name: 'ca-attract-koreaexpert-dev-kc-ae23'
 }
 
 resource currentWeather 'Microsoft.App/containerApps@2026-01-01' existing = {
-  name: 'ca-weather-seoultour-dev-kc-ae23'
+  name: 'ca-weather-koreaexpert-dev-kc-ae23'
 }
 
 resource currentAccommodation 'Microsoft.App/containerApps@2026-01-01' existing = {
-  name: 'ca-stay-seoultour-dev-kc-ae23'
+  name: 'ca-stay-koreaexpert-dev-kc-ae23'
 }
 
 resource currentCurrency 'Microsoft.App/containerApps@2026-01-01' existing = {
-  name: 'ca-fx-seoultour-dev-kc-ae23'
+  name: 'ca-fx-koreaexpert-dev-kc-ae23'
 }
 
 module attractions './modules/attractions-mcp-container-app.bicep' = {

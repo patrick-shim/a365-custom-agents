@@ -1,4 +1,4 @@
-# Seoul Tourist monorepo instructions
+# Korea Expert monorepo instructions
 
 - Read root `AGENTS.md`, then the owning child `AGENTS.md` and milestone manifest before work.
 - `a365-tourist-backend` is the sole shared runtime, MCP, infrastructure, tests, tools, Docker, and

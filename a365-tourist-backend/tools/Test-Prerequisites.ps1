@@ -8,7 +8,7 @@ param(
     [switch] $Strict
 )
 
-$modulePath = Join-Path $PSScriptRoot 'modules\SeoulTourist.Validation\SeoulTourist.Validation.psm1'
+$modulePath = Join-Path $PSScriptRoot 'modules\KoreaExpert.Validation\KoreaExpert.Validation.psm1'
 Import-Module $modulePath -Force
 
 $results = @(Invoke-StaValidationSafely -Check 'Prerequisite validation' -Operation {

@@ -16,7 +16,7 @@ rotate it before deployment. Do not copy the exposed value into this backend pro
 
 ## Agent 365 ownership and runtime identity
 
-The Seoul Tourist product owns one Agent Identity Blueprint and two child identities:
+The Korea Expert product owns one Agent Identity Blueprint and two child identities:
 
 | Frontend | Child identity | Endpoint | Runtime authority |
 | --- | --- | --- | --- |
@@ -138,7 +138,7 @@ correlation IDs, and `Client-Request-Id` through a loopback-only proxy. Empty te
 intermediate function-call message is not sent to `processContent`; the corresponding tool
 arguments and results remain independently evaluated by `ToolContentProtector` before execution.
 
-The OBO Azure Bot OAuth connection defaults to the non-secret name `seoul-tourist-obo`. Configure
+The OBO Azure Bot OAuth connection defaults to the non-secret name `korea-expert-obo`. Configure
 that connection for the OBO bot so its initial user token targets the delegated scope exposed by the
 shared Blueprint. Do not configure automatic `OBOConnectionName` or `OBOScopes` on `obo-user`; doing
 so would mint downstream tokens as the Blueprint. The host uses `OboServiceConnection` to obtain the
@@ -194,7 +194,7 @@ approval. Bicep does not assign Blueprint/inheritable permissions to the host UA
    OpenAI User**. Do not grant the role to the host UAMI as a shortcut.
 3. Verify the host UAMI's Blueprint federated identity credential and both connection profiles.
    Never duplicate the Blueprint or FIC in Bicep.
-4. Configure and test the `seoul-tourist-obo` Azure Bot OAuth connection against the shared
+4. Configure and test the `korea-expert-obo` Azure Bot OAuth connection against the shared
    Blueprint's delegated ingress scope before production OBO traffic.
 5. Review the shared Blueprint's existing inherited Graph grants before modifying inherited
    permissions. Remove mail, files, sites, channel-message, or other WorkIQ-era grants that neither
@@ -274,11 +274,11 @@ access. Do not configure a subscription key.
 Build from the backend project root:
 
 ```powershell
-docker build --tag seoul-tourist-agent:local .
-docker build --file Dockerfile.mcp --target attractions --tag seoul-tourist-attractions:local .
-docker build --file Dockerfile.mcp --target weather --tag seoul-tourist-weather:local .
-docker build --file Dockerfile.mcp --target accommodation --tag seoul-tourist-accommodation:local .
-docker build --file Dockerfile.mcp --target currency --tag seoul-tourist-currency:local .
+docker build --tag korea-expert-agent:local .
+docker build --file Dockerfile.mcp --target attractions --tag korea-expert-attractions:local .
+docker build --file Dockerfile.mcp --target weather --tag korea-expert-weather:local .
+docker build --file Dockerfile.mcp --target accommodation --tag korea-expert-accommodation:local .
+docker build --file Dockerfile.mcp --target currency --tag korea-expert-currency:local .
 ```
 
 Every image listens on `8080`, runs as UID `1654`, and disables runtime diagnostics. The root

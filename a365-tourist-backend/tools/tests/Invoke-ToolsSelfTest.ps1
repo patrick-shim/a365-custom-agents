@@ -44,7 +44,7 @@ foreach ($file in $toolFiles) {
         -Message "PowerShell syntax: $([System.IO.Path]::GetRelativePath($RepositoryRoot, $file.FullName))"
 }
 
-$modulePath = Join-Path $RepositoryRoot 'tools\modules\SeoulTourist.Validation\SeoulTourist.Validation.psm1'
+$modulePath = Join-Path $RepositoryRoot 'tools\modules\KoreaExpert.Validation\KoreaExpert.Validation.psm1'
 Import-Module $modulePath -Force
 $validationModuleContent = Get-Content -LiteralPath $modulePath -Raw
 Assert-ToolsCondition -Condition (
@@ -84,7 +84,7 @@ Assert-ToolsCondition -Condition (
     -Message 'Frontend backend contract conforms to its declared JSON schema'
 $frontendContract = $frontendContractJson | ConvertFrom-Json -Depth 20
 Assert-ToolsCondition -Condition (
-    $frontendContract.contractId -eq 'seoul-tourist-shared-backend' -and
+    $frontendContract.contractId -eq 'korea-expert-shared-backend' -and
     $frontendContract.contractVersion -eq '1.0.0' -and
     @($frontendContract.frontends).Count -eq 2 -and
     @($frontendContract.frontends.route) -contains '/api/messages' -and
@@ -100,25 +100,25 @@ foreach ($repositoryCheck in @('Two protected host routes', 'Frontend channel au
     }).Count -eq 1) -Message "$repositoryCheck validation passes"
 }
 
-$repositoryBoundaryFixtureRoot = Join-Path ([IO.Path]::GetTempPath()) "seoul-tourist-repository-boundary-fixture-$([guid]::NewGuid())"
+$repositoryBoundaryFixtureRoot = Join-Path ([IO.Path]::GetTempPath()) "korea-expert-repository-boundary-fixture-$([guid]::NewGuid())"
 try {
     $repositoryBoundaryFixtureFiles = @(
-        'SeoulTouristAgent.slnx',
+        'KoreaExpertAgent.slnx',
         'Directory.Packages.props',
         'README.md',
         'docs\milestones\milestones.json',
         'contracts\frontend-backend-contract.json',
         'contracts\frontend-backend-contract.schema.json',
-        'server\agent\SeoulTourist.Agent\SeoulTourist.Agent.csproj',
-        'server\agent-host\SeoulTourist.AgentHost\SeoulTourist.AgentHost.csproj',
-        'server\agent-host\SeoulTourist.AgentHost\Program.cs',
-        'server\agent-host\SeoulTourist.AgentHost\SeoulTouristApplication.cs',
-        'server\agent-host\SeoulTourist.AgentHost\AgentIdentityOboTokenExchange.cs',
-        'server\agent-host\SeoulTourist.AgentHost\AgentFrontendIdentityBinding.cs',
-        'server\agent-host\SeoulTourist.AgentHost\InternalMcpOptions.cs',
-        'server\agent-host\SeoulTourist.AgentHost\InternalMcpToolCatalog.cs',
-        'server\agent-host\SeoulTourist.AgentHost\appsettings.json',
-        'server\agent-host\SeoulTourist.AgentHost\appsettings.Development.json',
+        'server\agent\KoreaExpert.Agent\KoreaExpert.Agent.csproj',
+        'server\agent-host\KoreaExpert.AgentHost\KoreaExpert.AgentHost.csproj',
+        'server\agent-host\KoreaExpert.AgentHost\Program.cs',
+        'server\agent-host\KoreaExpert.AgentHost\KoreaExpertApplication.cs',
+        'server\agent-host\KoreaExpert.AgentHost\AgentIdentityOboTokenExchange.cs',
+        'server\agent-host\KoreaExpert.AgentHost\AgentFrontendIdentityBinding.cs',
+        'server\agent-host\KoreaExpert.AgentHost\InternalMcpOptions.cs',
+        'server\agent-host\KoreaExpert.AgentHost\InternalMcpToolCatalog.cs',
+        'server\agent-host\KoreaExpert.AgentHost\appsettings.json',
+        'server\agent-host\KoreaExpert.AgentHost\appsettings.Development.json',
         'infra\main.bicep',
         'infra\modules\agent-host-container-app.bicep',
         'infra\modules\mcp-api-application.bicep',
@@ -126,13 +126,13 @@ try {
         'infra\modules\weather-mcp-container-app.bicep',
         'infra\modules\accommodation-mcp-container-app.bicep',
         'infra\modules\currency-mcp-container-app.bicep',
-        'server\mcp\shared\SeoulTourist.Mcp.Hosting\McpWorkloadAuthorization.cs',
-        'tests\SeoulTourist.AgentHost.Tests\AgentIdentityAuthorizationOptionsTests.cs',
-        'tests\SeoulTourist.AgentHost.Tests\AgentIdentityOboTokenExchangeTests.cs',
-        'tests\SeoulTourist.AgentHost.Tests\AgentFrontendIdentityBindingTests.cs',
-        'tests\SeoulTourist.AgentHost.Tests\ObservabilityTokenCacheTests.cs',
-        'tests\SeoulTourist.AgentHost.Tests\InternalMcpToolCatalogTests.cs',
-        'tests\SeoulTourist.Mcp.Hosting.Tests\McpWorkloadAuthorizationTests.cs'
+        'server\mcp\shared\KoreaExpert.Mcp.Hosting\McpWorkloadAuthorization.cs',
+        'tests\KoreaExpert.AgentHost.Tests\AgentIdentityAuthorizationOptionsTests.cs',
+        'tests\KoreaExpert.AgentHost.Tests\AgentIdentityOboTokenExchangeTests.cs',
+        'tests\KoreaExpert.AgentHost.Tests\AgentFrontendIdentityBindingTests.cs',
+        'tests\KoreaExpert.AgentHost.Tests\ObservabilityTokenCacheTests.cs',
+        'tests\KoreaExpert.AgentHost.Tests\InternalMcpToolCatalogTests.cs',
+        'tests\KoreaExpert.Mcp.Hosting.Tests\McpWorkloadAuthorizationTests.cs'
     )
     foreach ($relativePath in $repositoryBoundaryFixtureFiles) {
         $destination = Join-Path $repositoryBoundaryFixtureRoot $relativePath
@@ -149,9 +149,9 @@ try {
         @{
             Name  = 'stale appsettings OBO connection setting'
             Check = 'OBO authorization configuration boundary'
-            Path  = 'server\agent-host\SeoulTourist.AgentHost\appsettings.json'
-            Old   = '"AzureBotOAuthConnectionName": "seoul-tourist-obo"'
-            New   = ('"AzureBotOAuthConnectionName": "seoul-tourist-obo",' + [Environment]::NewLine +
+            Path  = 'server\agent-host\KoreaExpert.AgentHost\appsettings.json'
+            Old   = '"AzureBotOAuthConnectionName": "korea-expert-obo"'
+            New   = ('"AzureBotOAuthConnectionName": "korea-expert-obo",' + [Environment]::NewLine +
                 '            "OBOConnectionName": "OboServiceConnection"')
         },
         @{
@@ -164,7 +164,7 @@ try {
         @{
             Name  = 'parent fmi_path child-token method removal'
             Check = 'Two-stage child Agent Identity OBO'
-            Path  = 'server\agent-host\SeoulTourist.AgentHost\AgentIdentityOboTokenExchange.cs'
+            Path  = 'server\agent-host\KoreaExpert.AgentHost\AgentIdentityOboTokenExchange.cs'
             Old   = 'GetAgenticApplicationTokenAsync('
             New   = 'GetAgenticApplicationTokenForChildAsync('
         },
@@ -178,21 +178,21 @@ try {
         @{
             Name  = 'custom MCP default child exchange removal'
             Check = 'OBO per-resource child exchanges'
-            Path  = 'server\agent-host\SeoulTourist.AgentHost\SeoulTouristApplication.cs'
+            Path  = 'server\agent-host\KoreaExpert.AgentHost\KoreaExpertApplication.cs'
             Old   = '[AgentIdentityAuthorizationScopes.InternalMcpDefault(_internalMcpOptions.Audience)]'
             New   = '[mcpScope]'
         },
         @{
             Name  = 'S2S observability endpoint removal'
             Check = 'App-only child observability'
-            Path  = 'server\agent-host\SeoulTourist.AgentHost\Program.cs'
+            Path  = 'server\agent-host\KoreaExpert.AgentHost\Program.cs'
             Old   = 'options.Agent365.UseS2SEndpoint = true;'
             New   = 'options.Agent365.UseS2SEndpoint = false;'
         },
         @{
             Name  = 'authenticated frontend identity resolver removal'
             Check = 'Authenticated frontend identity binding'
-            Path  = 'server\agent-host\SeoulTourist.AgentHost\SeoulTouristApplication.cs'
+            Path  = 'server\agent-host\KoreaExpert.AgentHost\KoreaExpertApplication.cs'
             Old   = '_frontendIdentityBinding.Resolve(turnContext.Activity, frontendMode)'
             New   = '_frontendIdentityBinding.ResolveUnbound(turnContext.Activity, frontendMode)'
         },
@@ -206,28 +206,28 @@ try {
         @{
             Name  = 'one stale schema fingerprint'
             Check = 'Canonical MCP schema fingerprints'
-            Path  = 'server\agent-host\SeoulTourist.AgentHost\InternalMcpOptions.cs'
+            Path  = 'server\agent-host\KoreaExpert.AgentHost\InternalMcpOptions.cs'
             Old   = '"4C1A15FF94EA712679A8D1444499DE6C548D25316423C7A32C896732E95C8A27"'
             New   = '"STALE-SCHEMA-FINGERPRINT"'
         },
         @{
             Name  = 'unexpected-tool rejection test removal'
             Check = 'Canonical MCP schema fingerprints'
-            Path  = 'tests\SeoulTourist.AgentHost.Tests\InternalMcpToolCatalogTests.cs'
+            Path  = 'tests\KoreaExpert.AgentHost.Tests\InternalMcpToolCatalogTests.cs'
             Old   = 'RejectsUnexpectedToolBeforeModelExposure'
             New   = 'AllowsUnexpectedToolBeforeModelExposure'
         },
         @{
             Name  = 'nested-schema rejection test removal'
             Check = 'Canonical MCP schema fingerprints'
-            Path  = 'tests\SeoulTourist.AgentHost.Tests\InternalMcpToolCatalogTests.cs'
+            Path  = 'tests\KoreaExpert.AgentHost.Tests\InternalMcpToolCatalogTests.cs'
             Old   = 'RejectsAlteredNestedSchemaBeforeModelExposure'
             New   = 'AllowsAlteredNestedSchemaBeforeModelExposure'
         },
         @{
             Name  = 'non-local HTTPS requirement removal'
             Check = 'Production MCP HTTPS endpoint enforcement'
-            Path  = 'server\agent-host\SeoulTourist.AgentHost\Program.cs'
+            Path  = 'server\agent-host\KoreaExpert.AgentHost\Program.cs'
             Old   = 'options.HasValidEndpoints(requireHttps: !isLocalEnvironment)'
             New   = 'options.HasValidEndpoints(requireHttps: false)'
         }
@@ -270,7 +270,7 @@ $unauthorizedAzureResults = @(Test-StaAzureReadiness `
 Assert-ToolsCondition -Condition (@($unauthorizedAzureResults | Where-Object { $_.Check -eq 'Online switch' -and $_.Status -eq 'Fail' }).Count -eq 1) `
     -Message 'Azure resource parameters fail without explicit online authorization'
 
-$capabilityFixtureRoot = Join-Path ([IO.Path]::GetTempPath()) "seoul-tourist-capability-fixture-$([guid]::NewGuid())"
+$capabilityFixtureRoot = Join-Path ([IO.Path]::GetTempPath()) "korea-expert-capability-fixture-$([guid]::NewGuid())"
 try {
     New-Item -ItemType Directory -Path (Join-Path $capabilityFixtureRoot 'docs\milestones') -Force | Out-Null
     $capabilityManifest = Get-Content -LiteralPath (Join-Path $RepositoryRoot 'docs\milestones\milestones.json') -Raw |
@@ -336,7 +336,7 @@ $syntheticPurviewMarker = '<PackageReference Include="Microsoft.Agents.AI.' + 'P
 Assert-ToolsCondition -Condition (@(Find-StaM0ImplementationMarker -Content $syntheticPurviewMarker -Source 'fixture').Count -eq 1) `
     -Message 'M0 scanner rejects a synthetic Purview package reference'
 
-$secretFixtureRoot = Join-Path ([IO.Path]::GetTempPath()) "seoul-tourist-secret-fixture-$([guid]::NewGuid())"
+$secretFixtureRoot = Join-Path ([IO.Path]::GetTempPath()) "korea-expert-secret-fixture-$([guid]::NewGuid())"
 New-Item -ItemType Directory -Path $secretFixtureRoot -Force | Out-Null
 try {
     Set-Content -LiteralPath (Join-Path $secretFixtureRoot '.env.dev') -Value 'AZURE_CLIENT_SECRET=not-a-real-secret-value'
@@ -350,7 +350,7 @@ finally {
     Remove-Item -LiteralPath $secretFixtureRoot -Recurse -Force -ErrorAction SilentlyContinue
 }
 
-$placeholderFixtureRoot = Join-Path ([IO.Path]::GetTempPath()) "seoul-tourist-placeholder-fixture-$([guid]::NewGuid())"
+$placeholderFixtureRoot = Join-Path ([IO.Path]::GetTempPath()) "korea-expert-placeholder-fixture-$([guid]::NewGuid())"
 New-Item -ItemType Directory -Path $placeholderFixtureRoot -Force | Out-Null
 try {
     Set-Content -LiteralPath (Join-Path $placeholderFixtureRoot '.env.dev') -Value 'CLIENT_SECRET=<set-in-user-environment>'
@@ -379,7 +379,7 @@ finally {
     Remove-Item -LiteralPath $placeholderFixtureRoot -Recurse -Force -ErrorAction SilentlyContinue
 }
 
-$dependencyFixtureRoot = Join-Path ([IO.Path]::GetTempPath()) "seoul-tourist-dependency-fixture-$([guid]::NewGuid())"
+$dependencyFixtureRoot = Join-Path ([IO.Path]::GetTempPath()) "korea-expert-dependency-fixture-$([guid]::NewGuid())"
 try {
     New-Item -ItemType Directory -Path (Join-Path $dependencyFixtureRoot 'server\agent-host') -Force | Out-Null
     New-Item -ItemType Directory -Path (Join-Path $dependencyFixtureRoot 'server\node_modules\fake') -Force | Out-Null

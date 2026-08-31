@@ -18,7 +18,7 @@ deployment authority. M7 prohibits restoring frontend backend mirrors.
 
 1. Read `a365-tourist-backend/docs/milestones/milestones.json` before any command or edit.
 2. Read `a365-tourist-backend/tools/README.md` and reuse the backend
-   `SeoulTourist.Validation.psm1` rather than duplicating logic.
+   `KoreaExpert.Validation.psm1` rather than duplicating logic.
 3. Treat package presence and local adapters as readiness evidence only, never proof of cloud onboarding.
 
 ## Safety Constraints

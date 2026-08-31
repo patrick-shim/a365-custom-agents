@@ -1,4 +1,4 @@
-# Seoul Tourist OBO Teams frontend
+# Korea Expert OBO Teams frontend
 
 This project owns the source OBO Teams package and the non-secret contract pin for the canonical
 shared backend route `/api/messages/obo`. It contains no backend runtime or deployment assets.
@@ -21,7 +21,7 @@ is a package and contract boundary, not a buildable application, so it has no te
 
 | Path | Kind |
 | --- | --- |
-| `teams/SeoulTourist.Teams.atkproj` | Teams Toolkit project file |
+| `teams/KoreaExpert.Teams.atkproj` | Teams Toolkit project file |
 | `teams/m365agents.yml` | Teams Toolkit lifecycle definition |
 | `teams/appPackage/manifest.json` | Teams app manifest source |
 | `teams/appPackage/color.png`, `teams/appPackage/outline.png` | Package icons |
@@ -43,7 +43,7 @@ The contract pin fixes:
 
 These three values must match
 [`../a365-tourist-backend/contracts/frontend-backend-contract.json`](../a365-tourist-backend/contracts/frontend-backend-contract.json)
-exactly — `contractId: seoul-tourist-shared-backend`, `contractVersion: 1.0.0`, frontend
+exactly — `contractId: korea-expert-shared-backend`, `contractVersion: 1.0.0`, frontend
 `on-behalf-of`. Unlike the generated Agent 365 state around it, `backend-contract.lock.json` **is**
 non-secret source and is expected to be committed.
 

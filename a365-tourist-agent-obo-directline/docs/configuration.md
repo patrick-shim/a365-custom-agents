@@ -7,13 +7,13 @@ channel, child, and secret values remain outside source.
 Set the Direct Line site secret only for the current process:
 
 ```powershell
-$env:SEOUL_TOURIST_DIRECT_LINE_SECRET = '<retrieve-through-approved-secret-workflow>'
-dotnet run --project direct/SeoulTourist.Direct
-Remove-Item Env:SEOUL_TOURIST_DIRECT_LINE_SECRET
+$env:KOREA_EXPERT_DIRECT_LINE_SECRET = '<retrieve-through-approved-secret-workflow>'
+dotnet run --project direct/KoreaExpert.Direct
+Remove-Item Env:KOREA_EXPERT_DIRECT_LINE_SECRET
 ```
 
 Do not place the value in source, command arguments, shell history, logs, appsettings, `.env` files,
-or key files. `SEOUL_TOURIST_DIRECT_LINE_ENDPOINT` may override the regional Direct Line base URL;
+or key files. `KOREA_EXPERT_DIRECT_LINE_ENDPOINT` may override the regional Direct Line base URL;
 the default is the standard Direct Line v3 service.
 
 The OBO Teams package and protected OBO state belong only in `../a365-tourist-agent-obo`; AI Teammate

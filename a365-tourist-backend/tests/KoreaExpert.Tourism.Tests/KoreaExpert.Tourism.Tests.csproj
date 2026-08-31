@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../server/integrations/KoreaExpert.AzureMaps/KoreaExpert.AzureMaps.csproj" />
+    <ProjectReference Include="../../server/integrations/KoreaExpert.Tourism/KoreaExpert.Tourism.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MSTest" />
+  </ItemGroup>
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+</Project>

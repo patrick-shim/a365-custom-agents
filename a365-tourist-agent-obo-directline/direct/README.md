@@ -1,6 +1,6 @@
 # Direct Line Console Client
 
-The .NET 10 console app in `SeoulTourist.Direct` talks to the OBO Azure Bot through Direct Line v3.
+The .NET 10 console app in `KoreaExpert.Direct` talks to the OBO Azure Bot through Direct Line v3.
 It does not use Teams or Microsoft 365 Copilot. It starts a Direct Line conversation, sends user
 messages, renders agent replies, renews expiring conversation tokens, and completes Bot Token
 Service authentication through the OAuth card and standard message-based magic-code flow.
@@ -9,11 +9,11 @@ Service authentication through the OAuth card and standard message-based magic-c
 
 - The OBO Azure Bot has an enabled Direct Line site.
 - The bot endpoint targets `/api/messages/obo`.
-- The Bot Token Service connection is named `seoul-tourist-obo`.
+- The Bot Token Service connection is named `korea-expert-obo`.
 - You have one Direct Line site secret. Keep it in an environment variable; do not put it in source,
   arguments, shell history, or logs.
 
-During M7, obtain `SEOUL_TOURIST_DIRECT_LINE_SECRET` only through an approved channel-operations
+During M7, obtain `KOREA_EXPERT_DIRECT_LINE_SECRET` only through an approved channel-operations
 workflow and set it only in the current process without printing it. Tenant or Purview operations
 require the M7 milestone permission, a reviewed dry run and rollback boundary, and explicit approval.
 Direct Line acceptance must prove zero unexplained route, audience, OAuth, token-renewal, policy, or
@@ -24,13 +24,13 @@ response drift from the canonical deployed backend.
 Interactive conversation:
 
 ```powershell
-dotnet run --project direct/SeoulTourist.Direct
+dotnet run --project direct/KoreaExpert.Direct
 ```
 
 Send one prompt and exit after the response:
 
 ```powershell
-dotnet run --project direct/SeoulTourist.Direct -- `
+dotnet run --project direct/KoreaExpert.Direct -- `
   --message 'Plan a one-day Seoul itinerary for tomorrow.'
 ```
 
@@ -41,19 +41,19 @@ continues polling.
 
 Use `--no-browser` on a remote shell and open the printed URL yourself. Use `--help` for endpoint,
 identity, polling, and timeout options. A regional Direct Line base URL can also be supplied through
-`SEOUL_TOURIST_DIRECT_LINE_ENDPOINT` or `--endpoint`.
+`KOREA_EXPERT_DIRECT_LINE_ENDPOINT` or `--endpoint`.
 
 Remove the process-scoped secret when finished:
 
 ```powershell
-Remove-Item Env:SEOUL_TOURIST_DIRECT_LINE_SECRET
+Remove-Item Env:KOREA_EXPERT_DIRECT_LINE_SECRET
 ```
 
 For isolated M7 acceptance, use a reviewed file containing exactly the approved credit-card,
 passport, and South Korean resident-registration cases, with three-minute separation:
 
 ```powershell
-dotnet run --project direct/SeoulTourist.Direct -- `
+dotnet run --project direct/KoreaExpert.Direct -- `
   --sit-file '<approved-three-case-file>' `
   --interval 180
 ```
@@ -74,10 +74,10 @@ Every option is parsed and validated by `DirectClientOptions`. An unrecognized t
 
 | Option | Default | Notes |
 | --- | --- | --- |
-| `--endpoint <url>` | `SEOUL_TOURIST_DIRECT_LINE_ENDPOINT`, else the global Direct Line base URL | Use for a regional Direct Line endpoint |
-| `--secret-env <name>` | `SEOUL_TOURIST_DIRECT_LINE_SECRET` | Names the variable holding the site secret; the secret itself is never an argument |
-| `--user-id <id>` | `dl_seoul_tourist_cli` | Direct Line user id |
-| `--user-name <name>` | `Seoul Tourist CLI` | Display name sent with activities |
+| `--endpoint <url>` | `KOREA_EXPERT_DIRECT_LINE_ENDPOINT`, else the global Direct Line base URL | Use for a regional Direct Line endpoint |
+| `--secret-env <name>` | `KOREA_EXPERT_DIRECT_LINE_SECRET` | Names the variable holding the site secret; the secret itself is never an argument |
+| `--user-id <id>` | `dl_korea_expert_cli` | Direct Line user id |
+| `--user-name <name>` | `Korea Expert CLI` | Display name sent with activities |
 | `--message <text>` | — | Sends one prompt, waits for the response, exits |
 | `--sit-list` | off | Runs the default list `direct/sensitive-information-type-test.json` |
 | `--sit-file <path>` | — | Runs an alternate synthetic list; implies list mode |

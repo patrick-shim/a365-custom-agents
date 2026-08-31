@@ -1,4 +1,4 @@
-# Seoul Tourist AI Teammate frontend
+# Korea Expert AI Teammate frontend
 
 This project owns the authoritative Microsoft 365 AI Teammate package boundary and the non-secret
 contract pin for the canonical shared backend route `/api/messages`. Shared runtime, MCP,
@@ -49,7 +49,7 @@ The contract pin fixes:
 
 These must match
 [`../a365-tourist-backend/contracts/frontend-backend-contract.json`](../a365-tourist-backend/contracts/frontend-backend-contract.json)
-exactly — `contractId: seoul-tourist-shared-backend`, `contractVersion: 1.0.0`, frontend
+exactly — `contractId: korea-expert-shared-backend`, `contractVersion: 1.0.0`, frontend
 `agentic-user`. This is the AI Teammate route; it is distinct from the OBO route `/api/messages/obo`,
 which uses a different audience and a configured rather than dynamic child identity. The backend
 selects the outbound credential from the incoming audience, so a mismatched pin fails

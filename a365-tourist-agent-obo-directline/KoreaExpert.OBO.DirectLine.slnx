@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/direct/">
+    <Project Path="direct/KoreaExpert.Direct/KoreaExpert.Direct.csproj" />
+  </Folder>
+  <Folder Name="/direct/tests/">
+    <Project Path="direct/tests/KoreaExpert.Direct.Tests/KoreaExpert.Direct.Tests.csproj" />
+  </Folder>
+</Solution>

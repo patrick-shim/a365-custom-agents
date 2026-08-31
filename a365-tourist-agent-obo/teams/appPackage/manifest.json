@@ -4,7 +4,7 @@
   "version": "1.0.1",
   "id": "${{TEAMS_APP_ID}}",
   "developer": {
-    "name": "Seoul Tourist Agent",
+    "name": "Korea Expert Agent",
     "websiteUrl": "https://${{DEVELOPER_DOMAIN}}",
     "privacyUrl": "https://${{DEVELOPER_DOMAIN}}/privacy",
     "termsOfUseUrl": "https://${{DEVELOPER_DOMAIN}}/terms"
@@ -18,8 +18,8 @@
     "full": "${{APP_FULL_NAME}}"
   },
   "description": {
-    "short": "Plans Seoul visits around your schedule and current local conditions.",
-    "full": "A governed Microsoft Agent Framework assistant that combines current attractions, accommodation, weather, and exchange-rate tools for practical Seoul travel planning."
+    "short": "Plans Korea travel around your schedule and current local conditions.",
+    "full": "A governed Microsoft Agent Framework assistant that combines current attractions, accommodation, weather, and exchange-rate tools for practical travel planning across Korea."
   },
   "accentColor": "#0F6CBD",
   "copilotAgents": {
@@ -47,16 +47,16 @@
           ],
           "commands": [
             {
-              "title": "Plan a day in Seoul",
+              "title": "Plan a day in Korea",
               "description": "Build an itinerary around my schedule and preferences."
             },
             {
               "title": "Check weather impact",
-              "description": "Check whether Seoul weather affects my plans."
+              "description": "Check whether local Korea weather affects my plans."
             },
             {
               "title": "Find nearby attractions",
-              "description": "Find attractions near a location in Seoul."
+              "description": "Find attractions near a location in Korea."
             }
           ]
         }

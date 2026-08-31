@@ -16,7 +16,7 @@
       "minLength": 1
     },
     "contractId": {
-      "const": "seoul-tourist-shared-backend"
+      "const": "korea-expert-shared-backend"
     },
     "contractVersion": {
       "type": "string",

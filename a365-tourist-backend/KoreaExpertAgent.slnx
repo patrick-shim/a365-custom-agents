@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/server/">
+    <Project Path="server/agent/KoreaExpert.Agent/KoreaExpert.Agent.csproj" />
+    <Project Path="server/agent-host/KoreaExpert.AgentHost/KoreaExpert.AgentHost.csproj" />
+    <Project Path="server/integrations/KoreaExpert.AzureMaps/KoreaExpert.AzureMaps.csproj" />
+    <Project Path="server/integrations/KoreaExpert.ExchangeRates/KoreaExpert.ExchangeRates.csproj" />
+    <Project Path="server/integrations/KoreaExpert.Tourism/KoreaExpert.Tourism.csproj" />
+    <Project Path="server/integrations/KoreaExpert.Weather/KoreaExpert.Weather.csproj" />
+    <Project Path="server/mcp/accommodation/KoreaExpert.Mcp.Accommodation/KoreaExpert.Mcp.Accommodation.csproj" />
+    <Project Path="server/mcp/attractions/KoreaExpert.Mcp.Attractions/KoreaExpert.Mcp.Attractions.csproj" />
+    <Project Path="server/mcp/currency/KoreaExpert.Mcp.Currency/KoreaExpert.Mcp.Currency.csproj" />
+    <Project Path="server/mcp/shared/KoreaExpert.Mcp.Hosting/KoreaExpert.Mcp.Hosting.csproj" />
+    <Project Path="server/mcp/weather/KoreaExpert.Mcp.Weather/KoreaExpert.Mcp.Weather.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/KoreaExpert.Agent.Tests/KoreaExpert.Agent.Tests.csproj" />
+    <Project Path="tests/KoreaExpert.AgentHost.Tests/KoreaExpert.AgentHost.Tests.csproj" />
+    <Project Path="tests/KoreaExpert.AzureMaps.Tests/KoreaExpert.AzureMaps.Tests.csproj" />
+    <Project Path="tests/KoreaExpert.ExchangeRates.Tests/KoreaExpert.ExchangeRates.Tests.csproj" />
+    <Project Path="tests/KoreaExpert.Mcp.Currency.Tests/KoreaExpert.Mcp.Currency.Tests.csproj" />
+    <Project Path="tests/KoreaExpert.Mcp.Hosting.Tests/KoreaExpert.Mcp.Hosting.Tests.csproj" />
+    <Project Path="tests/KoreaExpert.Tourism.Tests/KoreaExpert.Tourism.Tests.csproj" />
+    <Project Path="tests/KoreaExpert.Weather.Tests/KoreaExpert.Weather.Tests.csproj" />
+  </Folder>
+</Solution>

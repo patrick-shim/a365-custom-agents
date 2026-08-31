@@ -48,13 +48,13 @@ jobs:
 
       - name: Test Direct Line frontend
         shell: pwsh
-        run: dotnet test SeoulTourist.OBO.DirectLine.slnx --configuration Release
+        run: dotnet test KoreaExpert.OBO.DirectLine.slnx --configuration Release
 
       - name: Validate Direct Line contract pin
         shell: pwsh
         run: |
           $lock = Get-Content backend-contract.lock.json -Raw | ConvertFrom-Json
-          if ($lock.contractId -ne 'seoul-tourist-shared-backend' -or
+          if ($lock.contractId -ne 'korea-expert-shared-backend' -or
               $lock.contractVersion -ne '1.0.0' -or
               $lock.frontend -ne 'on-behalf-of' -or
               $lock.route -ne '/api/messages/obo' -or

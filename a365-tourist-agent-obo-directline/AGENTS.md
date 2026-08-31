@@ -1,4 +1,4 @@
-# Seoul Tourist OBO Direct Line Frontend Guide
+# Korea Expert OBO Direct Line Frontend Guide
 
 Read `docs/milestones/milestones.json` before work. This project contains only the Direct Line client
 and acceptance boundary for the shared OBO route.
@@ -19,8 +19,8 @@ generated manifest, or deployment asset. Secrets belong only in the current proc
 ## Commands
 
 ```powershell
-dotnet test SeoulTourist.OBO.DirectLine.slnx --configuration Release
-dotnet run --project direct/SeoulTourist.Direct
+dotnet test KoreaExpert.OBO.DirectLine.slnx --configuration Release
+dotnet run --project direct/KoreaExpert.Direct
 ```
 
 ## Active M7 status

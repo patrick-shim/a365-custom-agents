@@ -1,4 +1,4 @@
-# Seoul Tourist OBO Teams Frontend Guide
+# Korea Expert OBO Teams Frontend Guide
 
 Read `docs/milestones/milestones.json` before work. This project contains only the OBO Teams channel
 boundary for the shared backend.

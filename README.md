@@ -1,6 +1,6 @@
-# Seoul Tourist Agent workspace
+# Korea Expert Agent workspace
 
-This monorepo is the source boundary for one shared Seoul Tourist backend and three channel-only
+This monorepo is the source boundary for one shared Korea Expert backend and three channel-only
 frontends. The backend is deployed once; each frontend owns only its channel contract, package or
 client, and acceptance workflow.
 
@@ -22,7 +22,7 @@ separate child Agent Identities, token audiences, packages, session keys, and CL
 | `on-behalf-of` | `/api/messages/obo` | `TokenValidation__Audiences__OnBehalfOf` | `configured-obo-child-agent-identity` |
 
 OBO Teams and OBO Direct Line both reach the same `/api/messages/obo` route. Direct Line arrives
-through an OBO Azure Bot using Direct Line v3 and the `seoul-tourist-obo` OAuth connection; Teams
+through an OBO Azure Bot using Direct Line v3 and the `korea-expert-obo` OAuth connection; Teams
 arrives through its published package. Because they share a route, audience, and child identity, they
 also share DLP behavior — but each still owns its own acceptance evidence.
 
@@ -33,7 +33,7 @@ root [.gitignore](.gitignore).
 ## Contract alignment
 
 [`a365-tourist-backend/contracts/frontend-backend-contract.json`](a365-tourist-backend/contracts/frontend-backend-contract.json)
-is the authoritative, non-secret integration contract — `contractId: seoul-tourist-shared-backend`,
+is the authoritative, non-secret integration contract — `contractId: korea-expert-shared-backend`,
 `contractVersion: 1.0.0`. It declares both frontend bindings, the three health endpoints
 (`/api/health`, `/api/health/live`, `/api/health/ready`), and the MCP boundary: four services,
 streamable-HTTP transport, delegated `Mcp.Invoke` authorization.
@@ -82,7 +82,7 @@ cd a365-tourist-backend
 ./tools/Test-Repository.ps1 -Strict -OutputFormat Json
 
 cd ../a365-tourist-agent-obo-directline
-dotnet test SeoulTourist.OBO.DirectLine.slnx --configuration Release
+dotnet test KoreaExpert.OBO.DirectLine.slnx --configuration Release
 ```
 
 `Invoke-LocalCi.ps1` runs 11 gates: tool self-test, build, solution tests, three host health probes,

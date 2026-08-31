@@ -45,7 +45,7 @@ param agent365AgentPrincipalIds Agent365AgentPrincipalIds = {
   onBehalfOf: ''
 }
 param oboChannelAppId string = ''
-param oboOAuthConnectionName string = 'seoul-tourist-obo'
+param oboOAuthConnectionName string = 'korea-expert-obo'
 
 @secure()
 param ktoServiceKey string = ''
@@ -62,7 +62,7 @@ param koreaEximbankAuthKey string = ''
 @secure()
 param forexRateApiKey string = ''
 
-var resourceGroupName = 'rg-seoultour-dev-kc-ae23'
+var resourceGroupName = 'rg-koreaexpert-dev-kc-ae23'
 var tags = {
   'app-onboard-skill': 'true'
   'app-onboard-session-id': sessionId
@@ -87,7 +87,7 @@ module logAnalytics './modules/log-analytics.bicep' = {
   name: 'log-analytics'
   scope: resourceGroup
   params: {
-    workspaceName: 'log-seoultour-dev-kc-ae23'
+    workspaceName: 'log-koreaexpert-dev-kc-ae23'
     location: location
     tags: tags
   }
@@ -97,7 +97,7 @@ module applicationInsights './modules/application-insights.bicep' = {
   name: 'application-insights'
   scope: resourceGroup
   params: {
-    componentName: 'appi-seoultour-dev-kc-ae23'
+    componentName: 'appi-koreaexpert-dev-kc-ae23'
     location: location
     workspaceResourceId: logAnalytics.outputs.id
     tags: tags
@@ -108,7 +108,7 @@ module containerRegistry './modules/container-registry.bicep' = {
   name: 'container-registry'
   scope: resourceGroup
   params: {
-    registryName: 'crseoultourdevkcae23'
+    registryName: 'crkoreaexpertdevkcae23'
     location: location
     workspaceResourceId: logAnalytics.outputs.id
     tags: tags
@@ -119,7 +119,7 @@ module keyVault './modules/key-vault.bicep' = {
   name: 'key-vault'
   scope: resourceGroup
   params: {
-    vaultName: 'kv-seoultour-dev-kc-ae23'
+    vaultName: 'kv-koreaexpert-dev-kc-ae23'
     location: location
     tenantId: tenantId
     workspaceResourceId: logAnalytics.outputs.id
@@ -141,9 +141,9 @@ module containerAppEnvironment './modules/container-app-environment.bicep' = {
   name: 'container-app-environment'
   scope: resourceGroup
   params: {
-    environmentName: 'cae-seoultour-dev-kc-ae23'
+    environmentName: 'cae-koreaexpert-dev-kc-ae23'
     location: location
-    workspaceName: 'log-seoultour-dev-kc-ae23'
+    workspaceName: 'log-koreaexpert-dev-kc-ae23'
     tags: tags
   }
   dependsOn: [
@@ -155,7 +155,7 @@ module azureMaps './modules/azure-maps.bicep' = {
   name: 'azure-maps'
   scope: resourceGroup
   params: {
-    accountName: 'maps-seoultour-dev-kc-ae23'
+    accountName: 'maps-koreaexpert-dev-kc-ae23'
     tags: tags
   }
 }
@@ -164,7 +164,7 @@ module hostManagedIdentity './modules/host-managed-identity.bicep' = {
   name: 'host-managed-identity'
   scope: resourceGroup
   params: {
-    identityName: 'id-agent-seoultour-dev-kc-ae23'
+    identityName: 'id-agent-koreaexpert-dev-kc-ae23'
     location: location
     tags: tags
   }
@@ -174,7 +174,7 @@ module attractionsManagedIdentity './modules/attractions-managed-identity.bicep'
   name: 'attractions-managed-identity'
   scope: resourceGroup
   params: {
-    identityName: 'id-attract-seoultour-dev-kc-ae23'
+    identityName: 'id-attract-koreaexpert-dev-kc-ae23'
     location: location
     tags: tags
   }
@@ -184,7 +184,7 @@ module weatherManagedIdentity './modules/weather-managed-identity.bicep' = {
   name: 'weather-managed-identity'
   scope: resourceGroup
   params: {
-    identityName: 'id-weather-seoultour-dev-kc-ae23'
+    identityName: 'id-weather-koreaexpert-dev-kc-ae23'
     location: location
     tags: tags
   }
@@ -194,7 +194,7 @@ module accommodationManagedIdentity './modules/accommodation-managed-identity.bi
   name: 'accommodation-managed-identity'
   scope: resourceGroup
   params: {
-    identityName: 'id-stay-seoultour-dev-kc-ae23'
+    identityName: 'id-stay-koreaexpert-dev-kc-ae23'
     location: location
     tags: tags
   }
@@ -204,7 +204,7 @@ module currencyManagedIdentity './modules/currency-managed-identity.bicep' = {
   name: 'currency-managed-identity'
   scope: resourceGroup
   params: {
-    identityName: 'id-fx-seoultour-dev-kc-ae23'
+    identityName: 'id-fx-koreaexpert-dev-kc-ae23'
     location: location
     tags: tags
   }
@@ -214,7 +214,7 @@ module foundryResource './modules/foundry-resource.bicep' = {
   name: 'foundry-resource'
   scope: resourceGroup
   params: {
-    accountName: 'fdy-seoultour-dev-kc-ae23'
+    accountName: 'fdy-koreaexpert-dev-kc-ae23'
     location: location
     tags: tags
   }
@@ -224,8 +224,8 @@ module foundryProject './modules/foundry-project.bicep' = {
   name: 'foundry-project'
   scope: resourceGroup
   params: {
-    accountName: 'fdy-seoultour-dev-kc-ae23'
-    projectName: 'proj-seoultour-dev-kc-ae23'
+    accountName: 'fdy-koreaexpert-dev-kc-ae23'
+    projectName: 'proj-koreaexpert-dev-kc-ae23'
     location: location
     tags: tags
   }
@@ -238,7 +238,7 @@ module foundryModelDeployment './modules/foundry-model-deployment.bicep' = {
   name: 'foundry-model-deployment'
   scope: resourceGroup
   params: {
-    accountName: 'fdy-seoultour-dev-kc-ae23'
+    accountName: 'fdy-koreaexpert-dev-kc-ae23'
     deploymentName: 'gpt-5.6-sol'
     tags: tags
   }
@@ -251,8 +251,8 @@ module mcpApiApplication './modules/mcp-api-application.bicep' = {
   name: 'mcp-api-application'
   scope: resourceGroup
   params: {
-    applicationName: 'api-seoultour-dev-kc-ae23'
-    displayName: 'api-seoultour-dev-kc-ae23'
+    applicationName: 'api-koreaexpert-dev-kc-ae23'
+    displayName: 'api-koreaexpert-dev-kc-ae23'
     tenantId: tenantId
     graphTags: graphTags
   }
@@ -262,10 +262,10 @@ module roleAssignments './modules/role-assignments.bicep' = {
   name: 'role-assignments'
   scope: resourceGroup
   params: {
-    registryName: 'crseoultourdevkcae23'
-    vaultName: 'kv-seoultour-dev-kc-ae23'
-    mapsAccountName: 'maps-seoultour-dev-kc-ae23'
-    foundryAccountName: 'fdy-seoultour-dev-kc-ae23'
+    registryName: 'crkoreaexpertdevkcae23'
+    vaultName: 'kv-koreaexpert-dev-kc-ae23'
+    mapsAccountName: 'maps-koreaexpert-dev-kc-ae23'
+    foundryAccountName: 'fdy-koreaexpert-dev-kc-ae23'
     deployerObjectId: deployerObjectId
     hostPrincipalId: hostManagedIdentity.outputs.principalId
     attractionsPrincipalId: attractionsManagedIdentity.outputs.principalId
@@ -289,7 +289,7 @@ module attractionsMcpContainerApp './modules/attractions-mcp-container-app.bicep
   name: 'attractions-mcp-container-app'
   scope: resourceGroup
   params: {
-    appName: 'ca-attract-seoultour-dev-kc-ae23'
+    appName: 'ca-attract-koreaexpert-dev-kc-ae23'
     location: location
     environmentId: containerAppEnvironment.outputs.id
     managedIdentityResourceId: attractionsManagedIdentity.outputs.id
@@ -311,7 +311,7 @@ module weatherMcpContainerApp './modules/weather-mcp-container-app.bicep' = {
   name: 'weather-mcp-container-app'
   scope: resourceGroup
   params: {
-    appName: 'ca-weather-seoultour-dev-kc-ae23'
+    appName: 'ca-weather-koreaexpert-dev-kc-ae23'
     location: location
     environmentId: containerAppEnvironment.outputs.id
     managedIdentityResourceId: weatherManagedIdentity.outputs.id
@@ -331,7 +331,7 @@ module accommodationMcpContainerApp './modules/accommodation-mcp-container-app.b
   name: 'accommodation-mcp-container-app'
   scope: resourceGroup
   params: {
-    appName: 'ca-stay-seoultour-dev-kc-ae23'
+    appName: 'ca-stay-koreaexpert-dev-kc-ae23'
     location: location
     environmentId: containerAppEnvironment.outputs.id
     managedIdentityResourceId: accommodationManagedIdentity.outputs.id
@@ -353,7 +353,7 @@ module currencyMcpContainerApp './modules/currency-mcp-container-app.bicep' = {
   name: 'currency-mcp-container-app'
   scope: resourceGroup
   params: {
-    appName: 'ca-fx-seoultour-dev-kc-ae23'
+    appName: 'ca-fx-koreaexpert-dev-kc-ae23'
     location: location
     environmentId: containerAppEnvironment.outputs.id
     managedIdentityResourceId: currencyManagedIdentity.outputs.id
@@ -373,7 +373,7 @@ module agentHostContainerApp './modules/agent-host-container-app.bicep' = {
   name: 'agent-host-container-app'
   scope: resourceGroup
   params: {
-    appName: 'ca-agent-seoultour-dev-kc-ae23'
+    appName: 'ca-agent-koreaexpert-dev-kc-ae23'
     location: location
     environmentId: containerAppEnvironment.outputs.id
     managedIdentityResourceId: hostManagedIdentity.outputs.id
@@ -410,9 +410,9 @@ output mcpApiApplicationId string = mcpApiApplication.outputs.applicationId
 output mcpApiAudience string = mcpApiApplication.outputs.audience
 output mcpDelegatedScope string = mcpApiApplication.outputs.delegatedScope
 output applicationImageRepositories object = {
-  agentHost: '${containerRegistry.outputs.loginServer}/seoul-tourist-agent'
-  attractions: '${containerRegistry.outputs.loginServer}/seoul-tourist-attractions'
-  weather: '${containerRegistry.outputs.loginServer}/seoul-tourist-weather'
-  accommodation: '${containerRegistry.outputs.loginServer}/seoul-tourist-accommodation'
-  currency: '${containerRegistry.outputs.loginServer}/seoul-tourist-currency'
+  agentHost: '${containerRegistry.outputs.loginServer}/korea-expert-agent'
+  attractions: '${containerRegistry.outputs.loginServer}/korea-expert-attractions'
+  weather: '${containerRegistry.outputs.loginServer}/korea-expert-weather'
+  accommodation: '${containerRegistry.outputs.loginServer}/korea-expert-accommodation'
+  currency: '${containerRegistry.outputs.loginServer}/korea-expert-currency'
 }

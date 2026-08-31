@@ -1,4 +1,4 @@
-# Seoul Tourist OBO Direct Line frontend
+# Korea Expert OBO Direct Line frontend
 
 This project owns the Direct Line console client, focused tests, and synthetic SIT list for the
 canonical shared backend route `/api/messages/obo`. It contains no Teams package, Agent 365 CLI
@@ -16,7 +16,7 @@ OBO Teams lives in `../a365-tourist-agent-obo`, AI Teammate lives in
 
 `backend-contract.lock.json` must match
 [`../a365-tourist-backend/contracts/frontend-backend-contract.json`](../a365-tourist-backend/contracts/frontend-backend-contract.json)
-exactly — `contractId: seoul-tourist-shared-backend`, `contractVersion: 1.0.0`, frontend
+exactly — `contractId: korea-expert-shared-backend`, `contractVersion: 1.0.0`, frontend
 `on-behalf-of`. It is non-secret source and is expected to be committed. This project and the OBO
 Teams package share that route, that audience, and that child Agent Identity, so they share backend
 DLP behavior — but not acceptance evidence, because the channel and token path differ.
@@ -28,17 +28,17 @@ pins, and documentation.
 
 | Path | Purpose |
 | --- | --- |
-| `SeoulTourist.OBO.DirectLine.slnx` | XML-format solution covering the client and its tests |
+| `KoreaExpert.OBO.DirectLine.slnx` | XML-format solution covering the client and its tests |
 | `global.json` | .NET SDK pin |
 | `Directory.Build.props`, `Directory.Packages.props` | Shared build settings and central package versions |
-| `direct/SeoulTourist.Direct/Program.cs` | Entry point and argument dispatch |
-| `direct/SeoulTourist.Direct/DirectClientOptions.cs` | Command-line and environment option parsing/validation |
-| `direct/SeoulTourist.Direct/DirectLineClient.cs` | Direct Line v3 transport, token renewal, activity polling |
-| `direct/SeoulTourist.Direct/DirectLineModels.cs` | Wire models for conversations, activities, and OAuth cards |
-| `direct/SeoulTourist.Direct/ConsoleConversation.cs` | Interactive loop, OAuth card handling, SIT sequencing |
-| `direct/SeoulTourist.Direct/SensitivePromptList.cs` | Loading and validation of the synthetic SIT list |
+| `direct/KoreaExpert.Direct/Program.cs` | Entry point and argument dispatch |
+| `direct/KoreaExpert.Direct/DirectClientOptions.cs` | Command-line and environment option parsing/validation |
+| `direct/KoreaExpert.Direct/DirectLineClient.cs` | Direct Line v3 transport, token renewal, activity polling |
+| `direct/KoreaExpert.Direct/DirectLineModels.cs` | Wire models for conversations, activities, and OAuth cards |
+| `direct/KoreaExpert.Direct/ConsoleConversation.cs` | Interactive loop, OAuth card handling, SIT sequencing |
+| `direct/KoreaExpert.Direct/SensitivePromptList.cs` | Loading and validation of the synthetic SIT list |
 | `direct/sensitive-information-type-test.json` | Default synthetic SIT list — synthetic data only |
-| `direct/tests/SeoulTourist.Direct.Tests/` | Three test classes: conversation, client, prompt list |
+| `direct/tests/KoreaExpert.Direct.Tests/` | Three test classes: conversation, client, prompt list |
 | `docs/configuration.md`, `docs/milestones/` | Configuration guide, milestone JSON, schema, M7 record |
 
 The local `client_key.key` is covered by `.gitignore` and must never be staged. Credential patterns
@@ -55,11 +55,11 @@ lock file against the backend contract and both sibling frontends.
 ## Validate and run
 
 ```powershell
-dotnet test SeoulTourist.OBO.DirectLine.slnx --configuration Release
-dotnet run --project direct/SeoulTourist.Direct
+dotnet test KoreaExpert.OBO.DirectLine.slnx --configuration Release
+dotnet run --project direct/KoreaExpert.Direct
 ```
 
-Set `SEOUL_TOURIST_DIRECT_LINE_SECRET` only in the current process and remove it afterward. Never put
+Set `KOREA_EXPERT_DIRECT_LINE_SECRET` only in the current process and remove it afterward. Never put
 the secret or a private key in source, arguments, shell history, logs, or configuration files. See
 [configuration](docs/configuration.md) and the [client guide](direct/README.md).
 

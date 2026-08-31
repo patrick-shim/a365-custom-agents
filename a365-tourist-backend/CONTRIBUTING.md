@@ -6,8 +6,8 @@ milestone and preserve the repository boundaries.
 Required local checks:
 
 ```powershell
-dotnet build SeoulTouristAgent.slnx
-dotnet test SeoulTouristAgent.slnx
+dotnet build KoreaExpertAgent.slnx
+dotnet test KoreaExpertAgent.slnx
 ./tools/Invoke-Validation.ps1
 ./tools/Invoke-LocalCi.ps1
 ./tools/tests/Invoke-ToolsSelfTest.ps1

@@ -1,4 +1,4 @@
-# Seoul Tourist Shared Backend Guide
+# Korea Expert Shared Backend Guide
 
 Read `docs/milestones/milestones.json` before any work and stay within the active milestone. Use
 repository-contained architecture, configuration, deployment, and validation guidance as the source
@@ -33,11 +33,11 @@ agent never references Teams or provider implementations.
 ## Commands
 
 ```powershell
-dotnet build SeoulTouristAgent.slnx --configuration Release
-dotnet test SeoulTouristAgent.slnx --configuration Release
+dotnet build KoreaExpertAgent.slnx --configuration Release
+dotnet test KoreaExpertAgent.slnx --configuration Release
 ./tools/Invoke-LocalCi.ps1 -OutputFormat Json
 ./tools/Test-Repository.ps1 -Strict -OutputFormat Json
-dotnet run --project server/agent-host/SeoulTourist.AgentHost --launch-profile Playground
+dotnet run --project server/agent-host/KoreaExpert.AgentHost --launch-profile Playground
 ```
 
 PowerShell validation is offline/read-only unless an online switch is explicit. When a tools

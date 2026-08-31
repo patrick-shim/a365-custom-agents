@@ -9,7 +9,7 @@ issue, log query, or evidence file.
 ```powershell
 Invoke-WebRequest http://127.0.0.1:<port>/api/health/live -UseBasicParsing
 Invoke-WebRequest http://127.0.0.1:<port>/api/health/ready -UseBasicParsing
-dotnet test SeoulTouristAgent.slnx
+dotnet test KoreaExpertAgent.slnx
 ./tools/Invoke-Validation.ps1 -OutputFormat Json
 ```
 
