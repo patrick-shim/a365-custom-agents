@@ -1,0 +1,23 @@
+# yaml-language-server: $schema=https://aka.ms/m365-agents-toolkits/v1.9/yaml.schema.json
+version: v1.9
+
+environmentFolderPath: ./env
+
+# Agent 365 owns identity, permissions, endpoint registration, and publication.
+# Agents Toolkit only validates and packages the thin Teams channel manifest.
+# The tracked obo environment names the Custom Engine Agent output with TEAMSFX_ENV.
+provision:
+  - uses: teamsApp/validateManifest
+    with:
+      manifestPath: ./appPackage/manifest.json
+
+  - uses: teamsApp/zipAppPackage
+    with:
+      manifestPath: ./appPackage/manifest.json
+      outputZipPath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+      outputFolder: ./appPackage/build
+
+  - uses: teamsApp/validateAppPackage
+    with:
+      appPackagePath: ./appPackage/build/appPackage.${{TEAMSFX_ENV}}.zip
+projectId: b85cd894-dc19-421d-bda9-f4d19b8e4097

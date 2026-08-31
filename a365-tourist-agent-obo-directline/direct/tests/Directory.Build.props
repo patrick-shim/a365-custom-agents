@@ -1,0 +1,6 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)..\..\Directory.Build.props" />
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)TestAssemblyInfo.cs" Link="TestAssemblyInfo.cs" />
+  </ItemGroup>
+</Project>

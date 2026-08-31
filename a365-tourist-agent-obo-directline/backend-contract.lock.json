@@ -1,0 +1,8 @@
+{
+  "contractId": "seoul-tourist-shared-backend",
+  "contractVersion": "1.0.0",
+  "frontend": "on-behalf-of",
+  "route": "/api/messages/obo",
+  "audienceConfiguration": "TokenValidation__Audiences__OnBehalfOf",
+  "identityBinding": "configured-obo-child-agent-identity"
+}

@@ -1,0 +1,78 @@
+name: OBO Teams Frontend CI
+
+"on":
+  push:
+    paths:
+      - "a365-tourist-agent-obo/**"
+      - ".github/workflows/obo-teams-ci.yml"
+  pull_request:
+    paths:
+      - "a365-tourist-agent-obo/**"
+      - ".github/workflows/obo-teams-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: a365-tourist-agent-obo
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate OBO Teams contract pin and manifest
+        shell: pwsh
+        run: |
+          $lock = Get-Content backend-contract.lock.json -Raw | ConvertFrom-Json
+          if ($lock.contractId -ne 'seoul-tourist-shared-backend' -or
+              $lock.contractVersion -ne '1.0.0' -or
+              $lock.frontend -ne 'on-behalf-of' -or
+              $lock.route -ne '/api/messages/obo' -or
+              $lock.audienceConfiguration -ne 'TokenValidation__Audiences__OnBehalfOf' -or
+              $lock.identityBinding -ne 'configured-obo-child-agent-identity') {
+            throw 'Invalid OBO backend contract pin.'
+          }
+          $manifest = Get-Content teams/appPackage/manifest.json -Raw | ConvertFrom-Json
+          if (@($manifest.copilotAgents.customEngineAgents).Count -ne 1) {
+            throw 'OBO Teams manifest must contain one Custom Engine Agent.'
+          }
+          if (@($manifest.bots).Count -ne 1) {
+            throw 'OBO Teams manifest must contain one bot.'
+          }
+          $bot = @($manifest.bots)[0]
+          $agent = @($manifest.copilotAgents.customEngineAgents)[0]
+          if ($agent.type -ne 'bot' -or $agent.id -ne $bot.botId) {
+            throw 'Custom Engine Agent and bot IDs must align.'
+          }
+          if ($manifest.webApplicationInfo.id -ne $bot.botId -or
+              $manifest.webApplicationInfo.resource -ne "api://botid-$($bot.botId)") {
+            throw 'Bot and web application identity fields must align.'
+          }
+          if (@($bot.scopes) -notcontains 'copilot' -or @($bot.scopes) -notcontains 'personal') {
+            throw 'OBO bot must support Copilot and personal scopes.'
+          }
+          if (@($manifest.validDomains) -notcontains 'token.botframework.com' -or
+              @($manifest.validDomains) -notcontains 'login.microsoftonline.com') {
+            throw 'OBO manifest is missing required authentication domains.'
+          }
+
+      - name: Reject committed OBO operational state
+        shell: pwsh
+        run: |
+          $forbidden = @(
+            '.a365',
+            '.config',
+            'teams/appPackage/build',
+            'teams/env/.env.dev',
+            'teams/env/.env.obo',
+            'teams/env/.env.obo.user'
+          ) | Where-Object { Test-Path $_ }
+          if ($forbidden.Count -gt 0) {
+            throw "Protected OBO operational state is committed: $($forbidden -join ', ')"
+          }

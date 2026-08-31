@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/server/">
+    <Project Path="server/agent/SeoulTourist.Agent/SeoulTourist.Agent.csproj" />
+    <Project Path="server/agent-host/SeoulTourist.AgentHost/SeoulTourist.AgentHost.csproj" />
+    <Project Path="server/integrations/SeoulTourist.AzureMaps/SeoulTourist.AzureMaps.csproj" />
+    <Project Path="server/integrations/SeoulTourist.ExchangeRates/SeoulTourist.ExchangeRates.csproj" />
+    <Project Path="server/integrations/SeoulTourist.Tourism/SeoulTourist.Tourism.csproj" />
+    <Project Path="server/integrations/SeoulTourist.Weather/SeoulTourist.Weather.csproj" />
+    <Project Path="server/mcp/accommodation/SeoulTourist.Mcp.Accommodation/SeoulTourist.Mcp.Accommodation.csproj" />
+    <Project Path="server/mcp/attractions/SeoulTourist.Mcp.Attractions/SeoulTourist.Mcp.Attractions.csproj" />
+    <Project Path="server/mcp/currency/SeoulTourist.Mcp.Currency/SeoulTourist.Mcp.Currency.csproj" />
+    <Project Path="server/mcp/shared/SeoulTourist.Mcp.Hosting/SeoulTourist.Mcp.Hosting.csproj" />
+    <Project Path="server/mcp/weather/SeoulTourist.Mcp.Weather/SeoulTourist.Mcp.Weather.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SeoulTourist.Agent.Tests/SeoulTourist.Agent.Tests.csproj" />
+    <Project Path="tests/SeoulTourist.AgentHost.Tests/SeoulTourist.AgentHost.Tests.csproj" />
+    <Project Path="tests/SeoulTourist.AzureMaps.Tests/SeoulTourist.AzureMaps.Tests.csproj" />
+    <Project Path="tests/SeoulTourist.ExchangeRates.Tests/SeoulTourist.ExchangeRates.Tests.csproj" />
+    <Project Path="tests/SeoulTourist.Mcp.Currency.Tests/SeoulTourist.Mcp.Currency.Tests.csproj" />
+    <Project Path="tests/SeoulTourist.Mcp.Hosting.Tests/SeoulTourist.Mcp.Hosting.Tests.csproj" />
+    <Project Path="tests/SeoulTourist.Tourism.Tests/SeoulTourist.Tourism.Tests.csproj" />
+    <Project Path="tests/SeoulTourist.Weather.Tests/SeoulTourist.Weather.Tests.csproj" />
+  </Folder>
+</Solution>

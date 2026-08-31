@@ -1,0 +1,37 @@
+{
+  "$schema": "./milestones.schema.json",
+  "protocolVersion": 1,
+  "currentMilestone": "M7",
+  "milestones": [
+    {
+      "id": "M7",
+      "name": "OBO Direct Line end-to-end production alignment",
+      "status": "active",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": true,
+      "scope": [
+        "preserve the completed standalone Direct Line frontend extraction",
+        "eliminate all unexplained Direct Line client, route, audience, OAuth, token-renewal, Purview, and acceptance drift from the canonical backend contract",
+        "validate the Direct Line client and /api/messages/obo contract against the shared deployed backend",
+        "run bounded synthetic Purview DLP acceptance for approved credit-card, Korean passport, and Korean resident-registration cases",
+        "prove live Direct Line authentication, token renewal, governed responses, and shared-backend compatibility"
+      ],
+      "prohibited": [
+        "copying, moving, deleting, or hand-editing OBO Teams packages, .a365 state, .config state, generated manifests, identities, secrets, or tenant-bound evidence",
+        "recreating server, infra, shared tests, tools, Docker, or backend deployment files",
+        "changing /api/messages/obo, its audience, Blueprint ownership, the OBO child identity, consent, Purview, or Insider Risk Management policy without a reviewed dry run, rollback boundary, and explicit approval",
+        "tenant or policy mutation without a successful reviewed dry run and explicit approval",
+        "using real personal, financial, passport, or resident-registration data in validation",
+        "placing the Direct Line secret in source, arguments, shell history, logs, or configuration files"
+      ],
+      "acceptanceEvidence": [
+        "the Direct Line solution and focused tests pass from this frontend root",
+        "the Direct Line client, contract pin, live OBO route, audience, authentication, and policy behavior have no unexplained drift",
+        "the Direct Line contract pin validates structurally",
+        "the Direct Line frontend contains no Teams package, Agent 365 operational state, backend source, or deployment residue",
+        "a live OBO Direct Line conversation authenticates and responds through /api/messages/obo without repeated sign-in",
+        "approved synthetic SIT cases produce the configured Purview policy outcome before model access without exposing values"
+      ]
+    }
+  ]
+}

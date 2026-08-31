@@ -1,0 +1,56 @@
+name: Frontend Contract Alignment
+
+"on":
+  push:
+    paths:
+      - "a365-tourist-backend/contracts/**"
+      - "a365-tourist-agent-obo/backend-contract.lock.json"
+      - "a365-tourist-agent-obo-directline/backend-contract.lock.json"
+      - "a365-tourist-agent-teammate/backend-contract.lock.json"
+      - ".github/workflows/contract-alignment-ci.yml"
+  pull_request:
+    paths:
+      - "a365-tourist-backend/contracts/**"
+      - "a365-tourist-agent-obo/backend-contract.lock.json"
+      - "a365-tourist-agent-obo-directline/backend-contract.lock.json"
+      - "a365-tourist-agent-teammate/backend-contract.lock.json"
+      - ".github/workflows/contract-alignment-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compare frontend locks with canonical backend contract
+        shell: pwsh
+        run: |
+          $contract = Get-Content a365-tourist-backend/contracts/frontend-backend-contract.json -Raw | ConvertFrom-Json
+          $pins = @(
+            @{ Path = 'a365-tourist-agent-obo/backend-contract.lock.json'; Frontend = 'on-behalf-of' },
+            @{ Path = 'a365-tourist-agent-obo-directline/backend-contract.lock.json'; Frontend = 'on-behalf-of' },
+            @{ Path = 'a365-tourist-agent-teammate/backend-contract.lock.json'; Frontend = 'agentic-user' }
+          )
+
+          foreach ($pin in $pins) {
+            $lock = Get-Content $pin.Path -Raw | ConvertFrom-Json
+            $expected = @($contract.frontends | Where-Object name -eq $pin.Frontend)
+            if ($expected.Count -ne 1) {
+              throw "Canonical contract must contain exactly one '$($pin.Frontend)' frontend."
+            }
+            $expected = $expected[0]
+            if ($lock.contractId -ne $contract.contractId -or
+                $lock.contractVersion -ne $contract.contractVersion -or
+                $lock.frontend -ne $expected.name -or
+                $lock.route -ne $expected.route -or
+                $lock.audienceConfiguration -ne $expected.audienceConfiguration -or
+                $lock.identityBinding -ne $expected.identityBinding) {
+              throw "Frontend lock '$($pin.Path)' does not match the canonical backend contract."
+            }
+          }

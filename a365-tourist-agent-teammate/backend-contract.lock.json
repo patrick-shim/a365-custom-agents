@@ -1,0 +1,8 @@
+{
+  "contractId": "seoul-tourist-shared-backend",
+  "contractVersion": "1.0.0",
+  "frontend": "agentic-user",
+  "route": "/api/messages",
+  "audienceConfiguration": "TokenValidation__Audiences__AgenticUser",
+  "identityBinding": "dynamic-child-agent-identity"
+}

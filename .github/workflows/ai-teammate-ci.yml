@@ -1,0 +1,67 @@
+name: AI Teammate Frontend CI
+
+"on":
+  push:
+    paths:
+      - "a365-tourist-agent-teammate/**"
+      - ".github/workflows/ai-teammate-ci.yml"
+  pull_request:
+    paths:
+      - "a365-tourist-agent-teammate/**"
+      - ".github/workflows/ai-teammate-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: a365-tourist-agent-teammate
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate frontend contract pin
+        shell: pwsh
+        run: |
+          $lock = Get-Content backend-contract.lock.json -Raw | ConvertFrom-Json
+          if ($lock.contractId -ne 'seoul-tourist-shared-backend' -or
+              $lock.contractVersion -ne '1.0.0' -or
+              $lock.frontend -ne 'agentic-user' -or
+              $lock.route -ne '/api/messages' -or
+              $lock.audienceConfiguration -ne 'TokenValidation__Audiences__AgenticUser' -or
+              $lock.identityBinding -ne 'dynamic-child-agent-identity') {
+            throw 'Invalid AI Teammate backend contract pin.'
+          }
+          $sdk = Get-Content global.json -Raw | ConvertFrom-Json
+          if ($sdk.sdk.version -ne '10.0.110' -or $sdk.sdk.allowPrerelease -ne $false) {
+            throw 'Invalid AI Teammate .NET SDK pin.'
+          }
+
+      - name: Reject committed Agent 365 operational state
+        shell: pwsh
+        run: |
+          $forbidden = @(
+            'a365.config.json',
+            'a365.generated.config.json',
+            '.a365-workspace-detection.local.json',
+            '.a365',
+            '.azure',
+            '.copilot-azure',
+            '.config',
+            'manifest',
+            'manifest.zip',
+            'ToolingManifest.json',
+            '*.key',
+            '*.pem',
+            '*.pfx',
+            '*.p12'
+          ) | Where-Object { Test-Path $_ }
+          if ($forbidden.Count -gt 0) {
+            throw "Protected Agent 365 operational state is committed: $($forbidden -join ', ')"
+          }
