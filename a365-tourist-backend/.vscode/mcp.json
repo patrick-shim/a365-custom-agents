@@ -1,0 +1,20 @@
+{
+  "servers": {
+    "japan-attractions": {
+      "type": "http",
+      "url": "http://localhost:3981/mcp"
+    },
+    "japan-weather": {
+      "type": "http",
+      "url": "http://localhost:3982/mcp"
+    },
+    "japan-accommodation": {
+      "type": "http",
+      "url": "http://localhost:3983/mcp"
+    },
+    "japan-currency": {
+      "type": "http",
+      "url": "http://localhost:3984/mcp"
+    }
+  }
+}

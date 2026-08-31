@@ -1,0 +1,11 @@
+{
+  "contractId": "japan-expert-shared-backend",
+  "contractVersion": "2.0.0",
+  "productName": "Japan Expert",
+  "defaultTimeZone": "Asia/Tokyo",
+  "defaultCurrency": "JPY",
+  "frontend": "on-behalf-of",
+  "route": "/api/messages/obo",
+  "audienceConfiguration": "TokenValidation__Audiences__OnBehalfOf",
+  "identityBinding": "configured-obo-child-agent-identity"
+}

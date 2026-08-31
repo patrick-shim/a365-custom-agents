@@ -1,0 +1,65 @@
+{
+  "$schema": "./milestones.schema.json",
+  "protocolVersion": 1,
+  "currentMilestone": "M8",
+  "milestones": [
+    {
+      "id": "M7",
+      "name": "OBO Teams end-to-end production alignment",
+      "status": "blocked",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": true,
+      "scope": [
+        "preserve the completed OBO Teams frontend extraction and protected operational state",
+        "eliminate all unexplained OBO Teams package, endpoint, route, audience, authentication, and installed-channel drift from the canonical backend contract",
+        "validate the Teams package and /api/messages/obo contract against the shared deployed backend",
+        "rehydrate, validate, publish, or install the OBO Teams package only through approved CLI-owned workflows when required",
+        "prove live OBO Teams authentication, governed responses, Purview enforcement, and shared-backend compatibility"
+      ],
+      "prohibited": [
+        "recreating server, infra, shared tests, tools, Docker, or backend deployment files",
+        "copying, hand-editing, committing, or deleting .a365 state, .config state, generated manifests, packages, identities, secrets, or tenant-bound evidence",
+        "publishing generated historical build output instead of using the approved source and CLI workflow",
+        "changing /api/messages/obo, its audience, the shared Blueprint, the OBO child identity, consent, or package registration without a reviewed dry run, rollback boundary, and explicit approval",
+        "tenant mutation or package publication without a successful reviewed dry run and explicit approval"
+      ],
+      "acceptanceEvidence": [
+        "the OBO tree contains no backend source or deployment residue",
+        "the source package, approved CLI-produced package, installed channel, and live backend contract have no unexplained drift",
+        "the OBO tree contains no Direct Line solution or Direct Line source",
+        "the OBO contract pin and CLI-produced Teams package validate structurally",
+        "the installed OBO Teams package targets /api/messages/obo with the configured OBO audience",
+        "a live OBO Teams conversation passes authentication, governed response, Purview, and sanitized observability checks against the same backend revision as Direct Line"
+      ]
+    },
+    {
+      "id": "M8",
+      "name": "Japan Expert OBO Teams clean registration",
+      "status": "active",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": true,
+      "scope": [
+        "preserve the OBO Teams-only ownership boundary and /api/messages/obo contract",
+        "rename the source Teams package and current documentation to Japan Expert",
+        "replace source-owned package icons with approved Japanese-flag color and outline assets",
+        "prepare a clean owner-scoped Agent 365 and Teams workflow for the new Japan Expert OBO child and channel application without reusing Seoul operational state",
+        "publish and install only after a reviewed dry run, rollback boundary, and separate explicit approval",
+        "prove live Japan Expert OBO Teams authentication, governed response, Purview, MCP, observability, and shared-backend compatibility"
+      ],
+      "prohibited": [
+        "recreating backend, Direct Line, shared tests, infrastructure, tools, Docker, or deployment files",
+        "inspecting, copying, hand-editing, committing, or deleting .a365, .config, tenant environment, generated manifest, package, identity, secret, or tenant-bound evidence",
+        "reusing the Seoul Blueprint, OBO child, channel application, endpoint registration, generated package, or installation as Japan Expert authority",
+        "changing /api/messages/obo or the two-child architecture",
+        "tenant mutation, package publication, or installation before a successful reviewed dry run, rollback boundary, and separate explicit approval"
+      ],
+      "acceptanceEvidence": [
+        "the source package contains Japan Expert branding and valid Japanese-flag icons",
+        "the OBO contract pin matches the canonical Japan Expert backend contract",
+        "the clean CLI dry run proposes a new Japan Expert OBO child and channel boundary without modifying Seoul state",
+        "the approved package targets /api/messages/obo with the new OBO audience and passes structural validation",
+        "a live OBO Teams conversation passes authentication, governed response, Purview, MCP, and sanitized observability against the same Japan Expert backend revision as Direct Line"
+      ]
+    }
+  ]
+}

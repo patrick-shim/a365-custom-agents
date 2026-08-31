@@ -1,0 +1,28 @@
+# M7 OBO Direct Line end-to-end alignment
+
+> Historical Seoul Tourist record. M8 owns the Japan Expert client and channel migration.
+
+Workspace paths in this document are written from the Direct Line project root.
+
+This frontend stays limited to the Direct Line client, its focused tests, the synthetic prompt list,
+and a non-secret contract pin. Shared behavior and deployment remain owned by
+`../a365-tourist-backend`.
+
+## Latest recorded checkpoint
+
+- Contract version `1.0.0` pins `/api/messages/obo`,
+  `TokenValidation__Audiences__OnBehalfOf`, and `configured-obo-child-agent-identity`.
+- The Release-focused suite passes 5/5.
+- The latest repository-recorded shared host checkpoint is revision `0000028`; revision `0000027`
+  was the ARM-validated rollback target for that rollout. Exact immutable digests and rollback
+  provenance are maintained only in the
+  [shared backend record](../../../a365-tourist-backend/docs/milestones/M7-end-to-end-alignment.md).
+- Exactly three approved synthetic cases were sent with three-minute isolation gaps: one credit card,
+  one South Korean passport, and one South Korean resident-registration number. All three returned
+  the organization DLP block, revision logs recorded the block before model access, and model
+  requests stayed at zero for every covered minute. Prompt values were not echoed, and no background
+  closed-channel warning appeared during observation.
+
+This evidence is sanitized and does not contain prompts, matched values, identities, tokens, or
+responses beyond the policy outcome. A broad 120-case/five-second run is exploratory coverage, not
+substitute evidence for an isolated pre-model acceptance interval.

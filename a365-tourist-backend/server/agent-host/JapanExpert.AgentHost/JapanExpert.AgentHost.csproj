@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <UserSecretsId>japan-expert-agent-host</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../agent/JapanExpert.Agent/JapanExpert.Agent.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Azure.Core" />
+    <PackageReference Include="Azure.Identity" />
+
+    <!-- ==================== FOUNDRY PROJECT RESPONSES ADAPTER FOR gpt-5.6-sol =================== -->
+    <!-- Supplies the OpenAI Responses client and the AsIChatClientWithStoredOutputDisabled
+         adapter, aligned with the Microsoft.Agents.AI 1.17.0 train. OpenAI and System.ClientModel
+         are referenced directly because this project compiles against OpenAI, OpenAI.Responses,
+         and System.ClientModel.Primitives types rather than relying on transitive compile APIs. -->
+    <PackageReference Include="Microsoft.Agents.AI.OpenAI" />
+    <PackageReference Include="OpenAI" />
+    <PackageReference Include="System.ClientModel" />
+    <!-- Runtime compatibility floor only. Owned source does not compile against the
+         Microsoft.Extensions.AI.OpenAI namespace; Microsoft.Agents.AI.OpenAI uses it at runtime and
+         declares a lower minimum, so this direct reference is what makes the centrally pinned
+         10.8.3 bind instead of silently resolving to that lower transitive floor. -->
+    <PackageReference Include="Microsoft.Extensions.AI.OpenAI" />
+    <!-- ==================== END FOUNDRY PROJECT RESPONSES ADAPTER =============================== -->
+
+    <!-- ==================== A365 SDK: HOST RUNTIME, DISABLED WORKIQ GATE, AND OBSERVABILITY ========= -->
+    <PackageReference Include="Microsoft.Agents.A365.Runtime" />
+    <PackageReference Include="Microsoft.Bcl.Memory" />
+    <PackageReference Include="Microsoft.OpenTelemetry" />
+    <!-- ==================== END A365 SDK =========================================================== -->
+
+    <!-- ==================== PURVIEW DLP: FAIL-CLOSED PROMPT AND RESPONSE ENFORCEMENT ================ -->
+    <PackageReference Include="Microsoft.Agents.AI.Purview" />
+    <!-- ==================== END PURVIEW DLP ========================================================= -->
+
+    <PackageReference Include="Microsoft.Agents.Authentication.Msal" />
+    <PackageReference Include="Microsoft.Agents.Hosting.AspNetCore" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+    <PackageReference Include="Microsoft.Extensions.AI" />
+    <PackageReference Include="Microsoft.Identity.Client" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" />
+    <PackageReference Include="Microsoft.IdentityModel.Validators" />
+    <PackageReference Include="ModelContextProtocol" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="JapanExpert.AgentHost.Tests" />
+    <InternalsVisibleTo Include="JapanExpert.Mcp.Tools.Tests" />
+  </ItemGroup>
+</Project>

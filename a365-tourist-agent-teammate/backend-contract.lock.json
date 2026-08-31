@@ -1,0 +1,11 @@
+{
+  "contractId": "japan-expert-shared-backend",
+  "contractVersion": "2.0.0",
+  "productName": "Japan Expert",
+  "defaultTimeZone": "Asia/Tokyo",
+  "defaultCurrency": "JPY",
+  "frontend": "agentic-user",
+  "route": "/api/messages",
+  "audienceConfiguration": "TokenValidation__Audiences__AgenticUser",
+  "identityBinding": "dynamic-child-agent-identity"
+}

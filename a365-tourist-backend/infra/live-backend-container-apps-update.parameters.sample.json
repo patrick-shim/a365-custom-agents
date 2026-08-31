@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "targetResourceGroupName": {
+      "value": "rg-a365-custom-agents"
+    },
+    "resourceBaseName": {
+      "value": "japanexpert"
+    },
+    "foundryAccountName": {
+      "value": "a365-ai-foundry"
+    },
+    "foundryModelDeploymentName": {
+      "value": "gpt-5.6-sol"
+    },
+    "oboOAuthConnectionName": {
+      "value": "japan-expert-obo"
+    },
+    "hostImage": {
+      "value": "<registry-login-server>/japan-expert-agent@sha256:<host-digest>"
+    },
+    "attractionsImage": {
+      "value": "<registry-login-server>/japan-expert-attractions@sha256:<attractions-digest>"
+    },
+    "weatherImage": {
+      "value": "<registry-login-server>/japan-expert-weather@sha256:<weather-digest>"
+    },
+    "accommodationImage": {
+      "value": "<registry-login-server>/japan-expert-accommodation@sha256:<accommodation-digest>"
+    },
+    "currencyImage": {
+      "value": "<registry-login-server>/japan-expert-currency@sha256:<currency-digest>"
+    },
+    "tenantId": {
+      "value": "<entra-tenant-id>"
+    },
+    "mcpApplicationId": {
+      "value": "<mcp-api-application-id>"
+    },
+    "mcpAudience": {
+      "value": "<mcp-api-identifier-uri>"
+    },
+    "agent365BlueprintId": {
+      "value": "<japan-expert-blueprint-id>"
+    },
+    "agent365AgentIds": {
+      "value": {
+        "agenticUser": "",
+        "onBehalfOf": "<japan-expert-obo-child-id>"
+      }
+    },
+    "oboChannelAppId": {
+      "value": "<obo-azure-bot-app-id>"
+    }
+  }
+}

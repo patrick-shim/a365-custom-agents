@@ -1,0 +1,116 @@
+name: OBO Teams Frontend CI
+
+"on":
+  push:
+    paths:
+      - "a365-tourist-agent-obo/**"
+      - ".github/workflows/obo-teams-ci.yml"
+  pull_request:
+    paths:
+      - "a365-tourist-agent-obo/**"
+      - ".github/workflows/obo-teams-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: a365-tourist-agent-obo
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate OBO Teams contract pin and manifest
+        shell: pwsh
+        run: |
+          $lock = Get-Content backend-contract.lock.json -Raw | ConvertFrom-Json
+          if ($lock.contractId -ne 'japan-expert-shared-backend' -or
+              $lock.contractVersion -ne '2.0.0' -or
+              $lock.productName -ne 'Japan Expert' -or
+              $lock.defaultTimeZone -ne 'Asia/Tokyo' -or
+              $lock.defaultCurrency -ne 'JPY' -or
+              $lock.frontend -ne 'on-behalf-of' -or
+              $lock.route -ne '/api/messages/obo' -or
+              $lock.audienceConfiguration -ne 'TokenValidation__Audiences__OnBehalfOf' -or
+              $lock.identityBinding -ne 'configured-obo-child-agent-identity') {
+            throw 'Invalid OBO backend contract pin.'
+          }
+          $manifest = Get-Content teams/appPackage/manifest.json -Raw | ConvertFrom-Json
+          if (@($manifest.copilotAgents.customEngineAgents).Count -ne 1) {
+            throw 'OBO Teams manifest must contain one Custom Engine Agent.'
+          }
+          if (@($manifest.bots).Count -ne 1) {
+            throw 'OBO Teams manifest must contain one bot.'
+          }
+          $bot = @($manifest.bots)[0]
+          $agent = @($manifest.copilotAgents.customEngineAgents)[0]
+          if ($agent.type -ne 'bot' -or $agent.id -ne $bot.botId) {
+            throw 'Custom Engine Agent and bot IDs must align.'
+          }
+          if ($manifest.webApplicationInfo.id -ne $bot.botId -or
+              $manifest.webApplicationInfo.resource -ne "api://botid-$($bot.botId)") {
+            throw 'Bot and web application identity fields must align.'
+          }
+          if (@($bot.scopes) -notcontains 'copilot' -or @($bot.scopes) -notcontains 'personal') {
+            throw 'OBO bot must support Copilot and personal scopes.'
+          }
+          if (@($manifest.validDomains) -notcontains 'token.botframework.com' -or
+              @($manifest.validDomains) -notcontains 'login.microsoftonline.com') {
+            throw 'OBO manifest is missing required authentication domains.'
+          }
+          function Get-PngDimensions([string] $Path) {
+            $bytes = [IO.File]::ReadAllBytes($Path)
+            $signature = [byte[]] @(137, 80, 78, 71, 13, 10, 26, 10)
+            $hasSignature = $bytes.Length -ge 24
+            for ($index = 0; $hasSignature -and $index -lt $signature.Length; $index++) {
+              $hasSignature = $bytes[$index] -eq $signature[$index]
+            }
+            if (-not $hasSignature) {
+              throw "'$Path' is not a valid PNG file."
+            }
+            [pscustomobject] @{
+              Width = ($bytes[16] -shl 24) -bor ($bytes[17] -shl 16) -bor
+                ($bytes[18] -shl 8) -bor $bytes[19]
+              Height = ($bytes[20] -shl 24) -bor ($bytes[21] -shl 16) -bor
+                ($bytes[22] -shl 8) -bor $bytes[23]
+            }
+          }
+          $color = Get-PngDimensions "teams/appPackage/$($manifest.icons.color)"
+          $outline = Get-PngDimensions "teams/appPackage/$($manifest.icons.outline)"
+          if ($color.Width -ne 192 -or $color.Height -ne 192) {
+            throw 'OBO color icon must be 192x192.'
+          }
+          if ($outline.Width -ne 32 -or $outline.Height -ne 32) {
+            throw 'OBO outline icon must be 32x32.'
+          }
+          if ($manifest.name.short -ne 'Japan Expert' -or
+              $manifest.name.full -ne 'Japan Expert travel assistant' -or
+              $manifest.developer.name -ne 'Japan Expert' -or
+              $manifest.accentColor -ne '#BC002D') {
+            throw 'OBO manifest must use Japan Expert branding.'
+          }
+
+      - name: Reject committed OBO operational state
+        shell: pwsh
+        run: |
+          $tracked = @(git ls-files -- .)
+          if ($tracked.Count -eq 0) {
+            throw 'OBO Teams tracked-file validation returned no files.'
+          }
+          $forbidden = @($tracked | Where-Object {
+            $_ -match '(^|/)(?:\.a365|\.azure|\.copilot-azure|\.config|manifest)(?:/|$)' -or
+            $_ -match '(^|/)(?:a365\.config\.json|a365\.generated\.config\.json|\.a365-workspace-detection\.local\.json|manifest\.zip|ToolingManifest\.json|\.env(?:\.(?!example$).*)?|[^/]+\.(?:key|pem|pfx|p12))$' -or
+            $_ -match '^teams/appPackage/build/' -or
+            $_ -match '^teams/env/\.env(?:\.(?!example$).*)?$' -or
+            $_ -match '^(?:direct|server|infra|tests|tools)/' -or
+            $_ -match '^(?:Dockerfile(?:\..*)?|.*\.(?:csproj|slnx)|Directory\.(?:Build|Packages)\.props)$'
+          })
+          if ($forbidden.Count -gt 0) {
+            throw "Protected OBO operational state or foreign source is committed: $($forbidden -join ', ')"
+          }

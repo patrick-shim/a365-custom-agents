@@ -1,0 +1,47 @@
+{
+  "$schema": "./frontend-backend-contract.schema.json",
+  "contractId": "japan-expert-shared-backend",
+  "contractVersion": "2.0.0",
+  "product": {
+    "name": "Japan Expert",
+    "geography": "Japan",
+    "defaultTimeZone": "Asia/Tokyo",
+    "defaultCurrency": "JPY"
+  },
+  "backend": {
+    "deployment": "japan-expert-shared-agent-host",
+    "sourceAuthority": "a365-tourist-backend",
+    "configurationOwnership": "protected-deployment-configuration",
+    "inferenceProtocol": "foundry-responses"
+  },
+  "frontends": [
+    {
+      "name": "agentic-user",
+      "route": "/api/messages",
+      "audienceConfiguration": "TokenValidation__Audiences__AgenticUser",
+      "identityBinding": "dynamic-child-agent-identity"
+    },
+    {
+      "name": "on-behalf-of",
+      "route": "/api/messages/obo",
+      "audienceConfiguration": "TokenValidation__Audiences__OnBehalfOf",
+      "identityBinding": "configured-obo-child-agent-identity"
+    }
+  ],
+  "healthEndpoints": [
+    "/api/health",
+    "/api/health/live",
+    "/api/health/ready"
+  ],
+  "mcp": {
+    "serviceCount": 4,
+    "services": [
+      "attractions",
+      "accommodation",
+      "weather",
+      "currency"
+    ],
+    "transport": "streamable-http",
+    "authorization": "delegated Mcp.Invoke"
+  }
+}

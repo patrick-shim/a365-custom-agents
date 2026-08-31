@@ -1,0 +1,65 @@
+{
+  "$schema": "./milestones.schema.json",
+  "protocolVersion": 1,
+  "currentMilestone": "M8",
+  "milestones": [
+    {
+      "id": "M7",
+      "name": "AI Teammate end-to-end production alignment",
+      "status": "blocked",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": true,
+      "scope": [
+        "preserve the completed AI Teammate package-only frontend extraction and protected CLI-owned state",
+        "eliminate all unexplained AI Teammate package, route, Blueprint audience, child-identity, authentication, Purview, and installed-channel drift from the canonical backend contract",
+        "validate the AI Teammate package and /api/messages contract against the shared deployed backend",
+        "rehydrate, validate, publish, update, or install the AI Teammate package only through approved Agent 365 CLI workflows when required",
+        "prove live AI Teammate authentication, governed responses, Purview enforcement, sanitized observability, and shared-backend compatibility"
+      ],
+      "prohibited": [
+        "recreating server, infra, tests, tools, Docker, Teams Toolkit package, or backend deployment files",
+        "copying, hand-editing, committing, or deleting a365.config.json, a365.generated.config.json, generated manifests, packages, identities, secrets, or tenant-bound evidence",
+        "using the historical OBO-side AI Teammate snapshot as publication authority",
+        "changing /api/messages, its Blueprint audience, child identity model, consent, package registration, Purview, or Insider Risk Management policy without a reviewed dry run, rollback boundary, and explicit approval",
+        "tenant mutation or package publication without a successful reviewed dry run and explicit approval"
+      ],
+      "acceptanceEvidence": [
+        "the AI Teammate tree contains no backend source or deployment residue",
+        "authoritative CLI-owned source state, the supported generated package, installed channel, and live backend contract have no unexplained drift",
+        "the contract pin matches the canonical backend contract",
+        "the approved CLI-owned manifest validation contains one Agentic User template without committing generated state",
+        "the supported CLI workflow reconciles authoritative package state without hand edits",
+        "the installed AI Teammate targets /api/messages with the shared Blueprint audience and passes live governed-response, Purview, and sanitized observability checks against the same backend revision as OBO"
+      ]
+    },
+    {
+      "id": "M8",
+      "name": "Japan Expert AI Teammate clean registration",
+      "status": "active",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": true,
+      "scope": [
+        "preserve the AI Teammate-only ownership boundary, /api/messages contract, shared Blueprint architecture, and dynamic child identity selection",
+        "rename current source-safe package metadata and documentation to Japan Expert",
+        "add approved source-owned Japanese-flag icon assets for clean CLI rehydration",
+        "prepare a clean owner-scoped Agent 365 workflow for a new Japan Expert Blueprint and AI Teammate child without reusing Seoul generated state",
+        "publish, license, create, and install only after a reviewed dry run, rollback boundary, and separate explicit approval",
+        "prove live Japan Expert AI Teammate authentication, governed response, Purview, MCP, observability, and shared-backend compatibility"
+      ],
+      "prohibited": [
+        "recreating backend, OBO Teams, Direct Line, shared tests, infrastructure, tools, Docker, or deployment files",
+        "inspecting, copying, hand-editing, committing, or deleting a365.config.json, a365.generated.config.json, .config, generated manifest, package, identity, secret, or tenant-bound evidence",
+        "using the historical OBO-side AI Teammate snapshot or any Seoul Blueprint, child, endpoint, package, or installation as Japan Expert publication authority",
+        "changing /api/messages or the dynamic-child identity architecture",
+        "tenant mutation, consent, package publication, instance creation, licensing, or installation before a successful reviewed dry run, rollback boundary, and separate explicit approval"
+      ],
+      "acceptanceEvidence": [
+        "the source-safe AI Teammate boundary contains Japan Expert branding and approved Japanese-flag icon assets without generated state",
+        "the contract pin matches the canonical Japan Expert /api/messages contract",
+        "the clean CLI dry run proposes a new Japan Expert Blueprint and Agentic User child without modifying Seoul state",
+        "the approved generated package contains one Agentic User template, the Japan Expert endpoint, and valid icon assets",
+        "the installed AI Teammate passes governed response, Purview, MCP, and sanitized observability checks against the same Japan Expert backend revision as OBO"
+      ]
+    }
+  ]
+}

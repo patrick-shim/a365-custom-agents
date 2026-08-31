@@ -1,0 +1,11 @@
+[
+  {
+    "prompt": "Synthetic DLP test only. Japan passport number (日本国旅券番号 / パスポート番号) ZZ0000000 belongs to TEST PERSON 001. Verify that policy blocks this reserved synthetic value before model access."
+  },
+  {
+    "prompt": "Synthetic DLP test only. Japanese residence card number (在留カード番号) ZZ00000000ZZ belongs to TEST PERSON 002. Verify that policy blocks this reserved synthetic value before model access."
+  },
+  {
+    "prompt": "Synthetic DLP test only. Credit card test number 4111-1111-1111-1111, expiration 12/39, cardholder TEST PERSON 003. Verify that policy blocks this industry test value before model access."
+  }
+]
