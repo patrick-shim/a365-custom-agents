@@ -1,6 +1,53 @@
 # Japan Expert Workspace Guide
 
+> **LOCKED (2026-08-31).** This workspace is frozen at a verified-good baseline. Do not modify any
+> file, dependency, pin, or resource without an explicit, file-scoped instruction from the repository
+> owner. Read [Change lock](#change-lock) before taking any action.
+
 This workspace contains one canonical shared backend and three channel-only frontend projects.
+
+## Change lock
+
+This workspace is **locked**. It was rebuilt from scratch and fully validated on 2026-08-31, and is
+frozen at that baseline.
+
+| Baseline item | Verified value |
+| --- | --- |
+| .NET SDK | `10.0.110`, pinned in every `global.json` with `rollForward: latestPatch` |
+| `a365-tourist-backend/JapanExpertAgent.slnx` | 17/17 projects, 0 warnings, 0 errors |
+| `a365-tourist-agent-obo-directline/JapanExpert.OBO.DirectLine.slnx` | 2/2 projects, 0 warnings, 0 errors |
+| Tests | 340 passed, 0 failed, 0 skipped |
+| `a365-tourist-backend/tools/Invoke-LocalCi.ps1 -Strict` | 11 passed, 0 failed |
+| Contract pins and icons | Aligned across all three channels |
+| Deployment | Backend live in `rg-a365-custom-agents`; OBO Teams and OBO Direct Line accepted |
+
+### Prohibited without explicit approval
+
+Do not edit, rename, move, refactor, reformat, or tidy any file. Do not add, remove, or upgrade a
+package. Do not change a version pin, target framework, analyzer setting, or `global.json`. Do not
+modify `infra/`, `Dockerfile*`, or `.github/workflows/`. Do not mutate any Azure resource or Agent
+365 registration. Do not hand-edit, regenerate, or delete protected operational state. Do not stage,
+commit, revert, or clean the working tree on the owner's behalf.
+
+Opportunistic cleanup is the exact failure mode this lock exists to prevent. A change being
+obviously correct, harmless, idiomatic, or an improvement is not authorization.
+
+### Always allowed
+
+Reading any file. Building, testing, and running `a365-tourist-backend/tools/` validation, which is
+offline and read-only. Reporting findings, including a proposed diff that is described but not
+applied.
+
+### Unlocking
+
+An unlock is per-task and must come from the repository owner as an explicit instruction naming the
+files or the project to change. "Fix it", "make it better", a failing build, or a green CI run are
+not unlocks. When a task is authorized:
+
+1. Change only the named scope, inside the one owning project.
+2. Leave this lock section intact.
+3. Re-run the owning project's validation and report the result.
+4. If the change would alter any row in the baseline table above, stop and confirm first.
 
 ## Source authority
 

@@ -1,5 +1,11 @@
 # Japan Expert monorepo instructions
 
+- **This repository is LOCKED (2026-08-31).** It is frozen at a verified-good baseline. Do not edit,
+  rename, move, refactor, reformat, or tidy any file; do not add, remove, or upgrade packages; do not
+  change version pins, `global.json`, `infra/`, `Dockerfile*`, or workflows. Reading, building,
+  testing, and running `a365-tourist-backend/tools/` validation are always allowed. A change being
+  obviously correct or an improvement is not authorization. Unlock only on an explicit, file-scoped
+  instruction from the repository owner. See root `AGENTS.md` → "Change lock".
 - Read root `AGENTS.md`, then the owning child `AGENTS.md` and milestone manifest before work.
 - `a365-tourist-backend` is the sole shared runtime, MCP, infrastructure, tests, tools, Docker, and
   Azure deployment authority.

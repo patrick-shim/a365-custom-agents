@@ -1,5 +1,11 @@
 # Japan Expert OBO Teams Frontend Guide
 
+> **LOCKED (2026-08-31).** This project is frozen at a verified-good baseline: the contract pin
+> matches the canonical backend contract and the icons are byte-identical across all three channels.
+> Do not edit the Teams package source, manifest, icons, or `backend-contract.lock.json`, and do not
+> touch protected `.a365/`, `.config/`, or `teams/env/` state, without an explicit, file-scoped
+> instruction from the repository owner. Full rules are in [../AGENTS.md](../AGENTS.md#change-lock).
+
 Read `docs/milestones/milestones.json` before work. This project contains only the OBO Teams channel
 boundary for the shared backend.
 

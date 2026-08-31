@@ -180,6 +180,12 @@ param foundryModelDeploymentName string = 'gpt-5.6-sol'
 @description('Optional Foundry project endpoint override. Empty derives it from the existing account and project names.')
 param foundryProjectEndpoint string = ''
 
+@description('Object IDs allowed to reach the Foundry model through a delegated OBO turn. Prefer one group object ID.')
+param agentUserPrincipalIds string[] = []
+
+@allowed(['User', 'Group', 'ServicePrincipal'])
+param agentUserPrincipalType string = 'Group'
+
 // ---------------------------------------------------------------------------
 // Images
 // ---------------------------------------------------------------------------
@@ -196,6 +202,12 @@ param currencyImage string = 'mcr.microsoft.com/azuredocs/containerapps-hellowor
 
 param agent365BlueprintId string = ''
 param agent365AgentIds Agent365AgentIds = {
+  agenticUser: ''
+  onBehalfOf: ''
+}
+
+@description('Service principal object IDs of the Agent 365 child identities, used for Foundry data-plane role assignments.')
+param agent365AgentPrincipalIds Agent365AgentIds = {
   agenticUser: ''
   onBehalfOf: ''
 }
@@ -711,6 +723,21 @@ module agentHostContainerApp './modules/agent-host-container-app.bicep' = {
   dependsOn: [
     roleAssignments
   ]
+}
+
+// Foundry data-plane roles are assigned in the shared Foundry resource group. The OBO
+// turn calls the model with a delegated token, so it is attributed to the signed-in
+// user; every caller therefore needs Foundry data-plane access. Supply a group object
+// ID in agentUserPrincipalIds rather than listing individual users.
+module foundryRoleAssignments './modules/foundry-role-assignments.bicep' = {
+  name: 'foundry-role-assignments'
+  scope: resourceGroup(foundryResourceGroupName)
+  params: {
+    foundryAccountName: foundryAccountName
+    agent365AgentPrincipalIds: agent365AgentPrincipalIds
+    agentUserPrincipalIds: agentUserPrincipalIds
+    agentUserPrincipalType: agentUserPrincipalType
+  }
 }
 
 var oboMessagingEndpoint = 'https://${agentHostContainerApp.outputs.fqdn}/api/messages/obo'

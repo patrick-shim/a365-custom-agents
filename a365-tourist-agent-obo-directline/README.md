@@ -1,5 +1,9 @@
 # Japan Expert OBO Direct Line frontend
 
+> **LOCKED (2026-08-31).** Frozen at a verified-good baseline: 2/2 projects, 0 warnings, 0 errors, 5
+> tests passing, contract pin aligned. Build, test, and read freely; change nothing without explicit
+> owner approval. See [../AGENTS.md](../AGENTS.md#change-lock).
+
 This project owns the Direct Line console client, focused tests, and synthetic SIT list for the
 canonical shared backend route `/api/messages/obo`. It contains no Teams package, Agent 365 CLI
 state, backend runtime, infrastructure, or deployment automation.

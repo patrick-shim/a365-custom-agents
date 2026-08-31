@@ -1,5 +1,9 @@
 # Japan Expert agent workspace
 
+> **LOCKED (2026-08-31).** This repository is frozen at a verified-good baseline. Do not modify any
+> file, dependency, pin, or Azure resource without an explicit, file-scoped instruction from the
+> repository owner. The authoritative rules are in [AGENTS.md](./AGENTS.md#change-lock).
+
 Japan Expert is a governed Microsoft travel agent for Japan. One shared C# backend serves three
 channels: an OBO Teams app, an OBO Direct Line console client, and a Microsoft 365 AI Teammate.
 Microsoft Agent Framework owns orchestration, Agent 365 owns runtime identity and transport,

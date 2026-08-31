@@ -1,5 +1,10 @@
 # Japan Expert AI Teammate frontend
 
+> **LOCKED (2026-08-31).** Frozen at a verified-good baseline: contract pin, SDK pin, and icons all
+> aligned across channels. Change nothing without explicit owner approval. Acceptance remains open —
+> no live turn has run against `/api/messages` — and that work needs its own approval. See
+> [../AGENTS.md](../AGENTS.md#change-lock).
+
 This project owns the authoritative Microsoft 365 AI Teammate package boundary and the non-secret
 contract pin for the canonical shared backend route `/api/messages`. Shared runtime, MCP,
 infrastructure, Docker, tests, tools, and Azure deployment live only in

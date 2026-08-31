@@ -1,5 +1,10 @@
 # Japan Expert Backend
 
+> **LOCKED (2026-08-31).** Frozen at a verified-good baseline: 17/17 projects, 0 warnings, 0 errors,
+> 335 tests passing, `tools/Invoke-LocalCi.ps1 -Strict` 11/11, on .NET SDK `10.0.110`. Build, test,
+> and read freely; change nothing without explicit owner approval. See
+> [../AGENTS.md](../AGENTS.md#change-lock).
+
 A Microsoft-first C# shared backend for a Japan travel expert. Microsoft Agent Framework owns
 orchestration, Agent 365 owns runtime identity and transport, Microsoft Purview protects prompt and
 response content, and custom travel data is exposed through standalone MCP services. The OBO Teams,

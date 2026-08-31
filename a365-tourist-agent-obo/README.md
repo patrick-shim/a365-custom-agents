@@ -1,5 +1,9 @@
 # Japan Expert OBO Teams frontend
 
+> **LOCKED (2026-08-31).** Frozen at a verified-good baseline: contract pin aligned and icons
+> byte-identical across channels. Change nothing without explicit owner approval. See
+> [../AGENTS.md](../AGENTS.md#change-lock).
+
 This project owns the source OBO Teams package and the non-secret contract pin for the canonical
 shared backend route `/api/messages/obo`. It contains no backend runtime or deployment assets.
 
