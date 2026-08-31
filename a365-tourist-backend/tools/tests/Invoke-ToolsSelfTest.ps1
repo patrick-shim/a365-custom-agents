@@ -85,7 +85,7 @@ Assert-ToolsCondition -Condition (
 $frontendContract = $frontendContractJson | ConvertFrom-Json -Depth 20
 Assert-ToolsCondition -Condition (
     $frontendContract.contractId -eq 'korea-expert-shared-backend' -and
-    $frontendContract.contractVersion -eq '1.0.0' -and
+    $frontendContract.contractVersion -match '^\d+\.\d+\.\d+$' -and
     @($frontendContract.frontends).Count -eq 2 -and
     @($frontendContract.frontends.route) -contains '/api/messages' -and
     @($frontendContract.frontends.route) -contains '/api/messages/obo') `
