@@ -7,14 +7,23 @@ This directory contains two backend-owned deployment paths:
 - `live-backend-container-apps-update.bicep` is the resource-group-scope wrapper for updating the
   five existing Container Apps without recreating shared infrastructure.
 
-Korea Expert deploys into the same subscription and the same `rg-a365-custom-agents` resource group
-as Japan Expert; only the resource names differ, and they all derive from `resourceBaseName`
-(`koreaexpert`). `main.bicep` never creates the resource group, and it refuses to deploy into any
-group other than `targetResourceGroupName`.
+Korea Expert deploys into its own resource group, `rg-a365-custom-agent-korea-expert`, in
+`koreacentral`. It runs in the same subscription as Japan Expert but does not share Japan's
+`rg-a365-custom-agents` group, so the two products can be managed and torn down independently. All
+resource names derive from `resourceBaseName` (`koreaexpert`). `main.bicep` never creates the
+resource group, and it refuses to deploy into any group other than `targetResourceGroupName`.
 
 The existing `a365-ai-foundry` account, its `default` project, and the `gpt-5.6-sol` deployment in
-`rg-ai-foundry` are referenced in place. This template never creates, moves, or changes Foundry, and
-Korea Expert does not provision a Foundry account of its own.
+`rg-ai-foundry` are shared with Japan Expert and referenced in place. This template never creates,
+moves, or changes Foundry, and Korea Expert does not provision a Foundry account of its own.
+
+### Create the resource group first
+
+The target group is a prerequisite, not something this template provisions:
+
+```powershell
+az group create --name rg-a365-custom-agent-korea-expert --location koreacentral
+```
 
 > M7 is active. This is the only infrastructure and deployment source; the frontend projects are
 > channel-only frontends. The deployment commands below are historical and operational reference only;
@@ -26,7 +35,7 @@ Korea Expert does not provision a Foundry account of its own.
 | Path | Role |
 | --- | --- |
 | `main.bicep` | `targetScope = 'resourceGroup'`; deploys into the existing shared resource group and orchestrates all modules |
-| `main.parameters.json` | Checked-in non-secret parameters: `targetResourceGroupName` `rg-a365-custom-agents`, `resourceBaseName` `koreaexpert`, `location` `koreacentral`, the shared Foundry references, and placeholder provenance values |
+| `main.parameters.json` | Checked-in non-secret parameters: `targetResourceGroupName` `rg-a365-custom-agent-korea-expert`, `resourceBaseName` `koreaexpert`, `location` `koreacentral`, the shared Foundry references, and placeholder provenance values |
 | `live-backend-container-apps-update.bicep` | `targetScope = 'resourceGroup'`; updates only the five existing Container Apps |
 | `live-backend-container-apps-update.json` | Checked-in compiled ARM form of the wrapper; must stay synchronized with its Bicep source |
 | `bicepconfig.json` | Linter and analyzer configuration for both templates |

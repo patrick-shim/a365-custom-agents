@@ -14,10 +14,10 @@ type Agent365AgentPrincipalIds = {
 @maxLength(64)
 param environmentName string
 
-// Korea Expert deploys into the same shared resource group and subscription as Japan Expert.
-// Only the resource names differ. This template never creates the resource group.
+// Korea Expert deploys into its own resource group, in the same subscription as Japan Expert.
+// The shared Microsoft Foundry account is reused across both products.
 @minLength(1)
-param targetResourceGroupName string = 'rg-a365-custom-agents'
+param targetResourceGroupName string = 'rg-a365-custom-agent-korea-expert'
 
 var approvedDeploymentScopes = {
   '${toLower(targetResourceGroupName)}': targetResourceGroupName
