@@ -110,7 +110,7 @@ var productionEnvironment = [
   }
   {
     name: 'AgentApplication__UserAuthorization__Handlers__agentic-foundry__Settings__Scopes__0'
-    value: 'https://cognitiveservices.azure.com/.default'
+    value: 'https://ai.azure.com/.default'
   }
   {
     name: 'AgentApplication__UserAuthorization__Handlers__agentic-foundry__Settings__AlternateBlueprintConnectionName'
@@ -194,7 +194,9 @@ var productionEnvironment = [
   }
   {
     name: 'Connections__OboServiceConnection__Settings__Scopes__0'
-    value: '5a807f24-c9de-44ee-a3a7-329e88a00ffc/.default'
+    // Entra token exchange audience. This must not be the Agent 365 Messaging Bot
+    // API scope used by ServiceConnection; each connection has exactly one audience.
+    value: 'api://AzureADTokenExchange/.default'
   }
   {
     name: 'Connections__OboChannelConnection__Settings__AuthType'
