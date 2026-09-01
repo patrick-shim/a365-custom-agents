@@ -63,7 +63,7 @@ parameters (`containerImage`, `attractionsImage`, `weatherImage`, `accommodation
 bootstrap phase can run before any application image exists. Agent 365 binding uses
 `agent365BlueprintId`, the `Agent365AgentIds` and `Agent365AgentPrincipalIds` typed objects (each with
 `agenticUser` and `onBehalfOf` members), `oboChannelAppId`, and `oboOAuthConnectionName`
-(default `korea-expert-obo`). Five provider-secret parameters — `ktoServiceKey`, `openMeteoApiKey`,
+(default `korea-tourist-assistant-obo`). Five provider-secret parameters — `ktoServiceKey`, `openMeteoApiKey`,
 `openWeatherApiKey`, `koreaEximbankAuthKey`, `forexRateApiKey` — all default to empty and are inactive
 in the current deployment.
 
@@ -193,7 +193,7 @@ az deployment group create `
   --parameters agent365AgentIds="$agent365AgentIds" `
   --parameters agent365AgentPrincipalIds="$agent365AgentPrincipalIds" `
   --parameters oboChannelAppId="$env:OBO_CHANNEL_APP_ID" `
-  --parameters oboOAuthConnectionName='korea-expert-obo' `
+  --parameters oboOAuthConnectionName='korea-tourist-assistant-obo' `
   --parameters forexRateApiKey=''
 ```
 
@@ -348,7 +348,7 @@ a365 query-entra inheritance
 - Both connection profiles use `FederatedCredentials`: the shared Blueprint is `ClientId` and the
   host UAMI is `FederatedClientId`. Agentic User auth resolves its child dynamically;
   `AgentIdentityObo.AgentId` selects the OBO child for `fmi_path` and child OBO.
-- The Azure Bot OAuth connection `korea-expert-obo` must return an exchangeable user token for the
+- The Azure Bot OAuth connection `korea-tourist-assistant-obo` must return an exchangeable user token for the
   delegated scope exposed by the shared Blueprint. Agent Framework must return that raw assertion;
   the host performs the child-bound parent-token and resource `/.default` exchanges explicitly.
 - Review and minimize existing Blueprint Graph grants before creating the OBO child; inherited

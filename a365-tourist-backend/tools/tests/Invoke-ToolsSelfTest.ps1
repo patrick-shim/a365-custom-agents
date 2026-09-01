@@ -150,8 +150,8 @@ try {
             Name  = 'stale appsettings OBO connection setting'
             Check = 'OBO authorization configuration boundary'
             Path  = 'server\agent-host\KoreaExpert.AgentHost\appsettings.json'
-            Old   = '"AzureBotOAuthConnectionName": "korea-expert-obo"'
-            New   = ('"AzureBotOAuthConnectionName": "korea-expert-obo",' + [Environment]::NewLine +
+            Old   = '"AzureBotOAuthConnectionName": "korea-tourist-assistant-obo"'
+            New   = ('"AzureBotOAuthConnectionName": "korea-tourist-assistant-obo",' + [Environment]::NewLine +
                 '            "OBOConnectionName": "OboServiceConnection"')
         },
         @{

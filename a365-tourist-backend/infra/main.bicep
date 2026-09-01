@@ -75,7 +75,7 @@ param agent365AgentPrincipalIds Agent365AgentPrincipalIds = {
   onBehalfOf: ''
 }
 param oboChannelAppId string = ''
-param oboOAuthConnectionName string = 'korea-expert-obo'
+param oboOAuthConnectionName string = 'korea-tourist-assistant-obo'
 
 // Azure Bot registration for the OBO Teams and Direct Line channels. Opt-in: the bot is only
 // deployed when deployAzureBot is true and every channel prerequisite has been supplied.

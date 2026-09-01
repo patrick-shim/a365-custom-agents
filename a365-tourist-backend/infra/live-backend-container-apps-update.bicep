@@ -41,7 +41,7 @@ param agent365AgentIds Agent365AgentIds
 @maxLength(36)
 param oboChannelAppId string
 
-param oboOAuthConnectionName string = 'korea-expert-obo'
+param oboOAuthConnectionName string = 'korea-tourist-assistant-obo'
 
 @minLength(3)
 @maxLength(20)

@@ -27,7 +27,7 @@
       "value": "gpt-5.6-sol"
     },
     "oboOAuthConnectionName": {
-      "value": "korea-expert-obo"
+      "value": "korea-tourist-assistant-obo"
     },
     "sessionId": {
       "value": "<deployment-session-id>"

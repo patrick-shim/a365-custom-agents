@@ -22,7 +22,7 @@ separate child Agent Identities, token audiences, packages, session keys, and CL
 | `on-behalf-of` | `/api/messages/obo` | `TokenValidation__Audiences__OnBehalfOf` | `configured-obo-child-agent-identity` |
 
 OBO Teams and OBO Direct Line both reach the same `/api/messages/obo` route. Direct Line arrives
-through an OBO Azure Bot using Direct Line v3 and the `korea-expert-obo` OAuth connection; Teams
+through an OBO Azure Bot using Direct Line v3 and the `korea-tourist-assistant-obo` OAuth connection; Teams
 arrives through its published package. Because they share a route, audience, and child identity, they
 also share DLP behavior — but each still owns its own acceptance evidence.
 

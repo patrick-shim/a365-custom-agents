@@ -55,7 +55,7 @@ public sealed class AgentIdentityAuthorizationOptionsTests
                 "AzureBotUserAuthorization",
                 handler.GetProperty("Type").GetString());
             Assert.AreEqual(
-                "korea-expert-obo",
+                "korea-tourist-assistant-obo",
                 handlerSettings.GetProperty("AzureBotOAuthConnectionName").GetString());
             Assert.IsFalse(handlerSettings.TryGetProperty("OBOConnectionName", out _));
             Assert.IsFalse(handlerSettings.TryGetProperty("OBOScopes", out _));

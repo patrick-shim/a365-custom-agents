@@ -72,7 +72,7 @@
     },
     "oboOAuthConnectionName": {
       "type": "string",
-      "defaultValue": "korea-expert-obo"
+      "defaultValue": "korea-tourist-assistant-obo"
     }
   },
   "resources": {
@@ -1260,7 +1260,7 @@
             },
             "oboOAuthConnectionName": {
               "type": "string",
-              "defaultValue": "korea-expert-obo"
+              "defaultValue": "korea-tourist-assistant-obo"
             },
             "applicationInsightsConnectionString": {
               "type": "string"
