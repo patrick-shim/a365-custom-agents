@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "targetResourceGroupName": {
-      "value": "rg-a365-custom-agent-korea-expert"
+      "value": "a365-custom-agents"
     },
     "resourceBaseName": {
       "value": "koreaexpert"

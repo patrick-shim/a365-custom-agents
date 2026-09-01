@@ -7,9 +7,9 @@ This directory contains two backend-owned deployment paths:
 - `live-backend-container-apps-update.bicep` is the resource-group-scope wrapper for updating the
   five existing Container Apps without recreating shared infrastructure.
 
-Korea Tourist Assistant deploys into its own resource group, `rg-a365-custom-agent-korea-expert`, in
+Korea Tourist Assistant deploys into its own resource group, `a365-custom-agents`, in
 `koreacentral`. It runs in the same subscription as Japan Tourist Assistant but does not share Japan's
-`rg-a365-custom-agents` group, so the two products can be managed and torn down independently. All
+`a365-custom-agents` group, so the two products can be managed and torn down independently. All
 resource names derive from `resourceBaseName` (`koreaexpert`). `main.bicep` never creates the
 resource group, and it refuses to deploy into any group other than `targetResourceGroupName`.
 
@@ -22,7 +22,7 @@ moves, or changes Foundry, and Korea Tourist Assistant does not provision a Foun
 The target group is a prerequisite, not something this template provisions:
 
 ```powershell
-az group create --name rg-a365-custom-agent-korea-expert --location koreacentral
+az group create --name a365-custom-agents --location koreacentral
 ```
 
 > M7 is active. This is the only infrastructure and deployment source; the frontend projects are
@@ -35,7 +35,7 @@ az group create --name rg-a365-custom-agent-korea-expert --location koreacentral
 | Path | Role |
 | --- | --- |
 | `main.bicep` | `targetScope = 'resourceGroup'`; deploys into the existing shared resource group and orchestrates all modules |
-| `main.parameters.json` | Checked-in non-secret parameters: `targetResourceGroupName` `rg-a365-custom-agent-korea-expert`, `resourceBaseName` `koreaexpert`, `location` `koreacentral`, the shared Foundry references, and placeholder provenance values |
+| `main.parameters.json` | Checked-in non-secret parameters: `targetResourceGroupName` `a365-custom-agents`, `resourceBaseName` `koreaexpert`, `location` `koreacentral`, the shared Foundry references, and placeholder provenance values |
 | `live-backend-container-apps-update.bicep` | `targetScope = 'resourceGroup'`; updates only the five existing Container Apps |
 | `live-backend-container-apps-update.json` | Checked-in compiled ARM form of the wrapper; must stay synchronized with its Bicep source |
 | `bicepconfig.json` | Linter and analyzer configuration for both templates |
@@ -133,7 +133,7 @@ $deploymentActor = '<operator-or-automation-id>'
 $deploymentCreatedAt = '<ISO-8601-timestamp>'
 az deployment group create `
   --name koreaexpert-infra `
-  --resource-group rg-a365-custom-agent-korea-expert `
+  --resource-group a365-custom-agents `
   --template-file infra/main.bicep `
   --parameters '@infra/main.parameters.json' `
   --parameters deployerObjectId=$deployerObjectId tenantId=$tenantId `
@@ -179,7 +179,7 @@ $agent365AgentPrincipalIds = @{
 
 az deployment group create `
   --name koreaexpert-app `
-  --resource-group rg-a365-custom-agent-korea-expert `
+  --resource-group a365-custom-agents `
   --template-file infra/main.bicep `
   --parameters '@infra/main.parameters.json' `
   --parameters deployerObjectId=$deployerObjectId tenantId=$tenantId `
@@ -270,6 +270,56 @@ Review the structured result before approval: exactly five existing Container Ap
 no creates or deletes, and every property delta explained. Reject identity, RBAC, SKU, location,
 scale, ingress, route, audience, Blueprint, child-ID, secret, or unrelated drift. Validate the
 rollback set through the same compile, ARM validation, and what-if boundary before deployment.
+
+## Rebuilding into a new resource group
+
+Both products share the single resource group `a365-custom-agents` in `koreacentral`. Every resource
+name is suffixed with `resourceBaseName`, so `japanexpert` and `koreaexpert` resources co-exist there
+with no collision.
+
+Deleting a resource group destroys the registry and its images, the Container Apps environment, the
+five container apps, the five user-assigned managed identities, Log Analytics, Application Insights,
+the Azure Bot, and any Key Vault. It does **not** touch Entra: the Blueprint, the child Agent
+Identities, the OBO channel application, and the custom MCP API application all survive, as do the
+shared Foundry account and its role assignments.
+
+The rebuild order matters, because two things break silently:
+
+1. **Federated identity credentials.** The Blueprint and the OBO channel application each hold a
+   credential whose `subject` is the *principal ID of the host user-assigned managed identity*. A new
+   resource group creates a new identity with a new principal ID, so both credentials must be
+   repointed. Until they are, the host cannot acquire Blueprint tokens and every turn fails at
+   `identity.resolve`. Read the new value from the deployment output and patch the credential in
+   place; do not delete and recreate the applications.
+2. **Ingress FQDNs.** A new Container Apps environment gets a new DNS suffix, so the agent host
+   domain changes. Update the Azure Bot messaging endpoint, the Teams package `validDomains`, and the
+   package `AGENT_HOST_DOMAIN`, then rebuild and re-upload the package.
+
+Also expect: Direct Line keys are regenerated, so any cached channel key is stale; the bot OAuth
+connection must be recreated with a fresh client secret; and a soft-deleted Key Vault of the same
+name must be purged before the name can be reused.
+
+Full order:
+
+```powershell
+$resourceGroup = 'a365-custom-agents'
+az group create --name $resourceGroup --location koreacentral
+
+# 1. Infrastructure on placeholder images.
+# 2. Build and push images with `az acr build`, then redeploy by digest.
+# 3. Read the new host identity principal ID from the deployment output.
+# 4. Repoint both federated identity credentials to that principal ID.
+# 5. Recreate the bot OAuth connection and confirm the Blueprint inheritance table is complete.
+# 6. Rebuild the channel packages against the new host domain.
+```
+
+Confirm before declaring the rebuild healthy:
+
+```powershell
+az deployment group show --resource-group $resourceGroup --name '<deployment-name>' `
+  --query properties.outputs.hostManagedIdentityPrincipalId.value --output tsv
+a365 query-entra inheritance
+```
 
 ## Security and prerequisites
 
