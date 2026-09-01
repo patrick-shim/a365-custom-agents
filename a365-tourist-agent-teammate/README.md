@@ -1,4 +1,4 @@
-# Korea Expert AI Teammate frontend
+# Korea Tourist Assistant AI Teammate frontend
 
 This project owns the authoritative Microsoft 365 AI Teammate package boundary and the non-secret
 contract pin for the canonical shared backend route `/api/messages`. Shared runtime, MCP,

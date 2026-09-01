@@ -1,4 +1,4 @@
-# Korea Expert OBO Direct Line frontend
+# Korea Tourist Assistant OBO Direct Line frontend
 
 This project owns the Direct Line console client, focused tests, and synthetic SIT list for the
 canonical shared backend route `/api/messages/obo`. It contains no Teams package, Agent 365 CLI

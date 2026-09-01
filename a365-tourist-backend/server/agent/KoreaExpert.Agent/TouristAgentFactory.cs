@@ -15,7 +15,7 @@ public static class TouristAgentFactory
 
         var options = new ChatClientAgentOptions
         {
-            Name = "Korea Expert Assistant",
+            Name = "Korea Tourist Assistant",
             ChatOptions = new ChatOptions
             {
                 Instructions = TouristAgentInstructions.Create(),

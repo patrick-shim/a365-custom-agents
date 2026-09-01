@@ -1,4 +1,4 @@
-# Korea Expert Shared Backend Guide
+# Korea Tourist Assistant Shared Backend Guide
 
 Read `docs/milestones/milestones.json` before any work and stay within the active milestone. Use
 repository-contained architecture, configuration, deployment, and validation guidance as the source

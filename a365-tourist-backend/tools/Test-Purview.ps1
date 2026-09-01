@@ -20,7 +20,7 @@ param(
 
     [string] $AccessTokenEnvironmentVariable = 'PURVIEW_GRAPH_ACCESS_TOKEN',
 
-    [string] $ProbeText = 'Korea Expert Assistant synthetic Purview validation probe.',
+    [string] $ProbeText = 'Korea Tourist Assistant synthetic Purview validation probe.',
 
     [switch] $ExpectBlock,
 

@@ -1,4 +1,4 @@
-# Korea Expert AI Teammate Frontend Guide
+# Korea Tourist Assistant AI Teammate Frontend Guide
 
 Read `docs/milestones/milestones.json` before work. This project contains only the authoritative AI
 Teammate channel boundary for the shared backend.

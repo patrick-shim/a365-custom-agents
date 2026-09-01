@@ -1,4 +1,4 @@
-# Korea Expert OBO Teams frontend
+# Korea Tourist Assistant OBO Teams frontend
 
 This project owns the source OBO Teams package and the non-secret contract pin for the canonical
 shared backend route `/api/messages/obo`. It contains no backend runtime or deployment assets.

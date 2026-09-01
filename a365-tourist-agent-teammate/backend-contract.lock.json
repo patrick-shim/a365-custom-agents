@@ -1,7 +1,7 @@
 {
   "contractId": "korea-expert-shared-backend",
   "contractVersion": "2.0.0",
-  "productName": "Korea Expert",
+  "productName": "Korea Tourist Assistant",
   "defaultTimeZone": "Asia/Seoul",
   "defaultCurrency": "KRW",
   "frontend": "agentic-user",

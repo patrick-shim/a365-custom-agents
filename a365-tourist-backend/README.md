@@ -1,4 +1,4 @@
-# Korea Expert Assistant Backend
+# Korea Tourist Assistant Backend
 
 A Microsoft-first C# shared backend for a Korea travel assistant. Microsoft Agent Framework owns
 orchestration, Agent 365 owns runtime identity and transport, Microsoft Purview protects prompt and

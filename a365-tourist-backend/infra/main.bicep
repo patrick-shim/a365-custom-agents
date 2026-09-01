@@ -14,7 +14,7 @@ type Agent365AgentPrincipalIds = {
 @maxLength(64)
 param environmentName string
 
-// Korea Expert deploys into its own resource group, in the same subscription as Japan Expert.
+// Korea Tourist Assistant deploys into its own resource group, in the same subscription as Japan Tourist Assistant.
 // The shared Microsoft Foundry account is reused across both products.
 @minLength(1)
 param targetResourceGroupName string = 'rg-a365-custom-agent-korea-expert'
@@ -79,7 +79,7 @@ param oboOAuthConnectionName string = 'korea-expert-obo'
 // deployed when deployAzureBot is true and every channel prerequisite has been supplied.
 param deployAzureBot bool = false
 param azureBotName string = 'bot-${resourceBaseName}'
-param azureBotDisplayName string = 'Korea Expert'
+param azureBotDisplayName string = 'Korea Tourist Assistant'
 param azureBotSkuName string = 'F0'
 param deployDirectLineChannel bool = true
 param deployTeamsChannel bool = true

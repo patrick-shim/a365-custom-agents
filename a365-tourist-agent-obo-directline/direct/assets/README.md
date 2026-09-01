@@ -1,4 +1,4 @@
-# Korea Expert Direct Line icons
+# Korea Tourist Assistant Direct Line icons
 
 - `korea-expert.ico` is the multi-size Windows executable icon referenced by
   `KoreaExpert.Direct.csproj`; it uses the same white field and taegeuk as `color.png`.

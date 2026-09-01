@@ -29,7 +29,7 @@
       "required": ["name", "geography", "defaultTimeZone", "defaultCurrency"],
       "properties": {
         "name": {
-          "const": "Korea Expert"
+          "const": "Korea Tourist Assistant"
         },
         "geography": {
           "const": "Korea"

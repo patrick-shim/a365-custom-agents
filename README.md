@@ -1,6 +1,6 @@
-# Korea Expert Agent workspace
+# Korea Tourist Assistant workspace
 
-This monorepo is the source boundary for one shared Korea Expert backend and three channel-only
+This monorepo is the source boundary for one shared Korea Tourist Assistant backend and three channel-only
 frontends. The backend is deployed once; each frontend owns only its channel contract, package or
 client, and acceptance workflow.
 

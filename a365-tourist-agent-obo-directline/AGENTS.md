@@ -1,4 +1,4 @@
-# Korea Expert OBO Direct Line Frontend Guide
+# Korea Tourist Assistant OBO Direct Line Frontend Guide
 
 Read `docs/milestones/milestones.json` before work. This project contains only the Direct Line client
 and acceptance boundary for the shared OBO route.

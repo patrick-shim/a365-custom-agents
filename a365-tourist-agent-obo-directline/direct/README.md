@@ -77,7 +77,7 @@ Every option is parsed and validated by `DirectClientOptions`. An unrecognized t
 | `--endpoint <url>` | `KOREA_EXPERT_DIRECT_LINE_ENDPOINT`, else the global Direct Line base URL | Use for a regional Direct Line endpoint |
 | `--secret-env <name>` | `KOREA_EXPERT_DIRECT_LINE_SECRET` | Names the variable holding the site secret; the secret itself is never an argument |
 | `--user-id <id>` | `dl_korea_expert_cli` | Direct Line user id |
-| `--user-name <name>` | `Korea Expert CLI` | Display name sent with activities |
+| `--user-name <name>` | `Korea Tourist Assistant CLI` | Display name sent with activities |
 | `--message <text>` | — | Sends one prompt, waits for the response, exits |
 | `--sit-list` | off | Runs the default list `direct/sensitive-information-type-test.json` |
 | `--sit-file <path>` | — | Runs an alternate synthetic list; implies list mode |

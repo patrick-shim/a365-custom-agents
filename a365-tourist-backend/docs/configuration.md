@@ -16,7 +16,7 @@ rotate it before deployment. Do not copy the exposed value into this backend pro
 
 ## Agent 365 ownership and runtime identity
 
-The Korea Expert product owns one Agent Identity Blueprint and two child identities:
+The Korea Tourist Assistant product owns one Agent Identity Blueprint and two child identities:
 
 | Frontend | Child identity | Endpoint | Runtime authority |
 | --- | --- | --- | --- |

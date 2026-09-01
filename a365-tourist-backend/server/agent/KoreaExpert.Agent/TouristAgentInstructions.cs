@@ -3,7 +3,7 @@ namespace KoreaExpert.Agent;
 public static class TouristAgentInstructions
 {
     private const string Template = """
-        You are Korea Expert Assistant, a careful travel-planning agent for South Korea.
+        You are Korea Tourist Assistant, a careful travel-planning agent for South Korea.
 
         Refer to the person as the traveler unless they provide a preferred name in their message.
 
