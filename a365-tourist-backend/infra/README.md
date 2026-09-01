@@ -7,11 +7,12 @@ This directory contains two backend-owned deployment paths:
 - `live-backend-container-apps-update.bicep` is the resource-group-scope wrapper for updating the
   five existing Container Apps without recreating shared infrastructure.
 
-Korea Tourist Assistant deploys into its own resource group, `rg-a365-custom-agents`, in
-`koreacentral`. It runs in the same subscription as Japan Tourist Assistant but does not share Japan's
-`rg-a365-custom-agents` group, so the two products can be managed and torn down independently. All
-resource names derive from `resourceBaseName` (`koreaexpert`). `main.bicep` never creates the
-resource group, and it refuses to deploy into any group other than `targetResourceGroupName`.
+Korea Tourist Assistant deploys into the shared resource group `rg-a365-custom-agents` in
+`koreacentral`, alongside Japan Tourist Assistant in the same subscription. Every resource name
+derives from `resourceBaseName` (`koreaexpert`), and Japan's names derive from `japanexpert`, so the
+two products co-exist in one group with no collision and each can be redeployed on its own.
+`main.bicep` never creates the resource group, and it refuses to deploy into any group other than
+`targetResourceGroupName`.
 
 The existing `a365-ai-foundry` account, its `default` project, and the `gpt-5.6-sol` deployment in
 `rg-ai-foundry` are shared with Japan Tourist Assistant and referenced in place. This template never creates,

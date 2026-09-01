@@ -56,21 +56,25 @@ Five workspace workflows in [.github/workflows](.github/workflows), all `windows
 | `direct-line-ci.yml` | 10 min | Direct Line build, tests, and committed-credential rejection |
 | `contract-alignment-ci.yml` | 5 min | Cross-project contract equality |
 
-## Current M7 deployment checkpoint
+## Current deployment checkpoint
 
-- Shared host: revision `0000028`, healthy and receiving 100% traffic.
-- Host image: `sha256:161f9b8fa401012d5d87ccef1c215c23515709850496f585e0aca66f93b1f771`.
-- Verified rollback: revision `0000027`, image
-  `sha256:9dd1e4d22f824504c375cd112da36b8b25ace68aa4b8e23af12dd0de2a09004c`.
-- Attractions, weather, accommodation, and currency MCP services: revision `0000005` on their
-  approved immutable digests.
-- Direct Line: three isolated synthetic passport, South Korean resident-registration, and credit
-  card cases were blocked before model access on revision `0000028`; model requests remained zero in
-  the covered interval.
+Rebuilt on 2026-09-01 into the shared resource group `rg-a365-custom-agents` in `koreacentral`,
+alongside Japan Tourist Assistant. Every resource name is suffixed `koreaexpert`, so the two products
+co-exist in one group without collision.
+
+- Shared host `ca-agent-koreaexpert`: revision `0000001`, healthy, 100% traffic, `/api/health` 200.
+- All four MCP services on revision `0000001` and healthy.
+- Agent 365 objects were recreated from scratch: Blueprint `Korea Tourist Assistant BP`, child
+  identity `Korea Tourist Assistant ID`, and a new agent registration.
+- `a365 query-entra inheritance` reports 7 of 7 resources effective, including `api-koreaexpert`.
+- Both federated identity credentials point at the rebuilt host managed identity.
+
+Channel acceptance is open: the rebuild issued new Blueprint objects and a new OBO channel secret, so
+no cached user token exists and the first turn of each channel returns a sign-in card. A governed turn
+must be replayed and recorded per channel before this checkpoint counts as accepted.
 
 This is a dated operational checkpoint, not deployment authority. The detailed sanitized record is
-in [the backend M7 runbook](a365-tourist-backend/docs/milestones/M7-end-to-end-alignment.md). OBO Teams
-and AI Teammate must still have same-revision acceptance recorded before M7 is declared complete.
+in [the backend M7 runbook](a365-tourist-backend/docs/milestones/M7-end-to-end-alignment.md).
 
 ## Agent Identity Entra wiring
 
