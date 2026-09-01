@@ -20,9 +20,9 @@ type ContainerAppSetting = {
 
 @description('The only approved backend resource group. The deployment fails if it targets any other group.')
 @allowed([
-  'a365-custom-agents'
+  'rg-a365-custom-agents'
 ])
-param targetResourceGroupName string = 'a365-custom-agents'
+param targetResourceGroupName string = 'rg-a365-custom-agents'
 
 // Deployment-time scope guard. The lookup below has exactly one key, so a deployment that targets
 // any other resource group fails during ARM validation with an error that names the approved group.
@@ -153,7 +153,7 @@ param oboOAuthConnectionName string = 'japan-expert-obo'
 
 @description('User-Agent sent to OpenStreetMap Overpass and MET Norway. Must name the product and carry a public contact reference; never a mailbox or tenant identifier.')
 @minLength(16)
-param mcpUserAgent string = 'JapanExpertMcp/1.0 (+https://github.com/patrick-shim/a365-custom-agents)'
+param mcpUserAgent string = 'JapanExpertMcp/1.0 (+https://github.com/patrick-shim/rg-a365-custom-agents)'
 
 @description('OpenStreetMap Overpass interpreter endpoint used for Japan place search.')
 @minLength(1)

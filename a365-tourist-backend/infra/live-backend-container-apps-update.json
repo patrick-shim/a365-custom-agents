@@ -36,9 +36,9 @@
   "parameters": {
     "targetResourceGroupName": {
       "type": "string",
-      "defaultValue": "a365-custom-agents",
+      "defaultValue": "rg-a365-custom-agents",
       "allowedValues": [
-        "a365-custom-agents"
+        "rg-a365-custom-agents"
       ],
       "metadata": {
         "description": "The only approved backend resource group. The deployment fails if it targets any other group."
@@ -253,7 +253,7 @@
     },
     "mcpUserAgent": {
       "type": "string",
-      "defaultValue": "JapanExpertMcp/1.0 (+https://github.com/patrick-shim/a365-custom-agents)",
+      "defaultValue": "JapanExpertMcp/1.0 (+https://github.com/patrick-shim/rg-a365-custom-agents)",
       "minLength": 16,
       "metadata": {
         "description": "User-Agent sent to OpenStreetMap Overpass and MET Norway. Must name the product and carry a public contact reference; never a mailbox or tenant identifier."

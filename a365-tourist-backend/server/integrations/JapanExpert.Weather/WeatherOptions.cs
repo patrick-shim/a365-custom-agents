@@ -86,7 +86,7 @@ public sealed class MetNorwayOptions
     /// principal name, or any other tenant-bound identifier. Operators may override it.
     /// </summary>
     public const string DefaultUserAgent =
-        "JapanExpertMcp/1.0 (+https://github.com/patrick-shim/a365-custom-agents)";
+        "JapanExpertMcp/1.0 (+https://github.com/patrick-shim/rg-a365-custom-agents)";
 
     /// <summary>Enables the labelled third-party current-conditions source.</summary>
     public bool Enabled { get; init; } = true;

@@ -21,7 +21,7 @@ public sealed class OverpassOptions
     /// other tenant-bound identifier so it is safe to commit. Operators may override it.
     /// </summary>
     public const string DefaultUserAgent =
-        "JapanExpertMcp/1.0 (+https://github.com/patrick-shim/a365-custom-agents)";
+        "JapanExpertMcp/1.0 (+https://github.com/patrick-shim/rg-a365-custom-agents)";
 
     [Required]
     public string Endpoint { get; init; } = DefaultEndpoint;

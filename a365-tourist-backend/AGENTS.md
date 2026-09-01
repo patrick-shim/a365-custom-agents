@@ -58,14 +58,14 @@ owns the clean deployment plus new Agent 365 registrations. Preserve `/api/messa
 `/api/messages/obo`, their distinct audiences, one shared Blueprint with two child identities,
 fail-closed Purview, and the existing frontend/backend ownership boundary.
 
-The backend is deployed into `a365-custom-agents`, and OBO Teams and OBO Direct Line both have live
+The backend is deployed into `rg-a365-custom-agents`, and OBO Teams and OBO Direct Line both have live
 accepted turns. AI Teammate has a built package but no live turn, so M8 stays active. Two runtime
 facts are easy to regress and are covered by tests: the host reaches the model through the Foundry
 **account** endpoint plus `/openai/v1`, never the project-scoped path; and each federated connection
 has exactly one correct audience, with `ServiceConnection` on the Agent 365 Messaging Bot API,
 `OboServiceConnection` on Entra token exchange, and `OboChannelConnection` on the Bot Connector.
 
-All new backend resources belong only in the existing `a365-custom-agents` resource group. Refer
+All new backend resources belong only in the existing `rg-a365-custom-agents` resource group. Refer
 to the existing `a365-ai-foundry/default` project and `gpt-5.6-sol` deployment across resource groups;
 do not recreate Foundry. Seoul deployment and registration records under M0-M7 are historical only
 and cannot seed Japan Tourist Assistant identities, packages, or deployment parameters.

@@ -2591,7 +2591,7 @@ function Get-JexDeploymentPolicy {
     param([string] $RepositoryRoot = $script:DefaultRepositoryRoot)
 
     $root = Resolve-JexRepositoryRoot -RepositoryRoot $RepositoryRoot
-    $approvedResourceGroup = 'a365-custom-agents'
+    $approvedResourceGroup = 'rg-a365-custom-agents'
     $foundryResourceGroup = 'rg-ai-foundry'
     $foundryAccountName = 'a365-ai-foundry'
     $foundryProjectName = 'default'

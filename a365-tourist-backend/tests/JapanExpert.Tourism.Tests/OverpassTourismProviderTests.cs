@@ -398,9 +398,9 @@ public sealed class OverpassTourismProviderTests
         var userAgent = new OverpassOptions().UserAgent;
 
         Assert.AreEqual(
-            "JapanExpertMcp/1.0 (+https://github.com/patrick-shim/a365-custom-agents)",
+            "JapanExpertMcp/1.0 (+https://github.com/patrick-shim/rg-a365-custom-agents)",
             userAgent);
-        StringAssert.Contains(userAgent, "+https://github.com/patrick-shim/a365-custom-agents");
+        StringAssert.Contains(userAgent, "+https://github.com/patrick-shim/rg-a365-custom-agents");
         Assert.DoesNotContain("@", userAgent, StringComparison.Ordinal);
         Assert.DoesNotContain("example.com", userAgent, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("TODO", userAgent, StringComparison.OrdinalIgnoreCase);
@@ -418,7 +418,7 @@ public sealed class OverpassTourismProviderTests
             TestContext.CancellationToken);
 
         Assert.AreEqual(
-            "JapanExpertMcp/1.0 (+https://github.com/patrick-shim/a365-custom-agents)",
+            "JapanExpertMcp/1.0 (+https://github.com/patrick-shim/rg-a365-custom-agents)",
             handler.UserAgent);
     }
 

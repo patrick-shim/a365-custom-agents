@@ -15,7 +15,7 @@ deployment paths:
 
 | Boundary | Value |
 | --- | --- |
-| Target resource group | existing `a365-custom-agents` (never created by these templates) |
+| Target resource group | existing `rg-a365-custom-agents` (never created by these templates) |
 | Template scope | `resourceGroup` in both entry templates |
 | Foundry account | existing `a365-ai-foundry` in `rg-ai-foundry`, referenced only |
 | Foundry project | existing `default` |
@@ -110,7 +110,7 @@ Premium features are not required. Changing the tier is a reviewed cost and capa
 
 ### Committed identifier policy
 
-Source may commit fixed non-secret names: the target resource group `a365-custom-agents`, the
+Source may commit fixed non-secret names: the target resource group `rg-a365-custom-agents`, the
 existing Foundry account `a365-ai-foundry`, its `default` project, its endpoint, and the
 `gpt-5.6-sol` model deployment. Source must never commit the subscription GUID, tenant or directory
 ID, an owner user principal name, any principal or object ID, or a full ARM resource ID. Those stay
@@ -118,7 +118,7 @@ command parameters or `<placeholder>` values, and the runbook below constructs a
 them at run time. `./tools/Test-Repository.ps1` fails the build if one is committed.
 
 `location` defaults to `resourceGroup().location` in the template and is pinned to `koreacentral` in
-the parameter file, because the existing `a365-custom-agents` group and the existing
+the parameter file, because the existing `rg-a365-custom-agents` group and the existing
 `a365-ai-foundry` account both live in Korea Central and every model call is a host-to-Foundry call.
 Overriding `location` to a Japan region is supported and is an approver decision; if you take it,
 re-run the quota and availability checks for that region and accept the cross-region model latency.
@@ -151,7 +151,7 @@ effectiveness. Scale changes require a shared-cache/single-flight review.
 
 | Parameter | Default | Deployed setting |
 | --- | --- | --- |
-| `mcpUserAgent` | `JapanExpertMcp/1.0 (+https://github.com/patrick-shim/a365-custom-agents)` | `Overpass__UserAgent`, `MetNorway__UserAgent` |
+| `mcpUserAgent` | `JapanExpertMcp/1.0 (+https://github.com/patrick-shim/rg-a365-custom-agents)` | `Overpass__UserAgent`, `MetNorway__UserAgent` |
 | `overpassEndpoint` | `https://overpass-api.de/api/interpreter` | `Overpass__Endpoint` |
 | `jmaForecastEnabled` | `true` | `Jma__ForecastEnabled` |
 | `jmaForecastBaseAddress` | `https://www.jma.go.jp/bosai/forecast/data/forecast/` | `Jma__ForecastBaseAddress` |
@@ -199,7 +199,7 @@ over HTTPS with a commit-safe User-Agent and no retired provider setting.
 
 Inside the template boundary, and therefore covered by ARM validation, what-if, and rollback:
 
-- All Azure resources listed above, in `a365-custom-agents` only.
+- All Azure resources listed above, in `rg-a365-custom-agents` only.
 - ACR `AcrPull` for the five workload identities. No workload holds any other data-plane role,
   because every active MCP data source is a credential-free public API.
 - The `api-japanexpert` Entra application and service principal exposing delegated `Mcp.Invoke`.
@@ -210,7 +210,7 @@ Inside the template boundary, and therefore covered by ARM validation, what-if, 
 ### Azure Bot and Direct Line
 
 The Agent 365 CLI does not create Azure Bot resources, so the bot and its channels belong to this
-template and land in `a365-custom-agents` like every other resource. The bot is bound to the
+template and land in `rg-a365-custom-agents` like every other resource. The bot is bound to the
 protected OBO route and to the OBO channel application:
 
 | Parameter | Default | Purpose |
@@ -374,7 +374,7 @@ explicit approval.
 
 ```powershell
 $subscriptionId = '<subscription-id>'
-$resourceGroup  = 'a365-custom-agents'
+$resourceGroup  = 'rg-a365-custom-agents'
 $foundryGroup   = 'rg-ai-foundry'
 
 az account show --subscription $subscriptionId --output json
@@ -465,7 +465,7 @@ az deployment group validate `
   --output json
 ```
 
-A validation error that names `a365-custom-agents` means the command targeted the wrong group.
+A validation error that names `rg-a365-custom-agents` means the command targeted the wrong group.
 Fix the command, never the guard.
 
 ### 6. Structured what-if
@@ -481,7 +481,7 @@ az deployment group what-if `
   --no-pretty-print
 ```
 
-Review before approval: every change is a create in `a365-custom-agents`, there is no resource
+Review before approval: every change is a create in `rg-a365-custom-agents`, there is no resource
 group create, no resource lands in `rg-ai-foundry`, no Foundry resource is modified, and every Entra
 object is expected. Reject unreviewed identity, RBAC, SKU, region, scale, ingress, route, audience,
 Blueprint, child-ID, or secret drift.
@@ -575,7 +575,7 @@ az containerapp revision list --name ca-agent-japanexpert --resource-group $reso
   and what-if it through the same commands, then deploy it. A revision-level rollback is
   `az containerapp ingress traffic set` back to the recorded healthy revision.
 - Infrastructure rollback for a first deployment: delete only the resources this deployment created
-  in `a365-custom-agents`. Never delete the resource group, anything in `rg-ai-foundry`, or the
+  in `rg-a365-custom-agents`. Never delete the resource group, anything in `rg-ai-foundry`, or the
   historical Seoul production boundary.
 - Directory rollback: delete only the `api-japanexpert` application and service principal created by
   this deployment.
@@ -699,7 +699,7 @@ grant set rather than adding to it.
 
 ## Rebuilding into a new resource group
 
-Both products share the single resource group `a365-custom-agents` in `koreacentral`. Every resource
+Both products share the single resource group `rg-a365-custom-agents` in `koreacentral`. Every resource
 name is suffixed with `resourceBaseName`, so `japanexpert` and `koreaexpert` resources co-exist there
 with no collision.
 
@@ -736,7 +736,7 @@ name must be purged before the name can be reused.
 Full order:
 
 ```powershell
-$resourceGroup = 'a365-custom-agents'
+$resourceGroup = 'rg-a365-custom-agents'
 az group create --name $resourceGroup --location koreacentral
 
 # 1. Infrastructure on placeholder images.
