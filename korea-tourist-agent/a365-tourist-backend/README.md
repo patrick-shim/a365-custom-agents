@@ -24,6 +24,7 @@ flowchart LR
     Host --> Agent[Microsoft Agent Framework core]
     Host --> A365[Agent 365 SDK]
     Host --> Purview[Purview prompt and response DLP]
+    Host --> Shield[Prompt Shields injection guard]
     Host -. gated .-> WorkIQ[WorkIQ]
     Host --> MCP[Custom MCP services]
     MCP --> Attractions[Attractions]
@@ -339,6 +340,28 @@ That separate guard is `ToolContentProtector`. It wraps `FunctionInvocationConte
 `IToolContentEvaluator.EvaluateAsync` throws to block; there is no permissive path. Content exceeding
 the character cap is rejected rather than truncated, so an oversized payload cannot slip past policy
 evaluation.
+
+### Prompt Shields injection guard
+
+Purview answers "does this content violate a data protection policy?". It does not answer "is this
+content trying to hijack the agent?". Azure AI Content Safety Prompt Shields answers the second
+question, and both run on every turn through `CompositeToolContentEvaluator` — either can reject.
+
+`PromptShieldGuard` screens the user prompt before any model or tool call, and screens tool
+**results** through `PromptShieldToolContentEvaluator`. Results are the indirect-injection vector: a
+hostile instruction planted in an upstream description would otherwise reach the model as trusted
+grounding. Arguments are not re-screened because the model derives them from an already-screened
+prompt.
+
+The guard is fail-closed on every path — a detected attack, a transport error, a non-success status,
+an unparsable body, or content needing more segments than allowed all stop the turn. It
+authenticates with a per-turn child Agent Identity token on
+`https://cognitiveservices.azure.com/.default`, so no Content Safety key exists in the deployment,
+and because Prompt Shields never sees the model it keeps working if inference moves outside Azure.
+
+No extra Azure resource is needed: the existing multi-service `AIServices` account already publishes
+the Content Safety surface. The guard ships disabled; see
+[docs/configuration.md](docs/configuration.md) for the settings and the role needed to enable it.
 
 Each protected turn receives a fresh Purview wrapper so protection-scope and ETag state is never
 shared across requests. The host registry retains created wrappers long enough for background audit

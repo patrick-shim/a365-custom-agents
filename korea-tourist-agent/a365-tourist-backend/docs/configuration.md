@@ -107,6 +107,12 @@ confidential-client FMI or OBO exchanges required here.
 | `PurviewDlp__ApplicationId` | Fallback Purview application location. Protected turns resolve the active frontend audience: Blueprint for Agentic User and the single-tenant channel app for OBO. |
 | `PurviewDlp__UseCompatibilityProxy` | Enables the loopback-only request compatibility layer required by `Microsoft.Agents.AI.Purview` 1.17.0-rc1. Production sets this to `true`. |
 | `PurviewDlp__CompatibilityProxyBaseUri` | Loopback-only proxy URI; default `http://127.0.0.1:8080/internal/purview/`. External callers receive 404. |
+| `PromptShield__Enabled` | Enables the fail-closed Prompt Shields prompt-injection guard. Ships `false`; see [Prompt injection defence](#prompt-injection-defence-prompt-shields). |
+| `PromptShield__Endpoint` | Content Safety endpoint, such as `https://<account>.cognitiveservices.azure.com`. Required when the guard is enabled; startup fails otherwise. |
+| `PromptShield__ApiVersion` | Prompt Shields API version; default `2024-09-01`. |
+| `PromptShield__MaximumSegmentCharacters` | Per-request character ceiling before content is split into segments; default `10000`. |
+| `PromptShield__MaximumSegments` | Maximum segments evaluated for one piece of content; default `16`. Content needing more is rejected rather than partially screened. |
+| `PromptShield__TimeoutSeconds` | Prompt Shields HTTP timeout; default `10`. A timeout rejects the turn. |
 | `TokenValidation__Enabled` | Must remain `true` outside Development/Playground. |
 | `TokenValidation__TenantId` | Exact home tenant accepted by both protected frontend modes. |
 | `TokenValidation__Audiences__AgenticUser` | Shared Blueprint bot application ID accepted on `/api/messages`. |
@@ -160,6 +166,38 @@ turn binds downstream token acquisition and observability to that route's config
 and tenant, rejecting mismatched activity metadata. The OBO child setting must equal the OBO route
 audience. Each protected turn also requires the human sender's Entra object ID; missing identity or
 Purview service failure is rejected rather than sent to the model.
+
+## Prompt injection defence (Prompt Shields)
+
+Azure AI Content Safety Prompt Shields screens two surfaces on every turn and fails closed:
+
+| Surface | What it catches | Where it runs |
+| --- | --- | --- |
+| User prompt | Direct jailbreak, "ignore your instructions" | After the per-turn token scope is pushed, before any model or tool call |
+| Tool result | Indirect injection planted in third-party data | Inside `IToolContentEvaluator`, alongside the Purview evaluator |
+
+Tool results matter because Purview chat middleware inspects prompts and model responses, not tool
+arguments and results. Without this guard, a hostile instruction embedded in an upstream place
+description or forecast would reach the model as trusted grounding. Tool *arguments* are not
+screened: the model generates them from a prompt that was already screened on the way in.
+
+Every failure path rejects the turn. A detected attack, a transport error, a non-success status, an
+unparsable body, and content that would need more than `MaximumSegments` segments all stop the turn
+and return a message carrying an error code (`STA-SHIELD-001` for a blocked prompt, `-002` for a
+blocked tool result, `-003` for an evaluation failure).
+
+**No extra Azure resource is required.** Prompt Shields lives on the Content Safety surface of a
+Cognitive Services account, and the multi-service `AIServices` account this sample already
+references publishes it. `infra/main.bicep` therefore defaults `promptShieldEndpoint` to
+`https://<foundryAccountName>.cognitiveservices.azure.com`. Set the parameter explicitly to point at
+a dedicated `ContentSafety` account instead — useful when inference runs outside Azure, since Prompt
+Shields is a standalone text classifier that never sees the model or its credential.
+
+To enable it, deploy with `promptShieldEnabled=true` and grant the child Agent Identity a role that
+covers the Content Safety data plane on the target account (`Cognitive Services User` is
+sufficient). The guard authenticates with a per-turn child Agent Identity token on the
+`https://cognitiveservices.azure.com/.default` scope — a different audience from Foundry inference —
+so there is no Content Safety key in configuration or in the container environment.
 
 ## Internal MCP authorization
 

@@ -723,6 +723,8 @@ function Test-StaRepositoryConfiguration {
     $internalMcpCatalogTestsPath = Join-Path $root 'tests\KoreaExpert.AgentHost.Tests\InternalMcpToolCatalogTests.cs'
     $mcpAuthorizationPath = Join-Path $root 'server\mcp\shared\KoreaExpert.Mcp.Hosting\McpWorkloadAuthorization.cs'
     $mcpAuthorizationTestsPath = Join-Path $root 'tests\KoreaExpert.Mcp.Hosting.Tests\McpWorkloadAuthorizationTests.cs'
+    $promptShieldPath = Join-Path $root 'server\agent-host\KoreaExpert.AgentHost\PromptShieldGuard.cs'
+    $promptShieldToolContentPath = Join-Path $root 'server\agent-host\KoreaExpert.AgentHost\PromptShieldToolContentEvaluator.cs'
     $mainBicepPath = Join-Path $root 'infra\main.bicep'
     $hostBicepPath = Join-Path $root 'infra\modules\agent-host-container-app.bicep'
     $mcpApiApplicationBicepPath = Join-Path $root 'infra\modules\mcp-api-application.bicep'
@@ -746,6 +748,8 @@ function Test-StaRepositoryConfiguration {
     $internalMcpCatalogTestsContent = Get-Content -LiteralPath $internalMcpCatalogTestsPath -Raw
     $mcpAuthorizationContent = Get-Content -LiteralPath $mcpAuthorizationPath -Raw
     $mcpAuthorizationTestsContent = Get-Content -LiteralPath $mcpAuthorizationTestsPath -Raw
+    $promptShieldContent = Get-Content -LiteralPath $promptShieldPath -Raw
+    $promptShieldToolContent = Get-Content -LiteralPath $promptShieldToolContentPath -Raw
     $mainBicepContent = Get-Content -LiteralPath $mainBicepPath -Raw
     $hostBicepContent = Get-Content -LiteralPath $hostBicepPath -Raw
     $mcpApiApplicationBicepContent = Get-Content -LiteralPath $mcpApiApplicationBicepPath -Raw
@@ -858,6 +862,22 @@ function Test-StaRepositoryConfiguration {
         $hostBicepContent -match "(?s)\{\s*name:\s*'AgentIdentityObo__AgentId'\s*value:\s*agent365AgentIds\.onBehalfOf\s*\}" -and
         $hostBicepContent -match "(?s)\{\s*name:\s*'AgentIdentityObo__BlueprintConnectionName'\s*value:\s*'OboServiceConnection'\s*\}"
 
+    # PROMPT SHIELDS: both surfaces must stay screened and every failure path must reject the turn.
+    # The user prompt is screened before the model, and tool results are screened because Purview
+    # chat middleware does not inspect them.
+    $promptShieldGuardPresent = $promptShieldContent.Contains('PromptShieldSurface.UserPrompt', [StringComparison]::Ordinal) -and
+        $promptShieldContent.Contains('PromptShieldSurface.Document', [StringComparison]::Ordinal) -and
+        $promptShieldContent.Contains('contentsafety/text:shieldPrompt', [StringComparison]::Ordinal) -and
+        $promptShieldContent.Contains('throw new PromptShieldBlockedException', [StringComparison]::Ordinal) -and
+        $promptShieldContent.Contains('throw new PromptShieldEvaluationException', [StringComparison]::Ordinal)
+    $promptShieldFailsClosed = $applicationContent.Contains('_promptShieldGuard.EvaluateAsync', [StringComparison]::Ordinal) -and
+        $applicationContent.Contains('catch (PromptShieldBlockedException)', [StringComparison]::Ordinal) -and
+        $applicationContent.Contains('_promptShieldOptions.EvaluationFailureMessage', [StringComparison]::Ordinal) -and
+        $promptShieldToolContent.Contains('PromptShieldSurface.Document', [StringComparison]::Ordinal) -and
+        $programContent.Contains('CompositeToolContentEvaluator', [StringComparison]::Ordinal)
+    $promptShieldKeyless = -not ($promptShieldContent -match '(?i)Ocp-Apim-Subscription-Key|api-key') -and
+        $promptShieldContent.Contains('AgentIdentityAuthorizationScopes.ContentSafety', [StringComparison]::Ordinal)
+
     $oboExchangeCallCount = [regex]::Matches(
         $applicationContent,
         '_oboTokenExchange\.ExchangeAsync\s*\(').Count
@@ -868,10 +888,11 @@ function Test-StaRepositoryConfiguration {
         $applicationContent,
         '_oboTokenExchange\.AcquireAppTokenAsync\s*\(').Count
     $oboPerResourceExchange = $oboRawAssertionCount -eq 1 -and
-        $oboExchangeCallCount -eq 3 -and
+        $oboExchangeCallCount -eq 4 -and
         $oboAppTokenCallCount -eq 1 -and
         $applicationContent -match '(?s)oboUserAssertion\s*=\s*await UserAuthorization\.GetTurnTokenAsync\s*\(\s*turnContext\s*,\s*handlers\.FoundryAuthHandlerName' -and
         $applicationContent.Contains('[AgentIdentityAuthorizationScopes.Foundry]', [StringComparison]::Ordinal) -and
+        $applicationContent.Contains('[AgentIdentityAuthorizationScopes.ContentSafety]', [StringComparison]::Ordinal) -and
         $applicationContent.Contains('[AgentIdentityAuthorizationScopes.GraphDefault]', [StringComparison]::Ordinal) -and
         $applicationContent.Contains('[AgentIdentityAuthorizationScopes.InternalMcpDefault(_internalMcpOptions.Audience)]', [StringComparison]::Ordinal) -and
         $applicationContent -match '(?s)_oboTokenExchange\.AcquireAppTokenAsync\s*\(\s*tenantId\s*,\s*resolvedAgentId\s*,\s*observabilityScopes'
@@ -984,6 +1005,18 @@ function Test-StaRepositoryConfiguration {
     }
 
     foreach ($boundaryCheck in @(
+        @{
+            Name        = 'Prompt Shields fail-closed injection guard'
+            Valid       = $promptShieldGuardPresent -and $promptShieldFailsClosed -and $promptShieldKeyless
+            PassMessage = 'Prompt Shields screens the user prompt and tool results, rejects the turn on block or evaluation failure, and authenticates with a child Agent Identity token rather than an account key.'
+            FailMessage = 'The Prompt Shields guard is missing, no longer screens both surfaces, fails open, or uses an account key.'
+            Remediation = 'Restore PromptShieldGuard for both PromptShieldSurface values, keep the blocked and evaluation-failure branches returning from the turn, register CompositeToolContentEvaluator, and keep authentication on AgentIdentityAuthorizationScopes.ContentSafety.'
+            Data        = @{
+                GuardPresent = $promptShieldGuardPresent
+                FailsClosed  = $promptShieldFailsClosed
+                Keyless      = $promptShieldKeyless
+            }
+        },
         @{
             Name        = 'OBO authorization configuration boundary'
             Valid       = $oboConfigurationBoundary

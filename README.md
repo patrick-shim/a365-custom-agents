@@ -21,10 +21,14 @@ enterprise deployment has to be built:
 
 - **No API keys anywhere in the inference path.** The agent authenticates to Microsoft Foundry with
   a token bound to an Agent 365 *child identity*, resolved fresh on every turn.
-- **The agent acts as the signed-in user, not as itself.** Three separate on-behalf-of exchanges per
-  turn - one for the model, one for Microsoft Graph, one for the private tool API.
+- **The agent acts as the signed-in user, not as itself.** Up to four separate on-behalf-of exchanges
+  per turn - one for the model, one for Microsoft Graph, one for the private tool API, and one for
+  Content Safety when the prompt-injection guard is enabled.
 - **Data protection is fail-closed.** If Microsoft Purview cannot evaluate a prompt or response, the
   turn is rejected rather than allowed through.
+- **Prompt injection is screened fail-closed too.** Azure AI Content Safety Prompt Shields checks the
+  user's message *and* the text tools return, closing the indirect-injection gap that prompt/response
+  DLP does not cover. Off by default; no extra Azure resource needed to turn it on.
 - **Tools are real services, not functions.** Four independently deployed MCP servers behind internal
   ingress, each requiring a delegated token.
 - **One backend, three channels.** A Teams app, a console client, and a Microsoft 365 AI Teammate all
@@ -52,6 +56,7 @@ flowchart TB
   HOST -.->|resolves per turn| ID
 
   HOST --> PV["Microsoft Purview<br/>fail-closed prompt + response DLP"]
+  HOST --> PS["Prompt Shields<br/>fail-closed injection guard, optional"]
   HOST --> FDY["Microsoft Foundry<br/>Responses API, keyless"]
   HOST --> MCP["4 MCP services<br/>internal ingress, Mcp.Invoke"]
   HOST --> OBS["Agent 365 observability<br/>OTLP export"]
@@ -72,6 +77,7 @@ sequenceDiagram
   participant H as Agent host
   participant E as Microsoft Entra
   participant P as Purview
+  participant S as Prompt Shields
   participant M as MCP services
   participant F as Foundry
 
@@ -79,12 +85,16 @@ sequenceDiagram
   B->>H: activity + user token (OBO connection)
   H->>E: validate token audience for this channel
   H->>E: parent token via federated credential (fmi_path)
-  H->>E: child OBO exchange x3 (Foundry / Graph / Mcp.Invoke)
+  H->>E: child OBO exchange (Foundry / Graph / Mcp.Invoke / Content Safety)
   Note over H,E: the child inherits every grant from the Blueprint
+  H->>S: screen user prompt for injection (fail-closed)
+  S-->>H: allow or block
   H->>P: evaluate prompt (fail-closed)
   P-->>H: allow or block
   H->>M: discover and invoke tools (delegated token)
   M-->>H: grounded results
+  H->>S: screen tool results for indirect injection (fail-closed)
+  S-->>H: allow or block
   H->>F: model call with child token, no API key
   F-->>H: response
   H->>P: evaluate response (fail-closed)

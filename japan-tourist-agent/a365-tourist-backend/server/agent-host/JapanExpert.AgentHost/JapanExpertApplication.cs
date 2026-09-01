@@ -34,6 +34,8 @@ public sealed partial class JapanExpertApplication : AgentApplication
     private readonly Agent365HostOptions _agent365Options;
     private readonly AgentHostOptions _agentHostOptions;
     private readonly PurviewDlpOptions _purviewDlpOptions;
+    private readonly PromptShieldGuard _promptShieldGuard;
+    private readonly PromptShieldOptions _promptShieldOptions;
     private readonly InternalMcpOptions _internalMcpOptions;
     private readonly AgentIdentityAuthorizationOptions _authorizationOptions;
     private readonly AgentIdentityOboOptions _oboOptions;
@@ -55,6 +57,8 @@ public sealed partial class JapanExpertApplication : AgentApplication
         IOptions<AgentHostOptions> agentHostOptions,
         IOptions<Agent365HostOptions> agent365Options,
         IOptions<PurviewDlpOptions> purviewDlpOptions,
+        PromptShieldGuard promptShieldGuard,
+        IOptions<PromptShieldOptions> promptShieldOptions,
         IOptions<InternalMcpOptions> internalMcpOptions,
         IOptions<AgentIdentityAuthorizationOptions> authorizationOptions,
         IOptions<AgentIdentityOboOptions> oboOptions,
@@ -75,6 +79,8 @@ public sealed partial class JapanExpertApplication : AgentApplication
         _agentHostOptions = agentHostOptions.Value;
         _agent365Options = agent365Options.Value;
         _purviewDlpOptions = purviewDlpOptions.Value;
+        _promptShieldGuard = promptShieldGuard;
+        _promptShieldOptions = promptShieldOptions.Value;
         _internalMcpOptions = internalMcpOptions.Value;
         _authorizationOptions = authorizationOptions.Value;
         _oboOptions = oboOptions.Value;
@@ -233,6 +239,37 @@ public sealed partial class JapanExpertApplication : AgentApplication
                 : null;
 
         await turnContext.SendActivityAsync(Activity.CreateTypingActivity(), cancellationToken);
+
+        // ==================== PROMPT SHIELDS: SCREEN THE USER PROMPT, FAIL CLOSED =================
+        // Runs after the token scope is pushed so the guard can use the per-turn child identity
+        // token, and before any model or tool call so a hijack attempt never reaches them.
+        if (_promptShieldGuard.Enabled)
+        {
+            try
+            {
+                await _promptShieldGuard.EvaluateAsync(
+                    userText ?? string.Empty,
+                    PromptShieldSurface.UserPrompt,
+                    cancellationToken);
+            }
+            catch (PromptShieldBlockedException)
+            {
+                LogPromptShieldBlocked(_logger, PromptShieldSurface.UserPrompt, frontendMode);
+                await turnContext.SendActivityAsync(
+                    MessageFactory.Text(_promptShieldOptions.BlockedPromptMessage),
+                    cancellationToken);
+                return;
+            }
+            catch (Exception exception) when (!RequestCancellation.IsRequested(exception, cancellationToken))
+            {
+                LogPromptShieldUnavailable(_logger, exception.GetType().Name);
+                await turnContext.SendActivityAsync(
+                    MessageFactory.Text(_promptShieldOptions.EvaluationFailureMessage),
+                    cancellationToken);
+                return;
+            }
+        }
+        // ==================== END PROMPT SHIELDS ==================================================
 
         // ==================== PURVIEW DLP: BIND PROMPT TO THE HUMAN ENTRA USER ====================
         var userMessage = new ChatMessage(ChatRole.User, userText);
@@ -516,6 +553,28 @@ public sealed partial class JapanExpertApplication : AgentApplication
         }
 
         accessTokens[AgentIdentityAuthorizationScopes.Foundry] = foundryToken;
+
+        // ==================== PROMPT SHIELDS: SEPARATE CONTENT SAFETY AUDIENCE ====================
+        // Requested independently of the Foundry audience so the guard does not depend on inference
+        // staying inside Azure AI Foundry.
+        if (_promptShieldOptions.Enabled)
+        {
+            accessTokens[AgentIdentityAuthorizationScopes.ContentSafety] =
+                frontendMode == AgentFrontendMode.AgenticUser
+                    ? await GetRequiredAgenticTurnTokenAsync(
+                        turnContext,
+                        handlers.FoundryAuthHandlerName,
+                        AgentIdentityAuthorizationScopes.ContentSafety,
+                        resolvedAgentId,
+                        cancellationToken)
+                    : await _oboTokenExchange.ExchangeAsync(
+                        tenantId,
+                        resolvedAgentId,
+                        oboUserAssertion!,
+                        [AgentIdentityAuthorizationScopes.ContentSafety],
+                        cancellationToken);
+        }
+        // ==================== END PROMPT SHIELDS ==================================================
 
         if (_purviewDlpOptions.Enabled)
         {
@@ -811,6 +870,21 @@ public sealed partial class JapanExpertApplication : AgentApplication
         Level = LogLevel.Debug,
         Message = "Agent 365 WorkIQ tool loading is disabled until tooling supports MCP 2.1 and generated tools pass equivalent tool-content protection.")]
     private static partial void LogWorkIqDisabled(ILogger logger);
+
+    [LoggerMessage(
+        EventId = 1009,
+        Level = LogLevel.Warning,
+        Message = "Prompt Shields blocked the turn. surface={Surface} frontendMode={FrontendMode}.")]
+    private static partial void LogPromptShieldBlocked(
+        ILogger logger,
+        PromptShieldSurface surface,
+        AgentFrontendMode frontendMode);
+
+    [LoggerMessage(
+        EventId = 1010,
+        Level = LogLevel.Error,
+        Message = "Prompt Shields evaluation failed closed; the turn was rejected. exceptionType={ExceptionType}.")]
+    private static partial void LogPromptShieldUnavailable(ILogger logger, string exceptionType);
 
     [LoggerMessage(
         EventId = 1007,

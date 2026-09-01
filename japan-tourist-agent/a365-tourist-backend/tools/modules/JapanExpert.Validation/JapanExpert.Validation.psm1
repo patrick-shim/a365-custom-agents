@@ -1029,12 +1029,14 @@ function Test-JexRepositoryConfiguration {
     $internalMcpCatalogTestsPath = $layout.InternalMcpCatalogTestsPath
     $mcpAuthorizationPath = $layout.McpAuthorizationPath
     $mcpAuthorizationTestsPath = $layout.McpAuthorizationTestsPath
+    $promptShieldPath = Join-Path $layout.HostDirectory 'PromptShieldGuard.cs'
+    $promptShieldToolContentPath = Join-Path $layout.HostDirectory 'PromptShieldToolContentEvaluator.cs'
     $missingSourceFiles = @(@(
         $programPath, $applicationPath, $agentProjectPath, $hostProjectPath, $hostSettingsPath,
         $oboExchangePath, $frontendIdentityBindingPath, $internalMcpOptionsPath, $internalMcpCatalogPath,
         $authorizationTestsPath, $oboExchangeTestsPath, $frontendIdentityBindingTestsPath,
         $observabilityTokenCacheTestsPath, $internalMcpCatalogTestsPath, $mcpAuthorizationPath,
-        $mcpAuthorizationTestsPath
+        $mcpAuthorizationTestsPath, $promptShieldPath, $promptShieldToolContentPath
     ) | Where-Object { -not (Test-Path -LiteralPath $_ -PathType Leaf) } |
         ForEach-Object { [IO.Path]::GetRelativePath($root, $_) })
     if ($missingSourceFiles.Count -gt 0) {
@@ -1056,6 +1058,8 @@ function Test-JexRepositoryConfiguration {
     )
     $programContent = Get-Content -LiteralPath $programPath -Raw
     $applicationContent = Get-Content -LiteralPath $applicationPath -Raw
+    $promptShieldContent = Get-Content -LiteralPath $promptShieldPath -Raw
+    $promptShieldToolContent = Get-Content -LiteralPath $promptShieldToolContentPath -Raw
     $agentProjectContent = Get-Content -LiteralPath $agentProjectPath -Raw
     $hostProjectContent = Get-Content -LiteralPath $hostProjectPath -Raw
     $hostSettingsContent = Get-Content -LiteralPath $hostSettingsPath -Raw
@@ -1080,6 +1084,21 @@ function Test-JexRepositoryConfiguration {
         $applicationContent.Contains('_internalMcpTools.OpenAsync', [StringComparison]::Ordinal)
     $workIqCompatibilityGate = $programContent.Contains('options => !options.EnableWorkIq', [StringComparison]::Ordinal) -and
         $hostSettingsContent -match '"EnableWorkIq"\s*:\s*false'
+    # PROMPT SHIELDS: the guard must screen both surfaces and stay fail-closed. The user prompt is
+    # screened before the model, and tool results are screened because Purview chat middleware does
+    # not inspect them. Every failure path must reject the turn rather than continue unevaluated.
+    $promptShieldGuardPresent = $promptShieldContent.Contains('PromptShieldSurface.UserPrompt', [StringComparison]::Ordinal) -and
+        $promptShieldContent.Contains('PromptShieldSurface.Document', [StringComparison]::Ordinal) -and
+        $promptShieldContent.Contains('contentsafety/text:shieldPrompt', [StringComparison]::Ordinal) -and
+        $promptShieldContent.Contains('throw new PromptShieldBlockedException', [StringComparison]::Ordinal) -and
+        $promptShieldContent.Contains('throw new PromptShieldEvaluationException', [StringComparison]::Ordinal)
+    $promptShieldFailsClosed = $applicationContent.Contains('_promptShieldGuard.EvaluateAsync', [StringComparison]::Ordinal) -and
+        $applicationContent.Contains('catch (PromptShieldBlockedException)', [StringComparison]::Ordinal) -and
+        $applicationContent.Contains('_promptShieldOptions.EvaluationFailureMessage', [StringComparison]::Ordinal) -and
+        $promptShieldToolContent.Contains('PromptShieldSurface.Document', [StringComparison]::Ordinal) -and
+        $programContent.Contains('CompositeToolContentEvaluator', [StringComparison]::Ordinal)
+    $promptShieldKeyless = -not ($promptShieldContent -match '(?i)Ocp-Apim-Subscription-Key|api-key') -and
+        $promptShieldContent.Contains('AgentIdentityAuthorizationScopes.ContentSafety', [StringComparison]::Ordinal)
     $runtimeDependencyPinning = (
         -not [string]::IsNullOrWhiteSpace(
             (Get-JexPackageVersion -PackageName 'Microsoft.AspNetCore.Authentication.JwtBearer' -RepositoryRoot $root)) -and
@@ -1232,10 +1251,11 @@ function Test-JexRepositoryConfiguration {
         $applicationContent,
         '_oboTokenExchange\.AcquireAppTokenAsync\s*\(').Count
     $oboPerResourceExchange = $oboRawAssertionCount -eq 1 -and
-        $oboExchangeCallCount -eq 3 -and
+        $oboExchangeCallCount -eq 4 -and
         $oboAppTokenCallCount -eq 1 -and
         $applicationContent -match '(?s)oboUserAssertion\s*=\s*await UserAuthorization\.GetTurnTokenAsync\s*\(\s*turnContext\s*,\s*handlers\.FoundryAuthHandlerName' -and
         $applicationContent.Contains('[AgentIdentityAuthorizationScopes.Foundry]', [StringComparison]::Ordinal) -and
+        $applicationContent.Contains('[AgentIdentityAuthorizationScopes.ContentSafety]', [StringComparison]::Ordinal) -and
         $applicationContent.Contains('[AgentIdentityAuthorizationScopes.GraphDefault]', [StringComparison]::Ordinal) -and
         $applicationContent.Contains('[AgentIdentityAuthorizationScopes.InternalMcpDefault(_internalMcpOptions.Audience)]', [StringComparison]::Ordinal) -and
         $applicationContent -match '(?s)_oboTokenExchange\.AcquireAppTokenAsync\s*\(\s*tenantId\s*,\s*resolvedAgentId\s*,\s*observabilityScopes'
@@ -1352,6 +1372,18 @@ function Test-JexRepositoryConfiguration {
 
     foreach ($boundaryCheck in @(
         @{
+            Name        = 'Prompt Shields fail-closed injection guard'
+            Valid       = $promptShieldGuardPresent -and $promptShieldFailsClosed -and $promptShieldKeyless
+            PassMessage = 'Prompt Shields screens the user prompt and tool results, rejects the turn on block or evaluation failure, and authenticates with a child Agent Identity token rather than an account key.'
+            FailMessage = 'The Prompt Shields guard is missing, no longer screens both surfaces, fails open, or uses an account key.'
+            Remediation = 'Restore PromptShieldGuard for both PromptShieldSurface values, keep the blocked and evaluation-failure branches returning from the turn, register CompositeToolContentEvaluator, and keep authentication on AgentIdentityAuthorizationScopes.ContentSafety.'
+            Data        = @{
+                GuardPresent = $promptShieldGuardPresent
+                FailsClosed  = $promptShieldFailsClosed
+                Keyless      = $promptShieldKeyless
+            }
+        },
+        @{
             Name        = 'OBO authorization configuration boundary'
             Valid       = $oboConfigurationBoundary
             PassMessage = 'The sole OBO user handler contains only its Azure Bot OAuth connection setting, with no generic OBO settings in source configuration or Bicep.'
@@ -1370,7 +1402,7 @@ function Test-JexRepositoryConfiguration {
         @{
             Name        = 'OBO per-resource child exchanges'
             Valid       = $oboPerResourceExchange
-            PassMessage = 'One raw user assertion feeds delegated child exchanges for Foundry, Graph, and custom MCP; observability uses one app-only child exchange.'
+            PassMessage = 'One raw user assertion feeds delegated child exchanges for Foundry, Content Safety, Graph, and custom MCP; observability uses one app-only child exchange.'
             FailMessage = 'The turn no longer performs the expected three delegated child exchanges and one app-only observability exchange.'
             Remediation = 'Acquire obo-user once for Foundry, Graph, and custom MCP child OBO, and acquire observability through the app-only child path.'
             Data        = @{ DelegatedExchangeCalls = $oboExchangeCallCount; AppTokenCalls = $oboAppTokenCallCount; RawAssertionCalls = $oboRawAssertionCount }

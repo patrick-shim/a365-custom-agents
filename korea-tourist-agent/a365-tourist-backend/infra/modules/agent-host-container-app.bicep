@@ -11,6 +11,12 @@ param managedIdentityClientId string
 param acrLoginServer string
 param containerImage string = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 param foundryEndpoint string
+
+@description('Enables the Azure AI Content Safety Prompt Shields guard. The guard is fail-closed: when enabled, a turn is rejected if the service cannot be reached.')
+param promptShieldEnabled bool = false
+
+@description('Content Safety account endpoint for Prompt Shields, for example https://<account>.cognitiveservices.azure.com. A multi-service AIServices account already publishes this surface; a dedicated ContentSafety account works equally well. Plain configuration, so the guard does not depend on Foundry.')
+param promptShieldEndpoint string = ''
 param tenantId string
 param mcpAudience string
 param attractionsFqdn string
@@ -67,6 +73,14 @@ var productionEnvironment = [
   {
     name: 'Agent365__EnableWorkIq'
     value: 'false'
+  }
+  {
+    name: 'PromptShield__Enabled'
+    value: string(promptShieldEnabled)
+  }
+  {
+    name: 'PromptShield__Endpoint'
+    value: promptShieldEndpoint
   }
   {
     name: 'PurviewDlp__Enabled'

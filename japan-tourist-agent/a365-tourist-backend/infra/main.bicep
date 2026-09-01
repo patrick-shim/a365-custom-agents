@@ -180,6 +180,12 @@ param foundryModelDeploymentName string = 'gpt-5.6-sol'
 @description('Optional Foundry project endpoint override. Empty derives it from the existing account and project names.')
 param foundryProjectEndpoint string = ''
 
+@description('Enables the Azure AI Content Safety Prompt Shields guard on the agent host. The guard is fail-closed, so enable it only once the host identity can reach the Content Safety endpoint.')
+param promptShieldEnabled bool = false
+
+@description('Content Safety endpoint for Prompt Shields. Defaults to the Content Safety surface of the referenced multi-service account, so no extra Azure resource is required. Set this to point at a dedicated ContentSafety account, including one used when inference runs outside Azure.')
+param promptShieldEndpoint string = ''
+
 @description('Object IDs allowed to reach the Foundry model through a delegated OBO turn. Prefer one group object ID.')
 param agentUserPrincipalIds string[] = []
 
@@ -502,6 +508,14 @@ var resolvedFoundryProjectEndpoint = empty(foundryProjectEndpoint)
   ? 'https://${foundryAccountName}.services.ai.azure.com'
   : foundryProjectEndpoint
 
+// Prompt Shields lives on the Content Safety surface of a Cognitive Services account. The existing
+// multi-service account already publishes it, so the default reuses that host rather than requiring
+// a new resource. Supplying `promptShieldEndpoint` points the guard at a dedicated ContentSafety
+// account instead, with no code change.
+var resolvedPromptShieldEndpoint = empty(promptShieldEndpoint)
+  ? 'https://${foundryAccountName}.cognitiveservices.azure.com'
+  : promptShieldEndpoint
+
 module logAnalytics './modules/log-analytics.bicep' = {
   name: 'log-analytics'
   params: {
@@ -707,6 +721,8 @@ module agentHostContainerApp './modules/agent-host-container-app.bicep' = {
     containerImage: containerImage
     foundryProjectEndpoint: resolvedFoundryProjectEndpoint
     foundryModelDeploymentName: foundryModelDeploymentName
+    promptShieldEnabled: promptShieldEnabled
+    promptShieldEndpoint: resolvedPromptShieldEndpoint
     tenantId: tenantId
     mcpAudience: mcpApiApplication.outputs.audience
     attractionsFqdn: attractionsMcpContainerApp.outputs.fqdn

@@ -10,6 +10,10 @@ public static class AgentIdentityAuthorizationScopes
     // is both the scope requested per turn and the key the turn token dictionary is stored under,
     // so the chat client's bearer token policy must reuse it rather than a duplicate literal.
     public const string Foundry = "https://ai.azure.com/.default";
+    // Azure AI Content Safety, used by the Prompt Shields guard. This is a different resource from
+    // the Foundry inference audience above, and is requested separately so the guard keeps working
+    // if inference moves to a provider outside Azure.
+    public const string ContentSafety = "https://cognitiveservices.azure.com/.default";
     public const string Purview = "https://graph.microsoft.com/Content.Process.User";
     public const string PurviewProtectionScopes =
         "https://graph.microsoft.com/ProtectionScopes.Compute.User";

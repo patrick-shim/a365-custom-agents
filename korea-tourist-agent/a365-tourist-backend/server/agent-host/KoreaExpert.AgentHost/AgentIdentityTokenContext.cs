@@ -7,6 +7,10 @@ namespace KoreaExpert.AgentHost;
 public static class AgentIdentityAuthorizationScopes
 {
     public const string Foundry = "https://ai.azure.com/.default";
+    // Azure AI Content Safety, used by the Prompt Shields guard. This is a different resource from
+    // the Foundry inference audience above, and is requested separately so the guard keeps working
+    // if inference moves to a provider outside Azure.
+    public const string ContentSafety = "https://cognitiveservices.azure.com/.default";
     public const string Purview = "https://graph.microsoft.com/Content.Process.User";
     public const string PurviewProtectionScopes =
         "https://graph.microsoft.com/ProtectionScopes.Compute.User";

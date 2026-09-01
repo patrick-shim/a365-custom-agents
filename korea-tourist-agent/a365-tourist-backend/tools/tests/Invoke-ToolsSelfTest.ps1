@@ -117,6 +117,8 @@ try {
         'server\agent-host\KoreaExpert.AgentHost\AgentFrontendIdentityBinding.cs',
         'server\agent-host\KoreaExpert.AgentHost\InternalMcpOptions.cs',
         'server\agent-host\KoreaExpert.AgentHost\InternalMcpToolCatalog.cs',
+        'server\agent-host\KoreaExpert.AgentHost\PromptShieldGuard.cs',
+        'server\agent-host\KoreaExpert.AgentHost\PromptShieldToolContentEvaluator.cs',
         'server\agent-host\KoreaExpert.AgentHost\appsettings.json',
         'server\agent-host\KoreaExpert.AgentHost\appsettings.Development.json',
         'infra\main.bicep',
@@ -146,6 +148,20 @@ try {
         -Message 'Repository boundary fixture starts from a passing offline baseline'
 
     $boundaryMutations = @(
+        @{
+            Name  = 'tool-result prompt-injection screening removal'
+            Check = 'Prompt Shields fail-closed injection guard'
+            Path  = 'server\agent-host\KoreaExpert.AgentHost\PromptShieldToolContentEvaluator.cs'
+            Old   = 'PromptShieldSurface.Document'
+            New   = 'PromptShieldSurface.UserPrompt'
+        },
+        @{
+            Name  = 'prompt shield evaluation failure swallowed'
+            Check = 'Prompt Shields fail-closed injection guard'
+            Path  = 'server\agent-host\KoreaExpert.AgentHost\KoreaExpertApplication.cs'
+            Old   = '_promptShieldOptions.EvaluationFailureMessage'
+            New   = '"continuing without screening"'
+        },
         @{
             Name  = 'stale appsettings OBO connection setting'
             Check = 'OBO authorization configuration boundary'

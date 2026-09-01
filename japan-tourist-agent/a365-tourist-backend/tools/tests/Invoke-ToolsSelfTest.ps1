@@ -124,6 +124,8 @@ try {
         $sourceLayout.FrontendIdentityBindingPath,
         $sourceLayout.InternalMcpOptionsPath,
         $sourceLayout.InternalMcpCatalogPath,
+        (Join-Path $sourceLayout.HostDirectory 'PromptShieldGuard.cs'),
+        (Join-Path $sourceLayout.HostDirectory 'PromptShieldToolContentEvaluator.cs'),
         $sourceLayout.McpAuthorizationPath,
         (Join-Path (Split-Path -Parent $sourceLayout.McpAuthorizationPath) ([IO.Path]::GetFileName((Get-ChildItem -LiteralPath (Split-Path -Parent $sourceLayout.McpAuthorizationPath) -Filter '*.csproj' | Select-Object -First 1).FullName))),
         $sourceLayout.HostTestsProjectPath,
@@ -166,11 +168,27 @@ try {
     $oboExchangeRelative = Get-SelfTestRelativePath -Path $sourceLayout.OboExchangePath
     $internalMcpOptionsRelative = Get-SelfTestRelativePath -Path $sourceLayout.InternalMcpOptionsPath
     $internalMcpCatalogTestsRelative = Get-SelfTestRelativePath -Path $sourceLayout.InternalMcpCatalogTestsPath
+    $promptShieldToolRelative = Get-SelfTestRelativePath -Path (
+        Join-Path $sourceLayout.HostDirectory 'PromptShieldToolContentEvaluator.cs')
     $firstSchemaFingerprint = [regex]::Match(
         (Get-Content -LiteralPath $sourceLayout.InternalMcpOptionsPath -Raw),
         '"[A-F0-9]{64}"').Value
 
     $boundaryMutations = @(
+        @{
+            Name  = 'tool-result prompt-injection screening removal'
+            Check = 'Prompt Shields fail-closed injection guard'
+            Path  = $promptShieldToolRelative
+            Old   = 'PromptShieldSurface.Document'
+            New   = 'PromptShieldSurface.UserPrompt'
+        },
+        @{
+            Name  = 'prompt shield evaluation failure swallowed'
+            Check = 'Prompt Shields fail-closed injection guard'
+            Path  = $applicationRelative
+            Old   = '_promptShieldOptions.EvaluationFailureMessage'
+            New   = '"continuing without screening"'
+        },
         @{
             Name  = 'stale appsettings OBO connection setting'
             Check = 'OBO authorization configuration boundary'

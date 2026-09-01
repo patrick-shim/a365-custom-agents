@@ -5,6 +5,7 @@ using Microsoft.Agents.Hosting.AspNetCore;
 using Microsoft.Agents.Storage;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenTelemetry;
 using KoreaExpert.Agent;
 using KoreaExpert.AgentHost;
@@ -142,6 +143,19 @@ builder.Services
         "AgentIdentityObo:AgentId must be the OBO child Agent Identity application ID outside local development.")
     .ValidateOnStart();
 
+// ==================== PROMPT SHIELDS: FAIL-CLOSED PROMPT-INJECTION DEFENCE ================
+// Azure AI Content Safety Prompt Shields is a standalone text classifier and is independent of
+// where inference runs, so this guard survives a move to a model outside Azure.
+builder.Services
+    .AddOptions<PromptShieldOptions>()
+    .Bind(builder.Configuration.GetSection(PromptShieldOptions.SectionName))
+    .ValidateDataAnnotations()
+    .Validate(
+        options => options.HasValidEndpoint(),
+        "PromptShield:Endpoint must be an absolute HTTPS Content Safety endpoint when the guard is enabled.")
+    .ValidateOnStart();
+// ==================== END PROMPT SHIELDS ==================================================
+
 builder.AddAgentApplicationOptions();
 builder.AddAgent<KoreaExpertApplication>();
 
@@ -159,7 +173,34 @@ builder.Services
     .AddHttpClient("InternalMcp", client => client.Timeout = TimeSpan.FromSeconds(30))
     .AddHttpMessageHandler<AgentIdentityBearerTokenHandler>();
 builder.Services.AddSingleton<ToolUserContext>();
-builder.Services.AddSingleton<IToolContentEvaluator, PurviewToolContentEvaluator>();
+builder.Services.AddTransient<PromptShieldBearerTokenHandler>();
+builder.Services
+    .AddHttpClient(
+        PromptShieldGuard.HttpClientName,
+        (services, client) =>
+        {
+            var shieldOptions = services.GetRequiredService<IOptions<PromptShieldOptions>>().Value;
+            if (shieldOptions.Endpoint is not null)
+            {
+                var root = shieldOptions.Endpoint.AbsoluteUri;
+                client.BaseAddress = new Uri(root.EndsWith('/') ? root : root + "/");
+            }
+
+            client.Timeout = TimeSpan.FromSeconds(shieldOptions.TimeoutSeconds);
+        })
+    .AddHttpMessageHandler<PromptShieldBearerTokenHandler>();
+builder.Services.AddSingleton(services => new PromptShieldGuard(
+    services.GetRequiredService<IHttpClientFactory>().CreateClient(PromptShieldGuard.HttpClientName),
+    services.GetRequiredService<IOptions<PromptShieldOptions>>(),
+    services.GetRequiredService<ILogger<PromptShieldGuard>>()));
+builder.Services.AddSingleton<PurviewToolContentEvaluator>();
+builder.Services.AddSingleton<PromptShieldToolContentEvaluator>();
+builder.Services.AddSingleton<IToolContentEvaluator>(services =>
+    new CompositeToolContentEvaluator(
+    [
+        services.GetRequiredService<PurviewToolContentEvaluator>(),
+        services.GetRequiredService<PromptShieldToolContentEvaluator>()
+    ]));
 builder.Services.AddSingleton<ToolContentProtector>();
 builder.Services.AddSingleton<PurviewGraphProxy>();
 builder.Services.AddSingleton<InternalMcpToolCatalog>();
