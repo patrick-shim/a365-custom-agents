@@ -17,11 +17,12 @@ For this workspace the base name is `Korea Tourist Assistant`.
 | OBO Teams app (`name.short` and `name.full`) | `<base> (OBO)` | `Korea Tourist Assistant (OBO)` |
 | AI Teammate package (`name.full`) | `<base> (Teammate)` | `Korea Tourist Assistant (Teammate)` |
 | AI Teammate package (`name.short`) | `<base> (Team)` | `Korea Tourist Assistant (Team)` |
-| Agent 365 Blueprint | `<base> Blueprint` | `Korea Tourist Assistant Blueprint` |
-| Agent 365 child Agent Identity | `<base> Identity` | `Korea Tourist Assistant Identity` |
+| Agent 365 Blueprint | `<base> BP` | `Korea Tourist Assistant BP` |
+| Agent 365 child Agent Identity | `<base> ID` | `Korea Tourist Assistant ID` |
 | OBO channel Entra application | `<base> OBO Channel` | `Korea Tourist Assistant OBO Channel` |
 | Azure Bot `displayName` | `<base>` | `Korea Tourist Assistant` |
 | Workspace directory | `<country>-tourist-agent` | `korea-tourist-agent` |
+| Azure resource group | shared by both products | `rg-a365-custom-agents` (koreacentral) |
 
 Rules:
 

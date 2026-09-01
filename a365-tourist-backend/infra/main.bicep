@@ -14,12 +14,12 @@ type Agent365AgentPrincipalIds = {
 @maxLength(64)
 param environmentName string
 
-// Both products deploy into the single shared resource group `a365-custom-agents` in koreacentral.
+// Both products deploy into the single shared resource group `rg-a365-custom-agents` in koreacentral.
 // Every resource name is suffixed with `resourceBaseName`, so Japan Tourist Assistant and Korea
 // Tourist Assistant co-exist there without collision. The shared Microsoft Foundry account lives in
 // its own resource group and is reused across both products.
 @minLength(1)
-param targetResourceGroupName string = 'a365-custom-agents'
+param targetResourceGroupName string = 'rg-a365-custom-agents'
 
 var approvedDeploymentScopes = {
   '${toLower(targetResourceGroupName)}': targetResourceGroupName

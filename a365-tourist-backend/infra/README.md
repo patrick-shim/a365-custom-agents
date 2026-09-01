@@ -7,9 +7,9 @@ This directory contains two backend-owned deployment paths:
 - `live-backend-container-apps-update.bicep` is the resource-group-scope wrapper for updating the
   five existing Container Apps without recreating shared infrastructure.
 
-Korea Tourist Assistant deploys into its own resource group, `a365-custom-agents`, in
+Korea Tourist Assistant deploys into its own resource group, `rg-a365-custom-agents`, in
 `koreacentral`. It runs in the same subscription as Japan Tourist Assistant but does not share Japan's
-`a365-custom-agents` group, so the two products can be managed and torn down independently. All
+`rg-a365-custom-agents` group, so the two products can be managed and torn down independently. All
 resource names derive from `resourceBaseName` (`koreaexpert`). `main.bicep` never creates the
 resource group, and it refuses to deploy into any group other than `targetResourceGroupName`.
 
@@ -22,7 +22,7 @@ moves, or changes Foundry, and Korea Tourist Assistant does not provision a Foun
 The target group is a prerequisite, not something this template provisions:
 
 ```powershell
-az group create --name a365-custom-agents --location koreacentral
+az group create --name rg-a365-custom-agents --location koreacentral
 ```
 
 > M7 is active. This is the only infrastructure and deployment source; the frontend projects are
@@ -35,7 +35,7 @@ az group create --name a365-custom-agents --location koreacentral
 | Path | Role |
 | --- | --- |
 | `main.bicep` | `targetScope = 'resourceGroup'`; deploys into the existing shared resource group and orchestrates all modules |
-| `main.parameters.json` | Checked-in non-secret parameters: `targetResourceGroupName` `a365-custom-agents`, `resourceBaseName` `koreaexpert`, `location` `koreacentral`, the shared Foundry references, and placeholder provenance values |
+| `main.parameters.json` | Checked-in non-secret parameters: `targetResourceGroupName` `rg-a365-custom-agents`, `resourceBaseName` `koreaexpert`, `location` `koreacentral`, the shared Foundry references, and placeholder provenance values |
 | `live-backend-container-apps-update.bicep` | `targetScope = 'resourceGroup'`; updates only the five existing Container Apps |
 | `live-backend-container-apps-update.json` | Checked-in compiled ARM form of the wrapper; must stay synchronized with its Bicep source |
 | `bicepconfig.json` | Linter and analyzer configuration for both templates |
@@ -133,7 +133,7 @@ $deploymentActor = '<operator-or-automation-id>'
 $deploymentCreatedAt = '<ISO-8601-timestamp>'
 az deployment group create `
   --name koreaexpert-infra `
-  --resource-group a365-custom-agents `
+  --resource-group rg-a365-custom-agents `
   --template-file infra/main.bicep `
   --parameters '@infra/main.parameters.json' `
   --parameters deployerObjectId=$deployerObjectId tenantId=$tenantId `
@@ -179,7 +179,7 @@ $agent365AgentPrincipalIds = @{
 
 az deployment group create `
   --name koreaexpert-app `
-  --resource-group a365-custom-agents `
+  --resource-group rg-a365-custom-agents `
   --template-file infra/main.bicep `
   --parameters '@infra/main.parameters.json' `
   --parameters deployerObjectId=$deployerObjectId tenantId=$tenantId `
@@ -273,7 +273,7 @@ rollback set through the same compile, ARM validation, and what-if boundary befo
 
 ## Rebuilding into a new resource group
 
-Both products share the single resource group `a365-custom-agents` in `koreacentral`. Every resource
+Both products share the single resource group `rg-a365-custom-agents` in `koreacentral`. Every resource
 name is suffixed with `resourceBaseName`, so `japanexpert` and `koreaexpert` resources co-exist there
 with no collision.
 
@@ -310,7 +310,7 @@ name must be purged before the name can be reused.
 Full order:
 
 ```powershell
-$resourceGroup = 'a365-custom-agents'
+$resourceGroup = 'rg-a365-custom-agents'
 az group create --name $resourceGroup --location koreacentral
 
 # 1. Infrastructure on placeholder images.
