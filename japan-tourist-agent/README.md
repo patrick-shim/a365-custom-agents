@@ -11,8 +11,8 @@ travel data is served by four independently deployed MCP services.
 The backend is deployed once. Each frontend owns only its channel contract, package or client, and
 acceptance evidence. No frontend contains backend code.
 
-> A sibling repository, **`korea-tourist-agent`**, is the same architecture for South Korea with
-> different data providers. Either one is a complete, standalone reference.
+> Its sibling, [`korea-tourist-agent`](../korea-tourist-agent), is the same architecture for South
+> Korea with different data providers. Either one is a complete, standalone reference.
 
 ## What is actually guaranteed here
 

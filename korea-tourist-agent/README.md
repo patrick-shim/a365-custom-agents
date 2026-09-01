@@ -8,8 +8,8 @@ and a Microsoft 365 AI Teammate. Microsoft Agent Framework owns orchestration, A
 identity and transport, Microsoft Purview protects prompt and response content fail-closed, and Korea
 travel data is served by four independently deployed MCP services.
 
-> A sibling repository, **`japan-tourist-agent`**, is the same architecture for Japan with different
-> data providers. Either one is a complete, standalone reference.
+> Its sibling, [`japan-tourist-agent`](../japan-tourist-agent), is the same architecture for Japan
+> with different data providers. Either one is a complete, standalone reference.
 
 ## What is actually guaranteed here
 
