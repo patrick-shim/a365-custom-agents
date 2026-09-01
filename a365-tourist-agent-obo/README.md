@@ -51,6 +51,23 @@ first-party clients, a declared delegated permission to the Blueprint ingress sc
 consent. Without those, Teams returns `invokeerror` while Direct Line still succeeds, because
 magic-code sign-in performs no SSO token exchange.
 
+Agent Identity resolution additionally requires the Blueprint to expose inheritable permissions for
+**every** resource a turn calls. A child identity holds no OAuth2 grants of its own and inherits
+them from the Blueprint, so each resource needs a grant on the Blueprint service principal *and* an
+`inheritablePermissions` entry at `kind=allAllowed`. `a365 setup all` covers the first-party
+resources but not the backend's custom MCP API, which must be added explicitly:
+
+```powershell
+a365 setup permissions custom --resource-app-id '<mcp-api-application-id>' --scopes Mcp.Invoke
+a365 query-entra inheritance
+```
+
+`a365 query-entra inheritance` must report every resource effective, including `api-japanexpert`. If
+the entry is missing, the per-turn `/.default` exchange expands to an empty scope set and the turn
+fails at `identity.resolve` with `JEX-AUTH-001` even though the Blueprint holds a valid tenant-wide
+`Mcp.Invoke` grant. Never repair consent with `az ad app permission admin-consent`; it replaces the
+Blueprint's entire grant set.
+
 See the project [instructions](AGENTS.md), [configuration](docs/configuration.md),
 [milestone protocol](docs/milestones/README.md),
 [M8 record](docs/milestones/M8-japan-expert-obo.md), and

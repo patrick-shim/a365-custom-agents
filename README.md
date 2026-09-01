@@ -167,7 +167,14 @@ dotnet test JapanExpertAgent.slnx --configuration Release
      channel application;
    - a service principal for the OBO channel application;
    - `inheritablePermissions` with `allAllowed` for **every** resource the agent calls, including
-     Azure Machine Learning for the Foundry audience and the custom MCP API;
+     Azure Machine Learning for the Foundry audience and the custom MCP API. `a365 setup all` does
+     **not** cover the custom MCP API, so add that one explicitly with
+     `a365 setup permissions custom --resource-app-id <mcp-api-application-id> --scopes Mcp.Invoke`.
+     A child identity holds no grants of its own, so a missing entry makes the per-turn `/.default`
+     exchange expand to an empty scope set and the turn fails at `identity.resolve` with
+     `JEX-AUTH-001`. Confirm with `a365 query-entra inheritance`, which must report every resource
+     effective, and never repair consent with `az ad app permission admin-consent` - it replaces the
+     Blueprint's entire grant set;
    - tenant-wide delegated grants on the Blueprint, including the three Purview Graph scopes;
    - Teams SSO on the OBO channel application: an `api://botid-<appId>` identifier URI, an
      `access_as_user` scope, and pre-authorized Microsoft first-party clients;

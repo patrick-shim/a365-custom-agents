@@ -657,6 +657,46 @@ az rest --method DELETE `
 
 Never use `a365 cleanup blueprint` as a rollback for this step while either child identity exists.
 
+### 12. Blueprint inheritable permissions (separate approval, outside the template)
+
+Required after `a365 setup`, before the first live turn. Skipping it produces a turn that fails at
+`identity.resolve` with `JEX-AUTH-001`.
+
+A child Agent Identity carries **no** OAuth2 grants of its own; it inherits them from the Blueprint.
+Every resource a turn calls therefore needs both a grant on the Blueprint service principal **and**
+an `inheritablePermissions` entry at `kind=allAllowed`. A turn performs three delegated
+on-behalf-of exchanges - Azure Machine Learning for the Foundry audience, Microsoft Graph, and the
+custom `api-japanexpert` MCP API - and each requests a `/.default` scope, which Entra expands only
+from inherited permissions.
+
+`a365 setup all` configures the first-party resources it knows about. It does **not** know about the
+custom MCP API this backend creates, so that one entry must be added explicitly. Without it the
+Blueprint can hold a valid tenant-wide `Mcp.Invoke` grant while `.default` still expands to an empty
+scope set and Entra returns `AADSTS65001` naming the child identity. This was the documented M8
+failure; see the [M8 migration record](../docs/milestones/M8-japan-expert-migration.md).
+
+Run from the owning frontend project, using the MCP application ID from the deployment outputs:
+
+```powershell
+cd ../a365-tourist-agent-obo
+$mcpApiAppId = '<mcp-api-application-id>'
+a365 setup permissions custom --resource-app-id $mcpApiAppId --scopes Mcp.Invoke --dry-run
+a365 setup permissions custom --resource-app-id $mcpApiAppId --scopes Mcp.Invoke
+```
+
+Verify before declaring the deployment healthy. The summary must cover every resource the agent
+calls, including `api-japanexpert`:
+
+```powershell
+a365 query-entra inheritance
+```
+
+`Roles: WARN ... no app roles granted` is expected for delegated-only resources and does not affect
+`Effective inheritance: OK`.
+
+Never repair consent with `az ad app permission admin-consent`; it replaces the Blueprint's entire
+grant set rather than adding to it.
+
 ## Security and prerequisites
 
 - The five workload identities are user-assigned. The host UAMI has `AcrPull` only; it has no
