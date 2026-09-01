@@ -63,6 +63,25 @@ same configured child Agent Identity, so they share the backend's DLP behavior. 
 acceptance evidence: a Direct Line pass proves nothing about the Teams channel, because the channel,
 package installation, and token acquisition path differ. Each frontend records its own replay.
 
+## Agent Identity permissions
+
+Agent Identity resolution requires the Blueprint to expose inheritable permissions for **every**
+resource a turn calls. A child identity holds no OAuth2 grants of its own and inherits them from the
+Blueprint, so each resource needs a grant on the Blueprint service principal *and* an
+`inheritablePermissions` entry at `kind=allAllowed`. `a365 setup all` covers the first-party
+resources but not the backend's custom MCP API, which must be added explicitly:
+
+```powershell
+a365 setup permissions custom --resource-app-id '<mcp-api-application-id>' --scopes Mcp.Invoke
+a365 query-entra inheritance
+```
+
+`a365 query-entra inheritance` must report every resource effective, including `api-koreaexpert`. If
+the entry is missing, the per-turn `/.default` exchange expands to an empty scope set and the turn
+fails at `identity.resolve` with `STA-AUTH-001` even though the Blueprint holds a valid tenant-wide
+`Mcp.Invoke` grant. Never repair consent with `az ad app permission admin-consent`; it replaces the
+Blueprint's entire grant set.
+
 ## M7 checkpoint
 
 The shared host is currently revision `0000028`, digest

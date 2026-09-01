@@ -131,9 +131,9 @@ $tenantId = $env:AZURE_TENANT_ID
 $deploymentSessionId = '<deployment-session-id>'
 $deploymentActor = '<operator-or-automation-id>'
 $deploymentCreatedAt = '<ISO-8601-timestamp>'
-az deployment sub create `
+az deployment group create `
   --name koreaexpert-infra `
-  --location koreacentral `
+  --resource-group rg-a365-custom-agent-korea-expert `
   --template-file infra/main.bicep `
   --parameters '@infra/main.parameters.json' `
   --parameters deployerObjectId=$deployerObjectId tenantId=$tenantId `
@@ -177,9 +177,9 @@ $agent365AgentPrincipalIds = @{
   onBehalfOf = $env:AGENT365_OBO_AGENT_PRINCIPAL_ID
 } | ConvertTo-Json -Compress
 
-az deployment sub create `
+az deployment group create `
   --name koreaexpert-app `
-  --location koreacentral `
+  --resource-group rg-a365-custom-agent-korea-expert `
   --template-file infra/main.bicep `
   --parameters '@infra/main.parameters.json' `
   --parameters deployerObjectId=$deployerObjectId tenantId=$tenantId `
@@ -196,6 +196,45 @@ az deployment sub create `
   --parameters oboOAuthConnectionName='korea-expert-obo' `
   --parameters forexRateApiKey=''
 ```
+
+## Blueprint inheritable permissions (outside the template)
+
+Required after `a365 setup`, before the first live turn. Skipping it produces a turn that fails at
+`identity.resolve` with `STA-AUTH-001`.
+
+A child Agent Identity carries **no** OAuth2 grants of its own; it inherits them from the Blueprint.
+Every resource a turn calls therefore needs both a grant on the Blueprint service principal **and**
+an `inheritablePermissions` entry at `kind=allAllowed`. A turn performs three delegated
+on-behalf-of exchanges - Azure Machine Learning for the Foundry audience, Microsoft Graph, and the
+custom `api-koreaexpert` MCP API - and each requests a `/.default` scope, which Entra expands only
+from inherited permissions.
+
+`a365 setup all` configures the first-party resources it knows about. It does **not** know about the
+custom MCP API this backend creates, so that one entry must be added explicitly. Without it the
+Blueprint can hold a valid tenant-wide `Mcp.Invoke` grant while `.default` still expands to an empty
+scope set and Entra returns `AADSTS65001` naming the child identity.
+
+Run from the owning frontend project, using the MCP application ID from the deployment outputs:
+
+```powershell
+cd ../a365-tourist-agent-obo
+$mcpApiAppId = '<mcp-api-application-id>'
+a365 setup permissions custom --resource-app-id $mcpApiAppId --scopes Mcp.Invoke --dry-run
+a365 setup permissions custom --resource-app-id $mcpApiAppId --scopes Mcp.Invoke
+```
+
+Verify before declaring the deployment healthy. The summary must cover every resource the agent
+calls, including `api-koreaexpert`:
+
+```powershell
+a365 query-entra inheritance
+```
+
+`Roles: WARN ... no app roles granted` is expected for delegated-only resources and does not affect
+`Effective inheritance: OK`.
+
+Never repair consent with `az ad app permission admin-consent`; it replaces the Blueprint's entire
+grant set rather than adding to it.
 
 ## Existing-backend update workflow
 
