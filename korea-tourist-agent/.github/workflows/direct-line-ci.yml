@@ -1,0 +1,64 @@
+name: OBO Direct Line Frontend CI
+
+"on":
+  push:
+    paths:
+      - "a365-tourist-agent-obo-directline/**"
+      - ".github/workflows/direct-line-ci.yml"
+  pull_request:
+    paths:
+      - "a365-tourist-agent-obo-directline/**"
+      - ".github/workflows/direct-line-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: a365-tourist-agent-obo-directline
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.110
+
+      - name: Reject committed Direct Line credentials
+        shell: pwsh
+        run: |
+          $forbidden = @(
+            'client_key.key',
+            '*.key',
+            '*.pem',
+            '*.pfx',
+            '*.p12',
+            '.env',
+            '.env.*'
+          ) | Where-Object { Test-Path $_ }
+          if ($forbidden.Count -gt 0) {
+            throw "Direct Line credentials or local environment files are committed: $($forbidden -join ', ')"
+          }
+
+      - name: Test Direct Line frontend
+        shell: pwsh
+        run: dotnet test KoreaExpert.OBO.DirectLine.slnx --configuration Release
+
+      - name: Validate Direct Line contract pin
+        shell: pwsh
+        run: |
+          $lock = Get-Content backend-contract.lock.json -Raw | ConvertFrom-Json
+          if ($lock.contractId -ne 'korea-expert-shared-backend' -or
+              $lock.contractVersion -ne '1.0.0' -or
+              $lock.frontend -ne 'on-behalf-of' -or
+              $lock.route -ne '/api/messages/obo' -or
+              $lock.audienceConfiguration -ne 'TokenValidation__Audiences__OnBehalfOf' -or
+              $lock.identityBinding -ne 'configured-obo-child-agent-identity') {
+            throw 'Invalid OBO Direct Line backend contract pin.'
+          }

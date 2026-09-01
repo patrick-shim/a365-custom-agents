@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "targetResourceGroupName": {
+      "value": "rg-a365-custom-agents"
+    },
+    "resourceBaseName": {
+      "value": "koreaexpert"
+    },
+    "environmentName": {
+      "value": "koreaexpert"
+    },
+    "location": {
+      "value": "koreacentral"
+    },
+    "foundryResourceGroupName": {
+      "value": "rg-ai-foundry"
+    },
+    "foundryAccountName": {
+      "value": "a365-ai-foundry"
+    },
+    "foundryProjectName": {
+      "value": "default"
+    },
+    "foundryModelDeploymentName": {
+      "value": "gpt-5.6-sol"
+    },
+    "oboOAuthConnectionName": {
+      "value": "korea-tourist-assistant-obo"
+    },
+    "sessionId": {
+      "value": "<deployment-session-id>"
+    },
+    "deployedBy": {
+      "value": "<operator-or-automation-id>"
+    },
+    "createdAt": {
+      "value": "<ISO-8601-timestamp>"
+    },
+    "deployerObjectId": {
+      "value": "<deployer-object-id>"
+    },
+    "tenantId": {
+      "value": "<tenant-id>"
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "./milestones.schema.json",
+  "protocolVersion": 1,
+  "currentMilestone": "M7",
+  "milestones": [
+    {
+      "id": "M7",
+      "name": "OBO Teams end-to-end production alignment",
+      "status": "active",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": true,
+      "scope": [
+        "preserve the completed OBO Teams frontend extraction and protected operational state",
+        "eliminate all unexplained OBO Teams package, endpoint, route, audience, authentication, and installed-channel drift from the canonical backend contract",
+        "validate the Teams package and /api/messages/obo contract against the shared deployed backend",
+        "rehydrate, validate, publish, or install the OBO Teams package only through approved CLI-owned workflows when required",
+        "prove live OBO Teams authentication, governed responses, Purview enforcement, and shared-backend compatibility"
+      ],
+      "prohibited": [
+        "recreating server, infra, shared tests, tools, Docker, or backend deployment files",
+        "copying, hand-editing, committing, or deleting .a365 state, .config state, generated manifests, packages, identities, secrets, or tenant-bound evidence",
+        "publishing generated historical build output instead of using the approved source and CLI workflow",
+        "changing /api/messages/obo, its audience, the shared Blueprint, the OBO child identity, consent, or package registration without a reviewed dry run, rollback boundary, and explicit approval",
+        "tenant mutation or package publication without a successful reviewed dry run and explicit approval"
+      ],
+      "acceptanceEvidence": [
+        "the OBO tree contains no backend source or deployment residue",
+        "the source package, approved CLI-produced package, installed channel, and live backend contract have no unexplained drift",
+        "the OBO tree contains no Direct Line solution or Direct Line source",
+        "the OBO contract pin and CLI-produced Teams package validate structurally",
+        "the installed OBO Teams package targets /api/messages/obo with the configured OBO audience",
+        "a live OBO Teams conversation passes authentication, governed response, Purview, and sanitized observability checks against the same backend revision as Direct Line"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+# macOS and editor state
+.DS_Store
+**/.DS_Store
+._*
+**/._*
+.idea/
+.vs/
+.vscode/
+**/*.user
+**/*.suo
+
+# Build, test, and package-manager output
+**/bin/
+**/obj/
+**/node_modules/
+**/TestResults/
+**/artifacts/
+**/coverage/
+**/*.trx
+**/*.nupkg
+
+# Local settings and credentials
+**/appsettings.Local.json
+**/.env
+**/.env.*
+!**/.env.example
+**/*.key
+**/*.pem
+**/*.pfx
+**/*.p12
+
+# Azure and Agent 365 operational state
+**/.azure/
+**/.a365/
+**/.copilot-azure/
+**/.a365-workspace-detection.local.json
+**/a365.config.json
+**/a365.generated.config.json
+# Agent 365 CLI writes timestamped rollback copies alongside the generated config
+# (for example a365.generated.config.before-newblueprint-*.json). These carry the
+# previous blueprint client secret and must never be committed.
+**/a365.generated.config.*.json
+**/ToolingManifest.json
+**/manifest/
+**/manifest.zip
+
+# CLI-owned frontend state and generated package output
+a365-tourist-agent-obo/.config/
+a365-tourist-agent-obo/teams/env/.env.*
+a365-tourist-agent-obo/teams/appPackage/build/
+a365-tourist-agent-teammate/.config/
+a365-tourist-agent-teammate/manifest/
+a365-tourist-agent-teammate/manifest.zip
+
+# Separate project; never inspect or stage without explicit human approval
+/a365-tourist-agent-obo-teammate/

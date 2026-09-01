@@ -1,0 +1,233 @@
+{
+  "$schema": "./milestones.schema.json",
+  "protocolVersion": 1,
+  "currentMilestone": "M7",
+  "milestones": [
+    {
+      "id": "M0",
+      "name": "Foundation and validation automation",
+      "status": "complete",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": false,
+      "scope": [
+        "Microsoft Agent Framework application structure",
+        "Agent 365-compatible host boundaries",
+        "standalone MCP services",
+        "thin Teams package",
+        "read-only readiness validation tools",
+        "build, test, and local health automation"
+      ],
+      "prohibited": [
+        "Agent 365 tenant onboarding",
+        "a365 setup, publish, cleanup, or permission mutations",
+        "WorkIQ catalog mutation or ToolingManifest generation",
+        "Microsoft Purview package installation or middleware wiring",
+        "Purview policy creation or modification",
+        "production deployment"
+      ]
+    },
+    {
+      "id": "M1",
+      "name": "Governed Agent 365 onboarding",
+      "status": "complete",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": true,
+      "requiresExplicitUserActivation": true,
+      "activationPhrase": "Start milestone M1",
+      "scope": [
+        "coordinated Microsoft Agent Framework upgrade required by Purview",
+        "Agent 365 SDK notifications, observability, identity, and WorkIQ",
+        "Microsoft.Agents.AI.Purview middleware with fail-closed enforcement",
+        "tool argument and result content protection",
+        "a365 CLI dry runs, onboarding, endpoint registration, and publication",
+        "Korea Central Azure infrastructure, Foundry project, model, and container deployment",
+        "approved Blueprint federation and per-Agent Identity Foundry RBAC completion",
+        "Teams and Microsoft 365 acceptance testing"
+      ],
+      "acceptanceEvidence": [
+        "blocked input never reaches the model",
+        "blocked output and streaming content never reaches the channel",
+        "Purview service failures fail closed",
+        "sensitive tool arguments and results are protected or WorkIQ remains disabled",
+        "Agent 365 CLI-generated blueprint and tooling artifacts exist",
+        "Entra scope inheritance checks pass",
+        "observability contains no raw prompts, tool data, or credentials",
+        "approved agent instance responds through Teams"
+      ]
+    },
+    {
+      "id": "M2",
+      "name": "Production OBO governance verification",
+      "status": "blocked",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": true,
+      "requiresExplicitUserActivation": true,
+      "activationPhrase": "Start milestone M2",
+      "scope": [
+        "repair and prove Agent 365 observability export for OBO and agentic-user traffic",
+        "attribute invocation, inference, and tool activity to the runtime child identity and shared Blueprint",
+        "prove Purview AI interaction, DLP, sensitive-information-type, and content-activity evidence",
+        "verify Insider Risk Management policy, signal, and risk-score readiness for governed AI interactions",
+        "build and validate a patch-versioned Agent 365 package through CLI-owned packaging workflows",
+        "run production end-to-end acceptance through Direct Line, Teams, and Microsoft 365 Copilot",
+        "capture sanitized evidence, indexing windows, rollback steps, and repeatable validation commands"
+      ],
+      "prohibited": [
+        "real personal, financial, passport, or resident-registration data in tests",
+        "raw prompts, responses, tool data, bearer tokens, credentials, or tenant secrets in telemetry or evidence",
+        "disabling fail-closed Purview enforcement to make acceptance tests pass",
+        "hand-editing a365-generated configuration, manifests, or packages",
+        "Agent 365 Blueprint cleanup while either child identity exists",
+        "deployment, publication, consent, or Purview and IRM policy mutation without a reviewed dry run and explicit approval"
+      ],
+      "acceptanceEvidence": [
+        "observability token registration succeeds and the exporter receives an accepted service response without skipped identity groups",
+        "a synthetic OBO turn emits an InvokeAgent activity with non-sensitive inference and tool children under the OBO child identity",
+        "the same activity is visible in both the Agent 365 child and shared Blueprint activity views after the documented indexing window",
+        "Purview records the synthetic AI interaction and content activity for the authenticated human user",
+        "credit-card, Korean passport, and Korean resident-registration synthetic cases produce expected SIT and DLP evidence without exposing values",
+        "Insider Risk Management prerequisites and policy scope pass, and governed test activity produces the expected risk signal or a documented policy-correct no-risk result",
+        "the Agent 365 package is generated and validated by the supported CLI workflow, with its version incremented when package content changes and a no-change rationale otherwise",
+        "Direct Line OBO, Teams, and Microsoft 365 Copilot acceptance flows pass against the same deployed backend",
+        "full solution tests, local CI, tools self-tests, and online read-only validation pass"
+      ]
+    },
+    {
+      "id": "M3",
+      "name": "Runtime resilience and diagnostics hardening",
+      "status": "blocked",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": false,
+      "requiresExplicitUserActivation": true,
+      "activationPhrase": "Start milestone M3",
+      "scope": [
+        "harden exception boundaries across agent, host, integrations, MCP services, Direct Line client, and validation tools",
+        "add edge-case and fault-injection coverage for cancellation, timeout, malformed input, partial output, duplicate activity, dependency failure, and token expiry",
+        "improve actionable and channel-appropriate error messages without exposing implementation or security details",
+        "standardize structured event IDs, correlation fields, trace linkage, log levels, and sanitized diagnostic context",
+        "add dependency-aware health and readiness evidence where it improves operational diagnosis",
+        "document troubleshooting decision trees and repeatable local diagnostic workflows"
+      ],
+      "prohibited": [
+        "raw prompts, responses, tool arguments, tool results, matched SIT values, tokens, credentials, or personal data in logs or exceptions",
+        "catch-all handlers that swallow cancellation, authorization, Purview, or data-integrity failures",
+        "automatic retries for non-idempotent operations without an explicit idempotency contract",
+        "broad refactoring, dependency upgrades, or behavior changes without focused regression tests",
+        "production deployment or tenant mutation as part of the code-hardening milestone"
+      ],
+      "acceptanceEvidence": [
+        "all external dependency boundaries classify timeout, cancellation, authentication, authorization, throttling, malformed response, and service failure distinctly",
+        "user-facing errors are actionable, stable, localized to the failing operation, and contain no internal or sensitive details",
+        "cancellation is propagated without being logged as an application failure",
+        "bounded retry and backoff behavior is tested only for explicitly idempotent operations",
+        "structured logs carry stable event IDs, trace or correlation identifiers, frontend mode, dependency name, and sanitized outcome fields",
+        "fault-injection and edge-case tests cover agent orchestration, OBO identity, Purview, MCP tools, provider clients, and Direct Line transport",
+        "health and readiness checks distinguish process health from required dependency readiness without leaking configuration",
+        "the troubleshooting runbook maps user-visible symptoms to logs, traces, likely causes, and safe recovery actions",
+        "full solution tests, local CI, tools self-tests, analyzers, and diagnostics pass with no new warnings"
+      ]
+    },
+    {
+      "id": "M5",
+      "name": "Validated hardening rollout and live acceptance",
+      "status": "blocked",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": true,
+      "requiresExplicitUserActivation": true,
+      "activationPhrase": "Start milestone M5",
+      "scope": [
+        "prepare immutable host and MCP images from the validated M3 source",
+        "create a new deployment plan with rollback targets and a host-plus-four-MCP change boundary",
+        "run Azure validation, structured what-if, quota, policy, identity, RBAC, and image provenance checks",
+        "deploy the approved Container Apps revisions without changing Agent 365 identities, packages, consent, Purview policies, or IRM policies",
+        "record separately authorized frontend-owned package publication evidence without making package operations part of the backend deployment boundary",
+        "live-test liveness, degraded readiness, OBO, AI Teammate, Direct Line, MCP tools, Purview fail-closed behavior, and content-free Agent 365 observability",
+        "record sanitized production evidence and preserve M2 IRM indexing resumption"
+      ],
+      "prohibited": [
+        "M4 consolidation, repository restructuring, or cross-project migration",
+        "Agent 365 Blueprint cleanup, child identity replacement, unreviewed package publication, or consent mutation",
+        "Purview DLP or Insider Risk Management policy mutation",
+        "raw prompts, responses, tool content, matched SIT values, tokens, secrets, or personal data in deployment evidence",
+        "deployment before a new plan reaches Validated status through the Azure validation workflow",
+        "unreviewed create, delete, RBAC, identity, SKU, region, scale, or unrelated infrastructure changes"
+      ],
+      "acceptanceEvidence": [
+        "new immutable image digests are recorded for the host and every changed MCP service",
+        "structured what-if contains only reviewed existing Container App modifications with no creates or deletes",
+        "all five revisions are healthy and receive the intended traffic after rollout",
+        "legacy health and liveness return healthy while readiness intentionally reports degraded until durable storage is selected",
+        "OBO and AI Teammate requests use their correct routes, audiences, identities, and isolated session keys",
+        "Direct Line authentication and one governed non-sensitive turn succeed without repeated sign-in",
+        "weather, attractions, accommodation, and currency MCP calls return attributed results or stable sanitized errors",
+        "a synthetic blocked prompt never reaches the model while Purview content activity and a content-free Agent 365 invocation export succeed",
+        "runtime logs contain no test content, tokens, secrets, identifiers, or skipped observability identity groups",
+        "rollback revisions and immutable digests are verified before M5 closure"
+      ]
+    },
+    {
+      "id": "M6",
+      "name": "Repository separation and canonical backend extraction",
+      "status": "complete",
+      "allowsTenantReads": false,
+      "allowsTenantMutations": false,
+      "scope": [
+        "seed a standalone shared backend from the canonical OBO source tree",
+        "preserve the shared host's Agentic User and OBO routes without runtime behavior changes",
+        "separate backend ownership from the then-bundled OBO package and AI Teammate package ownership",
+        "define a versioned non-secret frontend-to-backend contract",
+        "rebuild offline validation and CI boundaries for the staged repository transition"
+      ],
+      "prohibited": [
+        "Azure, Agent 365, Microsoft 365, Purview, Entra, or tenant reads and mutations",
+        "production deployment, package publication, consent changes, or identity replacement",
+        "copying, moving, hand-editing, or committing generated Agent 365 state, manifests, packages, identities, secrets, or tenant-bound evidence",
+        "merging backend source from the teammate snapshot",
+        "changing protected routes, audiences, Blueprint ownership, child identities, or runtime behavior without a separate approved milestone",
+        "deleting either source tree before the staged backend and frontend validation gates pass"
+      ],
+      "acceptanceEvidence": [
+        "a365-tourist-backend is seeded only from reviewed OBO backend source and excludes generated state and frontend-only assets",
+        "the backend retains both protected routes and builds and tests independently without Direct Line or Teams package projects",
+        "at M6 closeout, the then-bundled OBO and AI Teammate trees remain intact as transition frontends and no generated state is changed",
+        "a non-secret versioned contract documents route, audience, health, and MCP integration boundaries",
+        "offline validation proves exactly one active milestone and preserves the source-authority rules",
+        "the next cutover step has a reviewed inventory, rollback path, and explicit user approval"
+      ]
+    },
+    {
+      "id": "M7",
+      "name": "End-to-end cross-channel production alignment",
+      "status": "active",
+      "allowsTenantReads": true,
+      "allowsTenantMutations": true,
+      "scope": [
+        "preserve the completed frontend/backend source separation and the canonical shared-backend ownership boundary",
+        "eliminate all unexplained code, configuration, infrastructure, route, audience, identity, Purview, MCP, observability, and deployment drift from the canonical backend contract",
+        "align shared runtime code, Azure infrastructure, protected routes, audiences, child identities, and Purview enforcement with the deployed production contract",
+        "validate and, after reviewed dry runs and explicit approval, deploy the single shared backend used by OBO Teams, OBO Direct Line, and AI Teammate",
+        "coordinate frontend-owned package and channel workflows without copying generated operational state or backend source",
+        "prove OBO Teams, OBO Direct Line, and AI Teammate end-to-end behavior against the same healthy backend revision"
+      ],
+      "prohibited": [
+        "copying backend source, infrastructure, deployment automation, or shared tests into a frontend repository",
+        "copying, hand-editing, committing, or deleting generated Agent 365 state, manifests, packages, identities, secrets, or tenant-bound evidence",
+        "copying backend source back into any frontend tree",
+        "changing /api/messages, /api/messages/obo, their audience boundaries, the shared Blueprint, or either child identity without a documented dry run, rollback boundary, and explicit approval",
+        "production deployment, package publication, consent change, Purview or Insider Risk Management policy mutation without a successful reviewed dry run and explicit approval",
+        "using real personal, financial, passport, or resident-registration data in validation",
+        "claiming cross-channel acceptance before live evidence exists for all three frontends"
+      ],
+      "acceptanceEvidence": [
+        "a365-tourist-backend is the only tree containing server, infra, shared tests, backend tools, Docker assets, and backend deployment automation",
+        "canonical source, validated deployment inputs, live backend configuration, and the active revision have no unexplained behavioral or contract drift",
+        "the deployed backend revision is healthy and its protected routes, audiences, Blueprint, child identities, and MCP authorization match the versioned contract",
+        "Purview blocks the approved synthetic credit-card, Korean passport, and Korean resident-registration cases before model access and records sanitized evidence",
+        "OBO Teams and OBO Direct Line pass against /api/messages/obo with the configured OBO audience and child identity",
+        "AI Teammate passes against /api/messages with the shared Blueprint audience and its dynamic child identity",
+        "frontend packages are produced only through approved CLI-owned workflows and match the deployed backend contract",
+        "full backend tests, frontend-focused validation, approved online checks, deployment validation, and live cross-channel acceptance pass"
+      ]
+    }
+  ]
+}

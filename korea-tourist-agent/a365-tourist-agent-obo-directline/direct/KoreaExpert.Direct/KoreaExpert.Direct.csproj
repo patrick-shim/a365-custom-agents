@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>KoreaExpert.Direct</RootNamespace>
+    <ApplicationIcon>..\assets\korea-expert.ico</ApplicationIcon>
+  </PropertyGroup>
+</Project>
