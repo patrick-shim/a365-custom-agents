@@ -80,6 +80,10 @@ Rules:
   style choice; restoring `(Teammate)` to `name.short` makes the package fail upload validation.
 - `agentIdentityDisplayName` and `agentBlueprintDisplayName` in each `a365.config.json` are the CLI
   inputs that produce the Blueprint and Identity names; keep them in step with the table.
+- `a365 publish` rewrites `manifest/manifest.json` and seeds `name.short` and `name.full` from
+  `agentBlueprintDisplayName`, which yields the 33-character `Japan Tourist Assistant Blueprint`
+  and overflows `name.short`. The CLI reports this as `EXCEEDS 30 chars`. After every publish,
+  restore the two names from the table and repackage `manifest.zip` from the manifest directory.
 - Renaming a directory object changes its display name only. Never delete or recreate a Blueprint,
   Agent Identity, or channel application to rename it: the object IDs are referenced by the container
   app settings, the bot OAuth connection, and the Foundry role assignments.
