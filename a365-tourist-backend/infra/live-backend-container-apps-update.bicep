@@ -145,7 +145,7 @@ param agent365AgentIds Agent365AgentIds
 @maxLength(36)
 param oboChannelAppId string
 
-param oboOAuthConnectionName string = 'japan-expert-obo'
+param oboOAuthConnectionName string = 'japan-tourist-assistant-obo'
 
 // MCP provider configuration. Section and property names mirror the MCP service options classes.
 // Keep these defaults identical to infra/main.bicep so an update or rollback never silently

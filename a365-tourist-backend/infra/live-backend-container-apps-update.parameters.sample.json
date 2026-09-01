@@ -15,7 +15,7 @@
       "value": "gpt-5.6-sol"
     },
     "oboOAuthConnectionName": {
-      "value": "japan-expert-obo"
+      "value": "japan-tourist-assistant-obo"
     },
     "hostImage": {
       "value": "<registry-login-server>/japan-expert-agent@sha256:<host-digest>"
@@ -47,7 +47,7 @@
     "agent365AgentIds": {
       "value": {
         "agenticUser": "",
-        "onBehalfOf": "<japan-expert-obo-child-id>"
+        "onBehalfOf": "<japan-tourist-assistant-obo-child-id>"
       }
     },
     "oboChannelAppId": {

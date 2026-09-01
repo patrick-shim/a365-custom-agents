@@ -50,7 +50,7 @@ public sealed class JapanExpertBrandingTests
             .GetProperty("AzureBotOAuthConnectionName")
             .GetString();
 
-        Assert.AreEqual("japan-expert-obo", connectionName);
+        Assert.AreEqual("japan-tourist-assistant-obo", connectionName);
     }
 
     [TestMethod]
@@ -248,7 +248,7 @@ public sealed class JapanExpertBrandingTests
         var obo = handlers.GetProperty("obo-user");
         Assert.AreEqual("AzureBotUserAuthorization", obo.GetProperty("Type").GetString());
         Assert.AreEqual(
-            "japan-expert-obo",
+            "japan-tourist-assistant-obo",
             obo.GetProperty("Settings").GetProperty("AzureBotOAuthConnectionName").GetString());
         Assert.IsFalse(obo.GetProperty("Settings").TryGetProperty("Scopes", out _));
 

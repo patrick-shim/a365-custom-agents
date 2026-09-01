@@ -38,7 +38,7 @@ flowchart LR
   Teams -->|Teams channel| Bot[Azure Bot<br/>bot-japanexpert]
   Direct -->|Direct Line v3| Bot
   Bot -->|/api/messages/obo| Host[Agent host<br/>ca-agent-japanexpert]
-  Bot -->|japan-expert-obo| OAuth[Aadv2 OAuth connection]
+  Bot -->|japan-tourist-assistant-obo| OAuth[Aadv2 OAuth connection]
   Teammate -->|/api/messages| Host
 
   subgraph Identity[Agent 365 identity]
@@ -126,7 +126,7 @@ their own resource group and are never created, moved, or recreated by this repo
 | `ca-agent-japanexpert` | Agent host, external ingress, the only public endpoint |
 | `ca-attract-japanexpert`, `ca-weather-japanexpert`, `ca-stay-japanexpert`, `ca-fx-japanexpert` | MCP services, internal ingress |
 | `crjapanexpert` | Container registry for immutable image digests |
-| `bot-japanexpert` | Azure Bot with the Teams channel, a Direct Line site, and the `japan-expert-obo` Aadv2 OAuth connection |
+| `bot-japanexpert` | Azure Bot with the Teams channel, a Direct Line site, and the `japan-tourist-assistant-obo` Aadv2 OAuth connection |
 
 The host reaches the model through the Foundry **account** endpoint plus `/openai/v1`. The
 project-scoped `/api/projects/<name>` form does not publish that surface and must not be configured.
@@ -161,7 +161,7 @@ dotnet test JapanExpertAgent.slnx --configuration Release
    or reuses the single shared Blueprint, its inheritable permissions, and the child identity. It also
    prints a Blueprint client secret; treat it as exposed and revoke it if it is not needed.
 5. **Deploy the Bot phase.** The phase-gated Bot module creates `bot-japanexpert`, the Teams channel,
-   the Direct Line site, and the `japan-expert-obo` OAuth connection.
+   the Direct Line site, and the `japan-tourist-assistant-obo` OAuth connection.
 6. **Complete the Entra wiring.** This is outside the templates and is the step most often missed:
    - a federated identity credential from the host managed identity to the Blueprint and to the OBO
      channel application;
@@ -260,7 +260,7 @@ deployment or registration authority.
 Key records:
 
 - [M8 shared backend migration and deployment](a365-tourist-backend/docs/milestones/M8-japan-expert-migration.md)
-- [M8 OBO Teams](a365-tourist-agent-obo/docs/milestones/M8-japan-expert-obo.md)
+- [M8 OBO Teams](a365-tourist-agent-obo/docs/milestones/M8-japan-tourist-assistant-obo.md)
 - [M8 Direct Line](a365-tourist-agent-obo-directline/docs/milestones/M8-japan-expert-direct-line.md)
 - [M8 AI Teammate](a365-tourist-agent-teammate/docs/milestones/M8-japan-expert-ai-teammate.md)
 

@@ -66,7 +66,7 @@ param directLineTrustedOrigins array = []
 @description('Bot Token Service OAuth connection name.')
 @minLength(2)
 @maxLength(64)
-param oauthConnectionName string = 'japan-expert-obo'
+param oauthConnectionName string = 'japan-tourist-assistant-obo'
 
 @description('Client ID used by the Aadv2 OAuth connection.')
 @minLength(36)

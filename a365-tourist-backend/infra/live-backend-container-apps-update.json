@@ -249,7 +249,7 @@
     },
     "oboOAuthConnectionName": {
       "type": "string",
-      "defaultValue": "japan-expert-obo"
+      "defaultValue": "japan-tourist-assistant-obo"
     },
     "mcpUserAgent": {
       "type": "string",
@@ -1656,7 +1656,7 @@
             },
             "oboOAuthConnectionName": {
               "type": "string",
-              "defaultValue": "japan-expert-obo"
+              "defaultValue": "japan-tourist-assistant-obo"
             },
             "applicationInsightsConnectionString": {
               "type": "string"

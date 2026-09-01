@@ -19,7 +19,7 @@ flowchart LR
   OboTeams[OBO Teams package] -->|Teams channel| OboBot[OBO Azure Bot]
   DirectLine[OBO Direct Line client] -->|Direct Line v3| OboBot
   OboBot -->|/api/messages/obo| Host
-  OboBot -->|japan-expert-obo| OAuth[Aadv2 OAuth connection]
+  OboBot -->|japan-tourist-assistant-obo| OAuth[Aadv2 OAuth connection]
   Blueprint[One Agent 365 Blueprint] --> TeammateIdentity[Agent Identity + Agent User]
   Blueprint --> OBOIdentity[OBO Agent Identity]
   TeammateIdentity --> Teammate
@@ -63,7 +63,7 @@ created by this repository. The host reaches the model through the Foundry **acc
 
 The backend is deployed. The agent host and the four MCP services run in `rg-a365-custom-agents` on
 immutable image digests, with the Azure Bot, Teams channel, Direct Line site, and the
-`japan-expert-obo` OAuth connection in place. OBO Teams and OBO Direct Line have live, accepted turns
+`japan-tourist-assistant-obo` OAuth connection in place. OBO Teams and OBO Direct Line have live, accepted turns
 covering Agent Identity resolution, fail-closed Purview, all four MCP services, and the Foundry model
 call. AI Teammate has a built package but no live turn yet, so M8 remains active until it passes.
 

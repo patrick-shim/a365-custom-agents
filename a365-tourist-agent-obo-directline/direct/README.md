@@ -10,7 +10,7 @@ Service authentication through the OAuth card and standard message-based magic-c
 
 - The OBO Azure Bot has an enabled Direct Line site.
 - The bot endpoint targets `/api/messages/obo`.
-- The Bot Token Service connection is named `japan-expert-obo`.
+- The Bot Token Service connection is named `japan-tourist-assistant-obo`.
 - You have one Direct Line site secret. Keep it in an environment variable; do not put it in source,
   arguments, shell history, or logs.
 

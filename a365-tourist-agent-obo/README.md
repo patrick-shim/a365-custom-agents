@@ -70,6 +70,6 @@ Blueprint's entire grant set.
 
 See the project [instructions](AGENTS.md), [configuration](docs/configuration.md),
 [milestone protocol](docs/milestones/README.md),
-[M8 record](docs/milestones/M8-japan-expert-obo.md), and
+[M8 record](docs/milestones/M8-japan-tourist-assistant-obo.md), and
 [shared backend migration](../a365-tourist-backend/docs/milestones/M8-japan-expert-migration.md).
 The [M7 record](docs/milestones/M7-obo-alignment.md) is historical only.

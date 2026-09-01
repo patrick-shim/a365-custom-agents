@@ -25,7 +25,7 @@ param currencyFqdn string
 param agent365BlueprintId string
 param agent365AgentIds Agent365AgentIds
 param oboChannelAppId string
-param oboOAuthConnectionName string = 'japan-expert-obo'
+param oboOAuthConnectionName string = 'japan-tourist-assistant-obo'
 param applicationInsightsConnectionString string
 param tags object
 

@@ -43,7 +43,7 @@ reserved synthetic policy cases: Japan passport, Japanese residence card, and an
 test number.
 
 **Direct Line is live and accepted.** The Japan Tourist Assistant Azure Bot, its Direct Line site, and the
-`japan-expert-obo` OAuth connection exist, and governed turns return model answers with fail-closed
+`japan-tourist-assistant-obo` OAuth connection exist, and governed turns return model answers with fail-closed
 Purview evaluation and all four MCP services healthy. A first-time user still receives an OAuth
 sign-in card, which is correct enforcement rather than a defect. The reserved three-case synthetic
 policy run remains a separate operation requiring its own approval, and no Seoul channel secret or

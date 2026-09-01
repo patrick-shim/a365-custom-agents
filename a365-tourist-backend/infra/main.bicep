@@ -215,7 +215,7 @@ param oboChannelAppId string = ''
 @description('Bot Token Service OAuth connection name used by the OBO clients.')
 @minLength(2)
 @maxLength(64)
-param oboOAuthConnectionName string = 'japan-expert-obo'
+param oboOAuthConnectionName string = 'japan-tourist-assistant-obo'
 
 // ---------------------------------------------------------------------------
 // MCP provider configuration

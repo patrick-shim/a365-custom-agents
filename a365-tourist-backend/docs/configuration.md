@@ -150,7 +150,7 @@ correlation IDs, and `Client-Request-Id` through a loopback-only proxy. Empty te
 intermediate function-call message is not sent to `processContent`; the corresponding tool
 arguments and results remain independently evaluated by `ToolContentProtector` before execution.
 
-The OBO Azure Bot OAuth connection defaults to the non-secret name `japan-expert-obo`. The
+The OBO Azure Bot OAuth connection defaults to the non-secret name `japan-tourist-assistant-obo`. The
 phase-gated Bot module creates it as Aadv2, with the separate OBO channel application as its client
 and the fresh Blueprint delegated ingress scope supplied after registration; its credential crosses
 the templates only as a secure parameter. Do not configure automatic `OBOConnectionName` or
@@ -213,7 +213,7 @@ approval. Bicep does not assign Blueprint/inheritable permissions to the host UA
    against this exact Responses deployment. Do not grant either role to the host UAMI.
 3. Verify the host UAMI's Blueprint federated identity credential and both connection profiles.
    Never duplicate the Blueprint or FIC in Bicep.
-4. Configure and test the `japan-expert-obo` Azure Bot OAuth connection against the shared
+4. Configure and test the `japan-tourist-assistant-obo` Azure Bot OAuth connection against the shared
    Blueprint's delegated ingress scope before production OBO traffic.
 5. Review the shared Blueprint's existing inherited Graph grants before modifying inherited
    permissions. Remove mail, files, sites, channel-message, or other WorkIQ-era grants that neither

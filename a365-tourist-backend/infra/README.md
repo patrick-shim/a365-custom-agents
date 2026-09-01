@@ -43,7 +43,7 @@ flowchart LR
   OboTeams[OBO Teams package] -->|Teams channel| OboBot[OBO Azure Bot]
   DirectLine[OBO Direct Line client] -->|Direct Line v3| OboBot
   OboBot -->|/api/messages/obo| Host
-  OboBot -->|japan-expert-obo| OAuth[Aadv2 OAuth connection]
+  OboBot -->|japan-tourist-assistant-obo| OAuth[Aadv2 OAuth connection]
   Blueprint[One Blueprint] --> TeammateIdentity[Agent Identity + Agent User]
   Blueprint --> OBOIdentity[OBO Agent Identity]
   TeammateIdentity --> Teammate
@@ -204,7 +204,7 @@ Inside the template boundary, and therefore covered by ARM validation, what-if, 
   because every active MCP data source is a credential-free public API.
 - The `api-japanexpert` Entra application and service principal exposing delegated `Mcp.Invoke`.
   These are tenant directory objects, not resource-group resources; review them explicitly.
-- The Azure Bot, Direct Line v3 and Teams channels, and `japan-expert-obo` Aadv2 connection, when
+- The Azure Bot, Direct Line v3 and Teams channels, and `japan-tourist-assistant-obo` Aadv2 connection, when
   `deployAzureBot` is true.
 
 ### Azure Bot and Direct Line
@@ -224,7 +224,7 @@ protected OBO route and to the OBO channel application:
 | `deployOboOAuthConnection` | `true` | Aadv2 Bot Token Service connection shared by both OBO clients. |
 | `directLineSiteName` | `japan-expert-directline` | Direct Line v3 site. |
 | `directLineTrustedOrigins` | `[]` | Empty by design; see enhanced authentication below. |
-| `oboOAuthConnectionName` | `japan-expert-obo` | Name shared with the host's `obo-user` handler. |
+| `oboOAuthConnectionName` | `japan-tourist-assistant-obo` | Name shared with the host's `obo-user` handler. |
 | `oboChannelAppClientSecret` | secure, empty | Phase-two channel-app credential written to Bot Token Service; never committed or output. |
 | `oboOAuthScope` | empty | Fresh Blueprint delegated ingress scope requested by Aadv2. |
 
@@ -288,7 +288,7 @@ reapply or modify it because that wrapper contains no Bot resource.
 **Rollback.** Delete the OAuth connection and both channels first, then the bot, using their captured
 M8 names. The OBO channel application is not created here and is rolled back by whoever registered it.
 
-### OBO channel identity and the `japan-expert-obo` OAuth connection
+### OBO channel identity and the `japan-tourist-assistant-obo` OAuth connection
 
 Four distinct objects carry the OBO path. Collapsing any two of them is a security change, not a
 simplification:
@@ -298,7 +298,7 @@ simplification:
 | OBO channel application | Azure Bot `msaAppId`, inbound activity audience, Teams manifest bot ID, outbound Bot Connector credential | operator or frontend, registered outside this template |
 | Japan Tourist Assistant Blueprint | parent identity that exposes the delegated ingress scope | Agent 365 CLI |
 | OBO child Agent Identity | performs the child-bound token exchange | Agent 365 CLI |
-| `japan-expert-obo` OAuth connection | Bot Token Service sign-in that returns the exchangeable user assertion | backend Bot phase |
+| `japan-tourist-assistant-obo` OAuth connection | Bot Token Service sign-in that returns the exchangeable user assertion | backend Bot phase |
 
 Evidence from Agent 365 CLI `1.1.214`:
 
@@ -774,7 +774,7 @@ a365 query-entra inheritance
 - Both connection profiles use `FederatedCredentials`: the shared Blueprint is `ClientId` and the host
   UAMI is `FederatedClientId`. Agentic User auth resolves its child dynamically;
   `AgentIdentityObo.AgentId` selects the OBO child for `fmi_path` and child OBO.
-- The Azure Bot OAuth connection named by `oboOAuthConnectionName` (default `japan-expert-obo`) must
+- The Azure Bot OAuth connection named by `oboOAuthConnectionName` (default `japan-tourist-assistant-obo`) must
   return an exchangeable user token for the delegated scope exposed by the shared Blueprint.
 - Review and minimize existing Blueprint Graph grants before creating the OBO child; inherited
   permissions are shared by design, even while WorkIQ is disabled in code.
