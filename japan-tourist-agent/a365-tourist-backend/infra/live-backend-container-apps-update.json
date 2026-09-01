@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "13060311387547111206"
+      "templateHash": "5980057699482248651"
     }
   },
   "definitions": {
@@ -183,6 +183,20 @@
       "defaultValue": "",
       "metadata": {
         "description": "Optional Foundry endpoint override. Empty derives it from the existing account name."
+      }
+    },
+    "promptShieldEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enables the Azure AI Content Safety Prompt Shields guard on the agent host. The guard is fail-closed, so enable it only once the child identity can reach the Content Safety endpoint."
+      }
+    },
+    "promptShieldEndpoint": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Content Safety endpoint for Prompt Shields. Empty derives the Content Safety surface of the referenced multi-service account, so no extra Azure resource is required."
       }
     },
     "hostImage": {
@@ -514,7 +528,8 @@
       "[format('{0}', toLower(parameters('targetResourceGroupName')))]": "[parameters('targetResourceGroupName')]"
     },
     "approvedDeploymentScope": "[variables('approvedDeploymentScopes')[toLower(resourceGroup().name)]]",
-    "resolvedFoundryProjectEndpoint": "[if(empty(parameters('foundryProjectEndpoint')), format('https://{0}.services.ai.azure.com', parameters('foundryAccountName')), parameters('foundryProjectEndpoint'))]"
+    "resolvedFoundryProjectEndpoint": "[if(empty(parameters('foundryProjectEndpoint')), format('https://{0}.services.ai.azure.com', parameters('foundryAccountName')), parameters('foundryProjectEndpoint'))]",
+    "resolvedPromptShieldEndpoint": "[if(empty(parameters('promptShieldEndpoint')), format('https://{0}.cognitiveservices.azure.com', parameters('foundryAccountName')), parameters('promptShieldEndpoint'))]"
   },
   "resources": {
     "environment": {
@@ -1528,6 +1543,12 @@
           "foundryModelDeploymentName": {
             "value": "[parameters('foundryModelDeploymentName')]"
           },
+          "promptShieldEnabled": {
+            "value": "[parameters('promptShieldEnabled')]"
+          },
+          "promptShieldEndpoint": {
+            "value": "[variables('resolvedPromptShieldEndpoint')]"
+          },
           "tenantId": {
             "value": "[parameters('tenantId')]"
           },
@@ -1573,7 +1594,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "6498039588424877435"
+              "templateHash": "3434815680166917881"
             }
           },
           "definitions": {
@@ -1625,6 +1646,20 @@
               "minLength": 1,
               "metadata": {
                 "description": "Token scope for Foundry project Responses inference. The project endpoint is guarded by the ai.azure.com resource."
+              }
+            },
+            "promptShieldEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Enables the Azure AI Content Safety Prompt Shields guard. The guard is fail-closed: when enabled, a turn is rejected if the service cannot be reached."
+              }
+            },
+            "promptShieldEndpoint": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Content Safety account endpoint for Prompt Shields, for example https://<account>.cognitiveservices.azure.com. A multi-service AIServices account already publishes this surface; a dedicated ContentSafety account works equally well. Plain configuration, so the guard does not depend on Foundry."
               }
             },
             "tenantId": {
@@ -1709,6 +1744,14 @@
               {
                 "name": "Agent365__EnableWorkIq",
                 "value": "false"
+              },
+              {
+                "name": "PromptShield__Enabled",
+                "value": "[string(parameters('promptShieldEnabled'))]"
+              },
+              {
+                "name": "PromptShield__Endpoint",
+                "value": "[parameters('promptShieldEndpoint')]"
               },
               {
                 "name": "PurviewDlp__Enabled",

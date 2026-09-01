@@ -104,6 +104,12 @@ param foundryModelDeploymentName string = 'gpt-5.6-sol'
 @description('Optional Foundry endpoint override. Empty derives it from the existing account name.')
 param foundryProjectEndpoint string = ''
 
+@description('Enables the Azure AI Content Safety Prompt Shields guard on the agent host. The guard is fail-closed, so enable it only once the child identity can reach the Content Safety endpoint.')
+param promptShieldEnabled bool = false
+
+@description('Content Safety endpoint for Prompt Shields. Empty derives the Content Safety surface of the referenced multi-service account, so no extra Azure resource is required.')
+param promptShieldEndpoint string = ''
+
 @description('Immutable agent host image reference, normally a digest.')
 @minLength(1)
 param hostImage string
@@ -379,6 +385,10 @@ var resolvedFoundryProjectEndpoint = empty(foundryProjectEndpoint)
   ? 'https://${foundryAccountName}.services.ai.azure.com'
   : foundryProjectEndpoint
 
+var resolvedPromptShieldEndpoint = empty(promptShieldEndpoint)
+  ? 'https://${foundryAccountName}.cognitiveservices.azure.com'
+  : promptShieldEndpoint
+
 module attractions './modules/attractions-mcp-container-app.bicep' = {
   name: 'live-attractions'
   params: {
@@ -459,6 +469,8 @@ module host './modules/agent-host-container-app.bicep' = {
     containerImage: hostImage
     foundryProjectEndpoint: resolvedFoundryProjectEndpoint
     foundryModelDeploymentName: foundryModelDeploymentName
+    promptShieldEnabled: promptShieldEnabled
+    promptShieldEndpoint: resolvedPromptShieldEndpoint
     tenantId: tenantId
     mcpAudience: mcpAudience
     attractionsFqdn: currentAttractions.properties.configuration.ingress.fqdn

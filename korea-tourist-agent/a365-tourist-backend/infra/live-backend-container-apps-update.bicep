@@ -50,6 +50,16 @@ param resourceBaseName string = 'koreaexpert'
 // Shared Microsoft Foundry account name; the Responses base URL is derived from it.
 param foundryAccountName string = 'a365-ai-foundry'
 
+@description('Enables the Azure AI Content Safety Prompt Shields guard on the agent host. The guard is fail-closed, so enable it only once the child identity can reach the Content Safety endpoint.')
+param promptShieldEnabled bool = false
+
+@description('Content Safety endpoint for Prompt Shields. Empty derives the Content Safety surface of the referenced multi-service account, so no extra Azure resource is required.')
+param promptShieldEndpoint string = ''
+
+var resolvedPromptShieldEndpoint = empty(promptShieldEndpoint)
+  ? 'https://${foundryAccountName}.cognitiveservices.azure.com'
+  : promptShieldEndpoint
+
 resource environment 'Microsoft.App/managedEnvironments@2025-01-01' existing = {
   name: 'cae-${resourceBaseName}'
 }
@@ -187,6 +197,8 @@ module host './modules/agent-host-container-app.bicep' = {
     // The account's published endpoint is the cognitiveservices form, which does not
     // serve /openai/v1. The Responses client needs the services.ai.azure.com base.
     foundryEndpoint: 'https://${foundryAccountName}.services.ai.azure.com'
+    promptShieldEnabled: promptShieldEnabled
+    promptShieldEndpoint: resolvedPromptShieldEndpoint
     tenantId: tenantId
     mcpAudience: mcpAudience
     attractionsFqdn: currentAttractions.properties.configuration.ingress.fqdn

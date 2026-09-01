@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "18064169187558209587"
+      "templateHash": "18197491843889801166"
     }
   },
   "definitions": {
@@ -73,98 +73,119 @@
     "oboOAuthConnectionName": {
       "type": "string",
       "defaultValue": "korea-tourist-assistant-obo"
+    },
+    "resourceBaseName": {
+      "type": "string",
+      "defaultValue": "koreaexpert",
+      "minLength": 3,
+      "maxLength": 20
+    },
+    "foundryAccountName": {
+      "type": "string",
+      "defaultValue": "a365-ai-foundry"
+    },
+    "promptShieldEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enables the Azure AI Content Safety Prompt Shields guard on the agent host. The guard is fail-closed, so enable it only once the child identity can reach the Content Safety endpoint."
+      }
+    },
+    "promptShieldEndpoint": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Content Safety endpoint for Prompt Shields. Empty derives the Content Safety surface of the referenced multi-service account, so no extra Azure resource is required."
+      }
     }
+  },
+  "variables": {
+    "resolvedPromptShieldEndpoint": "[if(empty(parameters('promptShieldEndpoint')), format('https://{0}.cognitiveservices.azure.com', parameters('foundryAccountName')), parameters('promptShieldEndpoint'))]"
   },
   "resources": {
     "environment": {
       "existing": true,
       "type": "Microsoft.App/managedEnvironments",
       "apiVersion": "2025-01-01",
-      "name": "cae-koreaexpert-dev-kc-ae23"
+      "name": "[format('cae-{0}', parameters('resourceBaseName'))]"
     },
     "registry": {
       "existing": true,
       "type": "Microsoft.ContainerRegistry/registries",
       "apiVersion": "2025-11-01",
-      "name": "crkoreaexpertdevkcae23"
+      "name": "[format('cr{0}', parameters('resourceBaseName'))]"
     },
     "applicationInsights": {
       "existing": true,
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02",
-      "name": "appi-koreaexpert-dev-kc-ae23"
-    },
-    "foundry": {
-      "existing": true,
-      "type": "Microsoft.CognitiveServices/accounts",
-      "apiVersion": "2026-05-01",
-      "name": "fdy-koreaexpert-dev-kc-ae23"
+      "name": "[format('appi-{0}', parameters('resourceBaseName'))]"
     },
     "azureMaps": {
       "existing": true,
       "type": "Microsoft.Maps/accounts",
       "apiVersion": "2023-06-01",
-      "name": "maps-koreaexpert-dev-kc-ae23"
+      "name": "[format('maps-{0}', parameters('resourceBaseName'))]"
     },
     "hostIdentity": {
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "name": "id-agent-koreaexpert-dev-kc-ae23"
+      "name": "[format('id-agent-{0}', parameters('resourceBaseName'))]"
     },
     "attractionsIdentity": {
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "name": "id-attract-koreaexpert-dev-kc-ae23"
+      "name": "[format('id-attract-{0}', parameters('resourceBaseName'))]"
     },
     "weatherIdentity": {
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "name": "id-weather-koreaexpert-dev-kc-ae23"
+      "name": "[format('id-weather-{0}', parameters('resourceBaseName'))]"
     },
     "accommodationIdentity": {
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "name": "id-stay-koreaexpert-dev-kc-ae23"
+      "name": "[format('id-stay-{0}', parameters('resourceBaseName'))]"
     },
     "currencyIdentity": {
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "name": "id-fx-koreaexpert-dev-kc-ae23"
+      "name": "[format('id-fx-{0}', parameters('resourceBaseName'))]"
     },
     "currentHost": {
       "existing": true,
       "type": "Microsoft.App/containerApps",
       "apiVersion": "2026-01-01",
-      "name": "ca-agent-koreaexpert-dev-kc-ae23"
+      "name": "[format('ca-agent-{0}', parameters('resourceBaseName'))]"
     },
     "currentAttractions": {
       "existing": true,
       "type": "Microsoft.App/containerApps",
       "apiVersion": "2026-01-01",
-      "name": "ca-attract-koreaexpert-dev-kc-ae23"
+      "name": "[format('ca-attract-{0}', parameters('resourceBaseName'))]"
     },
     "currentWeather": {
       "existing": true,
       "type": "Microsoft.App/containerApps",
       "apiVersion": "2026-01-01",
-      "name": "ca-weather-koreaexpert-dev-kc-ae23"
+      "name": "[format('ca-weather-{0}', parameters('resourceBaseName'))]"
     },
     "currentAccommodation": {
       "existing": true,
       "type": "Microsoft.App/containerApps",
       "apiVersion": "2026-01-01",
-      "name": "ca-stay-koreaexpert-dev-kc-ae23"
+      "name": "[format('ca-stay-{0}', parameters('resourceBaseName'))]"
     },
     "currentCurrency": {
       "existing": true,
       "type": "Microsoft.App/containerApps",
       "apiVersion": "2026-01-01",
-      "name": "ca-fx-koreaexpert-dev-kc-ae23"
+      "name": "[format('ca-fx-{0}', parameters('resourceBaseName'))]"
     },
     "attractions": {
       "type": "Microsoft.Resources/deployments",
@@ -177,16 +198,16 @@
         "mode": "Incremental",
         "parameters": {
           "appName": {
-            "value": "ca-attract-koreaexpert-dev-kc-ae23"
+            "value": "[format('ca-attract-{0}', parameters('resourceBaseName'))]"
           },
           "location": {
             "value": "[resourceGroup().location]"
           },
           "environmentId": {
-            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-koreaexpert-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.App/managedEnvironments', format('cae-{0}', parameters('resourceBaseName')))]"
           },
           "managedIdentityResourceId": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-attract-koreaexpert-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-attract-{0}', parameters('resourceBaseName')))]"
           },
           "managedIdentityClientId": {
             "value": "[reference('attractionsIdentity').clientId]"
@@ -412,16 +433,16 @@
         "mode": "Incremental",
         "parameters": {
           "appName": {
-            "value": "ca-weather-koreaexpert-dev-kc-ae23"
+            "value": "[format('ca-weather-{0}', parameters('resourceBaseName'))]"
           },
           "location": {
             "value": "[resourceGroup().location]"
           },
           "environmentId": {
-            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-koreaexpert-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.App/managedEnvironments', format('cae-{0}', parameters('resourceBaseName')))]"
           },
           "managedIdentityResourceId": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-weather-koreaexpert-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-weather-{0}', parameters('resourceBaseName')))]"
           },
           "acrLoginServer": {
             "value": "[reference('registry').loginServer]"
@@ -645,16 +666,16 @@
         "mode": "Incremental",
         "parameters": {
           "appName": {
-            "value": "ca-stay-koreaexpert-dev-kc-ae23"
+            "value": "[format('ca-stay-{0}', parameters('resourceBaseName'))]"
           },
           "location": {
             "value": "[resourceGroup().location]"
           },
           "environmentId": {
-            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-koreaexpert-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.App/managedEnvironments', format('cae-{0}', parameters('resourceBaseName')))]"
           },
           "managedIdentityResourceId": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-stay-koreaexpert-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-stay-{0}', parameters('resourceBaseName')))]"
           },
           "managedIdentityClientId": {
             "value": "[reference('accommodationIdentity').clientId]"
@@ -880,16 +901,16 @@
         "mode": "Incremental",
         "parameters": {
           "appName": {
-            "value": "ca-fx-koreaexpert-dev-kc-ae23"
+            "value": "[format('ca-fx-{0}', parameters('resourceBaseName'))]"
           },
           "location": {
             "value": "[resourceGroup().location]"
           },
           "environmentId": {
-            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-koreaexpert-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.App/managedEnvironments', format('cae-{0}', parameters('resourceBaseName')))]"
           },
           "managedIdentityResourceId": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-fx-koreaexpert-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-fx-{0}', parameters('resourceBaseName')))]"
           },
           "acrLoginServer": {
             "value": "[reference('registry').loginServer]"
@@ -1121,16 +1142,16 @@
         "mode": "Incremental",
         "parameters": {
           "appName": {
-            "value": "ca-agent-koreaexpert-dev-kc-ae23"
+            "value": "[format('ca-agent-{0}', parameters('resourceBaseName'))]"
           },
           "location": {
             "value": "[resourceGroup().location]"
           },
           "environmentId": {
-            "value": "[resourceId('Microsoft.App/managedEnvironments', 'cae-koreaexpert-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.App/managedEnvironments', format('cae-{0}', parameters('resourceBaseName')))]"
           },
           "managedIdentityResourceId": {
-            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'id-agent-koreaexpert-dev-kc-ae23')]"
+            "value": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-agent-{0}', parameters('resourceBaseName')))]"
           },
           "managedIdentityClientId": {
             "value": "[reference('hostIdentity').clientId]"
@@ -1142,7 +1163,13 @@
             "value": "[parameters('hostImage')]"
           },
           "foundryEndpoint": {
-            "value": "[reference('foundry').endpoint]"
+            "value": "[format('https://{0}.services.ai.azure.com', parameters('foundryAccountName'))]"
+          },
+          "promptShieldEnabled": {
+            "value": "[parameters('promptShieldEnabled')]"
+          },
+          "promptShieldEndpoint": {
+            "value": "[variables('resolvedPromptShieldEndpoint')]"
           },
           "tenantId": {
             "value": "[parameters('tenantId')]"
@@ -1189,7 +1216,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "1798822300582454369"
+              "templateHash": "2411135031887824171"
             }
           },
           "definitions": {
@@ -1230,6 +1257,20 @@
             },
             "foundryEndpoint": {
               "type": "string"
+            },
+            "promptShieldEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Enables the Azure AI Content Safety Prompt Shields guard. The guard is fail-closed: when enabled, a turn is rejected if the service cannot be reached."
+              }
+            },
+            "promptShieldEndpoint": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Content Safety account endpoint for Prompt Shields, for example https://<account>.cognitiveservices.azure.com. A multi-service AIServices account already publishes this surface; a dedicated ContentSafety account works equally well. Plain configuration, so the guard does not depend on Foundry."
+              }
             },
             "tenantId": {
               "type": "string"
@@ -1303,20 +1344,24 @@
                 "value": "info|warn|error"
               },
               {
-                "name": "AgentHost__AzureOpenAIEndpoint",
+                "name": "AgentHost__FoundryProjectEndpoint",
                 "value": "[parameters('foundryEndpoint')]"
               },
               {
-                "name": "AgentHost__AzureOpenAIDeployment",
-                "value": "gpt-5.6-sol"
-              },
-              {
-                "name": "AgentHost__AzureOpenAIModel",
+                "name": "AgentHost__FoundryModelDeployment",
                 "value": "gpt-5.6-sol"
               },
               {
                 "name": "Agent365__EnableWorkIq",
                 "value": "false"
+              },
+              {
+                "name": "PromptShield__Enabled",
+                "value": "[string(parameters('promptShieldEnabled'))]"
+              },
+              {
+                "name": "PromptShield__Endpoint",
+                "value": "[parameters('promptShieldEndpoint')]"
               },
               {
                 "name": "PurviewDlp__Enabled",
@@ -1356,7 +1401,7 @@
               },
               {
                 "name": "AgentApplication__UserAuthorization__Handlers__agentic-foundry__Settings__Scopes__0",
-                "value": "https://cognitiveservices.azure.com/.default"
+                "value": "https://ai.azure.com/.default"
               },
               {
                 "name": "AgentApplication__UserAuthorization__Handlers__agentic-foundry__Settings__AlternateBlueprintConnectionName",
@@ -1440,7 +1485,7 @@
               },
               {
                 "name": "Connections__OboServiceConnection__Settings__Scopes__0",
-                "value": "5a807f24-c9de-44ee-a3a7-329e88a00ffc/.default"
+                "value": "api://AzureADTokenExchange/.default"
               },
               {
                 "name": "Connections__OboChannelConnection__Settings__AuthType",
@@ -1642,7 +1687,6 @@
         "currentCurrency",
         "currentHost",
         "currentWeather",
-        "foundry",
         "hostIdentity",
         "registry",
         "weather"
