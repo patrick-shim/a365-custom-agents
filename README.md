@@ -8,8 +8,8 @@ and a Microsoft 365 AI Teammate. Microsoft Agent Framework owns orchestration, A
 identity and transport, Microsoft Purview protects prompt and response content fail-closed, and Korea
 travel data is served by four independently deployed MCP services.
 
-> Its sibling, [`japan-tourist-agent`](../japan-tourist-agent), is the same architecture for Japan
-> with different data providers. Either one is a complete, standalone reference.
+> A sibling repository, **`japan-tourist-agent`**, is the same architecture for Japan with different
+> data providers. Either one is a complete, standalone reference.
 
 ## What is actually guaranteed here
 
@@ -163,6 +163,16 @@ The shape of it:
 A child Agent Identity holds **no OAuth2 grants of its own**. It inherits them from the Blueprint, so
 every resource a turn calls needs *both* a grant on the Blueprint service principal **and** an
 `inheritablePermissions` entry at `kind=allAllowed`.
+
+```mermaid
+flowchart LR
+  BP["Blueprint application"] -->|grant on its service principal| G["OAuth2 grants"]
+  BP -->|inheritablePermissions<br/>kind=allAllowed| I["Inheritance entries"]
+  G --> EFF{{"Effective inheritance"}}
+  I --> EFF
+  EFF -->|flows to| C["Child Agent Identity<br/>0 grants of its own"]
+  C -->|/.default expands<br/>from inherited scopes| TOK["Per-resource token"]
+```
 
 `a365 setup all` configures only the first-party resources it knows about. It does **not** cover
 Azure Machine Learning (the Foundry audience), this backend's custom MCP API, or the Purview Graph
