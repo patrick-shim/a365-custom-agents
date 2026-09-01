@@ -21,15 +21,17 @@ co-exist in one group without collision.
 
 | Channel | Route | Status |
 | --- | --- | --- |
-| OBO Teams | `/api/messages/obo` | Deployed; awaiting sign-in and a recorded governed turn |
-| OBO Direct Line | `/api/messages/obo` | Deployed; bot responds and issues the sign-in card |
+| OBO Teams | `/api/messages/obo` | Live and accepted in Microsoft Teams |
+| OBO Direct Line | `/api/messages/obo` | Live; bot responds and completes sign-in |
 | AI Teammate | `/api/messages` | Package built; awaiting Microsoft 365 licensing, upload, and install |
 
 The host and all four MCP services are on revision `0000001` and healthy, `a365 query-entra
 inheritance` reports 7 of 7 resources effective, and both federated identity credentials point at the
-rebuilt host managed identity. The rebuild issued new Blueprint objects and a new OBO channel secret,
-so no cached user token exists and the first turn of each channel returns a sign-in card. Channel
-acceptance is open until a governed turn is replayed and recorded per channel.
+rebuilt host managed identity. A governed Teams turn completes Agent Identity resolution with
+`child=False, user=True` on the delegated Foundry exchange, fail-closed Purview evaluation, all four
+MCP discovery calls, and the Foundry model call. Agent 365 observability export returns HTTP 200,
+and the interval carries zero `JEX-` failures. AI Teammate acceptance is still open because no live
+AI Teammate turn has run.
 
 ## Architecture
 
