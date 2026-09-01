@@ -1,0 +1,51 @@
+name: Backend CI
+
+"on":
+  push:
+    paths:
+      - "a365-tourist-backend/**"
+      - ".github/workflows/backend-ci.yml"
+  pull_request:
+    paths:
+      - "a365-tourist-backend/**"
+      - ".github/workflows/backend-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: a365-tourist-backend
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.0.110
+
+      - name: Reject committed frontend and operational state
+        shell: pwsh
+        run: |
+          $tracked = @(git ls-files -- .)
+          if ($tracked.Count -eq 0) {
+            throw 'Backend tracked-file validation returned no files.'
+          }
+          $forbidden = @($tracked | Where-Object {
+            $_ -match '(^|/)(?:\.a365|\.azure|\.copilot-azure|\.config|manifest)(?:/|$)' -or
+            $_ -match '(^|/)(?:a365\.config\.json|a365\.generated\.config\.json|\.a365-workspace-detection\.local\.json|manifest\.zip|ToolingManifest\.json|backend-contract\.lock\.json|\.env(?:\.(?!example$).*)?|[^/]+\.(?:key|pem|pfx|p12|atkproj))$' -or
+            $_ -match '^(?:teams|direct)/'
+          })
+          if ($forbidden.Count -gt 0) {
+            throw "Frontend source or protected operational state is committed in the backend: $($forbidden -join ', ')"
+          }
+
+      - name: Run local CI
+        shell: pwsh
+        run: ./tools/Invoke-LocalCi.ps1 -Configuration Release

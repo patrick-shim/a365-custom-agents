@@ -1,0 +1,117 @@
+name: Frontend Contract Alignment
+
+"on":
+  push:
+    paths:
+      - "a365-tourist-backend/contracts/**"
+      - "a365-tourist-agent-obo/backend-contract.lock.json"
+      - "a365-tourist-agent-obo/teams/appPackage/color.png"
+      - "a365-tourist-agent-obo/teams/appPackage/outline.png"
+      - "a365-tourist-agent-obo-directline/backend-contract.lock.json"
+      - "a365-tourist-agent-obo-directline/direct/assets/color.png"
+      - "a365-tourist-agent-obo-directline/direct/assets/outline.png"
+      - "a365-tourist-agent-teammate/backend-contract.lock.json"
+      - "a365-tourist-agent-teammate/assets/color.png"
+      - "a365-tourist-agent-teammate/assets/outline.png"
+      - ".github/workflows/contract-alignment-ci.yml"
+  pull_request:
+    paths:
+      - "a365-tourist-backend/contracts/**"
+      - "a365-tourist-agent-obo/backend-contract.lock.json"
+      - "a365-tourist-agent-obo/teams/appPackage/color.png"
+      - "a365-tourist-agent-obo/teams/appPackage/outline.png"
+      - "a365-tourist-agent-obo-directline/backend-contract.lock.json"
+      - "a365-tourist-agent-obo-directline/direct/assets/color.png"
+      - "a365-tourist-agent-obo-directline/direct/assets/outline.png"
+      - "a365-tourist-agent-teammate/backend-contract.lock.json"
+      - "a365-tourist-agent-teammate/assets/color.png"
+      - "a365-tourist-agent-teammate/assets/outline.png"
+      - ".github/workflows/contract-alignment-ci.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: windows-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compare frontend locks with canonical backend contract
+        shell: pwsh
+        run: |
+          $contract = Get-Content a365-tourist-backend/contracts/frontend-backend-contract.json -Raw | ConvertFrom-Json
+          $pins = @(
+            @{ Path = 'a365-tourist-agent-obo/backend-contract.lock.json'; Frontend = 'on-behalf-of' },
+            @{ Path = 'a365-tourist-agent-obo-directline/backend-contract.lock.json'; Frontend = 'on-behalf-of' },
+            @{ Path = 'a365-tourist-agent-teammate/backend-contract.lock.json'; Frontend = 'agentic-user' }
+          )
+
+          foreach ($pin in $pins) {
+            $lock = Get-Content $pin.Path -Raw | ConvertFrom-Json
+            $expected = @($contract.frontends | Where-Object name -eq $pin.Frontend)
+            if ($expected.Count -ne 1) {
+              throw "Canonical contract must contain exactly one '$($pin.Frontend)' frontend."
+            }
+            $expected = $expected[0]
+            if ($lock.contractId -ne $contract.contractId -or
+                $lock.contractVersion -ne $contract.contractVersion -or
+                $lock.productName -ne $contract.product.name -or
+                $lock.defaultTimeZone -ne $contract.product.defaultTimeZone -or
+                $lock.defaultCurrency -ne $contract.product.defaultCurrency -or
+                $lock.frontend -ne $expected.name -or
+                $lock.route -ne $expected.route -or
+                $lock.audienceConfiguration -ne $expected.audienceConfiguration -or
+                $lock.identityBinding -ne $expected.identityBinding) {
+              throw "Frontend lock '$($pin.Path)' does not match the canonical backend contract."
+            }
+          }
+
+          $colorIcons = @(
+            'a365-tourist-agent-obo/teams/appPackage/color.png',
+            'a365-tourist-agent-obo-directline/direct/assets/color.png',
+            'a365-tourist-agent-teammate/assets/color.png'
+          )
+          $outlineIcons = @(
+            'a365-tourist-agent-obo/teams/appPackage/outline.png',
+            'a365-tourist-agent-obo-directline/direct/assets/outline.png',
+            'a365-tourist-agent-teammate/assets/outline.png'
+          )
+          foreach ($icons in @($colorIcons, $outlineIcons)) {
+            $hashes = @($icons | ForEach-Object {
+              (Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash
+            } | Sort-Object -Unique)
+            if ($hashes.Count -ne 1) {
+              throw "Japan Tourist Assistant icon assets are inconsistent: $($icons -join ', ')"
+            }
+          }
+          Add-Type -AssemblyName System.Drawing.Common
+          $color = [Drawing.Bitmap]::new((Resolve-Path $colorIcons[0]).Path)
+          try {
+            $center = $color.GetPixel(96, 96)
+            $corner = $color.GetPixel(0, 0)
+            if ($color.Width -ne 192 -or $color.Height -ne 192 -or
+                $center.R -ne 188 -or $center.G -ne 0 -or $center.B -ne 45 -or
+                $corner.R -ne 255 -or $corner.G -ne 255 -or $corner.B -ne 255) {
+              throw 'Japan Tourist Assistant color icon must be a white field with a Japan-red disc.'
+            }
+          }
+          finally {
+            $color.Dispose()
+          }
+          $outline = [Drawing.Bitmap]::new((Resolve-Path $outlineIcons[0]).Path)
+          try {
+            $center = $outline.GetPixel(16, 16)
+            $corner = $outline.GetPixel(0, 0)
+            if ($outline.Width -ne 32 -or $outline.Height -ne 32 -or
+                $center.R -ne 255 -or $center.G -ne 255 -or $center.B -ne 255 -or
+                $center.A -ne 255 -or $corner.A -ne 0) {
+              throw 'Japan Tourist Assistant outline icon must be a white disc on transparency.'
+            }
+          }
+          finally {
+            $outline.Dispose()
+          }

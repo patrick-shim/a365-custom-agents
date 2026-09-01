@@ -1,0 +1,79 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.26/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.26",
+  "version": "1.0.0",
+  "id": "${{TEAMS_APP_ID}}",
+  "developer": {
+    "name": "Japan Tourist Assistant",
+    "websiteUrl": "https://${{DEVELOPER_DOMAIN}}",
+    "privacyUrl": "https://${{DEVELOPER_DOMAIN}}/privacy",
+    "termsOfUseUrl": "https://${{DEVELOPER_DOMAIN}}/terms"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "Japan Tourist Assistant (OBO)",
+    "full": "Japan Tourist Assistant (OBO)"
+  },
+  "description": {
+    "short": "Plans Japan travel around your schedule and current local conditions.",
+    "full": "A governed Microsoft Agent Framework assistant that combines current attractions, accommodation, weather, alerts, and exchange-rate tools for practical travel planning across Japan."
+  },
+  "accentColor": "#BC002D",
+  "copilotAgents": {
+    "customEngineAgents": [
+      {
+        "type": "bot",
+        "id": "${{AGENT_APP_ID}}"
+      }
+    ]
+  },
+  "bots": [
+    {
+      "botId": "${{AGENT_APP_ID}}",
+      "scopes": [
+        "copilot",
+        "personal"
+      ],
+      "supportsFiles": false,
+      "isNotificationOnly": false,
+      "commandLists": [
+        {
+          "scopes": [
+            "copilot",
+            "personal"
+          ],
+          "commands": [
+            {
+              "title": "Plan a day in Japan",
+              "description": "Build an itinerary around my schedule and preferences."
+            },
+            {
+              "title": "Check weather impact",
+              "description": "Check whether local Japan weather affects my plans."
+            },
+            {
+              "title": "Find nearby attractions",
+              "description": "Find attractions near a location in Japan."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "webApplicationInfo": {
+    "id": "${{AGENT_APP_ID}}",
+    "resource": "api://botid-${{AGENT_APP_ID}}"
+  },
+  "validDomains": [
+    "${{AGENT_HOST_DOMAIN}}",
+    "token.botframework.com",
+    "login.microsoftonline.com"
+  ]
+}

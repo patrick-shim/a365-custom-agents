@@ -1,0 +1,22 @@
+* text=auto
+
+*.cs text eol=lf
+*.csproj text eol=lf
+*.bicep text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.ps1 text eol=lf
+*.psm1 text eol=lf
+*.props text eol=lf
+*.slnx text eol=lf
+*.atkproj text eol=lf
+*.xml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+Dockerfile* text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.zip binary

@@ -1,0 +1,23 @@
+<Solution>
+  <Folder Name="/server/">
+    <Project Path="server/agent/JapanExpert.Agent/JapanExpert.Agent.csproj" />
+    <Project Path="server/agent-host/JapanExpert.AgentHost/JapanExpert.AgentHost.csproj" />
+    <Project Path="server/integrations/JapanExpert.ExchangeRates/JapanExpert.ExchangeRates.csproj" />
+    <Project Path="server/integrations/JapanExpert.Tourism/JapanExpert.Tourism.csproj" />
+    <Project Path="server/integrations/JapanExpert.Weather/JapanExpert.Weather.csproj" />
+    <Project Path="server/mcp/accommodation/JapanExpert.Mcp.Accommodation/JapanExpert.Mcp.Accommodation.csproj" />
+    <Project Path="server/mcp/attractions/JapanExpert.Mcp.Attractions/JapanExpert.Mcp.Attractions.csproj" />
+    <Project Path="server/mcp/currency/JapanExpert.Mcp.Currency/JapanExpert.Mcp.Currency.csproj" />
+    <Project Path="server/mcp/shared/JapanExpert.Mcp.Hosting/JapanExpert.Mcp.Hosting.csproj" />
+    <Project Path="server/mcp/weather/JapanExpert.Mcp.Weather/JapanExpert.Mcp.Weather.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/JapanExpert.Agent.Tests/JapanExpert.Agent.Tests.csproj" />
+    <Project Path="tests/JapanExpert.AgentHost.Tests/JapanExpert.AgentHost.Tests.csproj" />
+    <Project Path="tests/JapanExpert.ExchangeRates.Tests/JapanExpert.ExchangeRates.Tests.csproj" />
+    <Project Path="tests/JapanExpert.Mcp.Hosting.Tests/JapanExpert.Mcp.Hosting.Tests.csproj" />
+    <Project Path="tests/JapanExpert.Mcp.Tools.Tests/JapanExpert.Mcp.Tools.Tests.csproj" />
+    <Project Path="tests/JapanExpert.Tourism.Tests/JapanExpert.Tourism.Tests.csproj" />
+    <Project Path="tests/JapanExpert.Weather.Tests/JapanExpert.Weather.Tests.csproj" />
+  </Folder>
+</Solution>

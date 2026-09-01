@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="../../../integrations/JapanExpert.ExchangeRates/JapanExpert.ExchangeRates.csproj" />
+    <ProjectReference Include="../../shared/JapanExpert.Mcp.Hosting/JapanExpert.Mcp.Hosting.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol.AspNetCore" />
+  </ItemGroup>
+</Project>

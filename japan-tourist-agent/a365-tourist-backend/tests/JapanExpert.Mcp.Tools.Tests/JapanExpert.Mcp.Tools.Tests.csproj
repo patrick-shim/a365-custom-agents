@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../server/agent-host/JapanExpert.AgentHost/JapanExpert.AgentHost.csproj" />
+    <ProjectReference Include="../../server/mcp/accommodation/JapanExpert.Mcp.Accommodation/JapanExpert.Mcp.Accommodation.csproj" />
+    <ProjectReference Include="../../server/mcp/attractions/JapanExpert.Mcp.Attractions/JapanExpert.Mcp.Attractions.csproj" />
+    <ProjectReference Include="../../server/mcp/currency/JapanExpert.Mcp.Currency/JapanExpert.Mcp.Currency.csproj" />
+    <ProjectReference Include="../../server/mcp/weather/JapanExpert.Mcp.Weather/JapanExpert.Mcp.Weather.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol" />
+    <PackageReference Include="MSTest" />
+  </ItemGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+</Project>

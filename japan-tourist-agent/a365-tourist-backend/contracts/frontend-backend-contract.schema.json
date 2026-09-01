@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contractId",
+    "contractVersion",
+    "product",
+    "backend",
+    "frontends",
+    "healthEndpoints",
+    "mcp"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contractId": {
+      "const": "japan-expert-shared-backend"
+    },
+    "contractVersion": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "geography", "defaultTimeZone", "defaultCurrency"],
+      "properties": {
+        "name": {
+          "const": "Japan Tourist Assistant"
+        },
+        "geography": {
+          "const": "Japan"
+        },
+        "defaultTimeZone": {
+          "const": "Asia/Tokyo"
+        },
+        "defaultCurrency": {
+          "const": "JPY"
+        }
+      }
+    },
+    "backend": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "deployment",
+        "sourceAuthority",
+        "configurationOwnership",
+        "inferenceProtocol"
+      ],
+      "properties": {
+        "deployment": {
+          "const": "japan-expert-shared-agent-host"
+        },
+        "sourceAuthority": {
+          "const": "a365-tourist-backend"
+        },
+        "configurationOwnership": {
+          "const": "protected-deployment-configuration"
+        },
+        "inferenceProtocol": {
+          "const": "foundry-responses"
+        }
+      }
+    },
+    "frontends": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "route",
+          "audienceConfiguration",
+          "identityBinding"
+        ],
+        "properties": {
+          "name": {
+            "enum": ["agentic-user", "on-behalf-of"]
+          },
+          "route": {
+            "enum": ["/api/messages", "/api/messages/obo"]
+          },
+          "audienceConfiguration": {
+            "type": "string",
+            "minLength": 1
+          },
+          "identityBinding": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "healthEndpoints": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "string",
+        "pattern": "^/api/health(?:/(?:live|ready))?$"
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["serviceCount", "services", "transport", "authorization"],
+      "properties": {
+        "serviceCount": {
+          "const": 4
+        },
+        "services": {
+          "type": "array",
+          "const": ["attractions", "accommodation", "weather", "currency"]
+        },
+        "transport": {
+          "const": "streamable-http"
+        },
+        "authorization": {
+          "const": "delegated Mcp.Invoke"
+        }
+      }
+    }
+  }
+}
