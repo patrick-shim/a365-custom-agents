@@ -1,7 +1,7 @@
-# Japan Expert AI Teammate configuration
+# Japan Tourist Assistant AI Teammate configuration
 
 The frontend binds to `/api/messages` through `backend-contract.lock.json`. The committed source pin
-names Japan Expert, `Asia/Tokyo`, `JPY`, `TokenValidation__Audiences__AgenticUser`, and
+names Japan Tourist Assistant, `Asia/Tokyo`, `JPY`, `TokenValidation__Audiences__AgenticUser`, and
 `dynamic-child-agent-identity`; actual Blueprint, child, tenant, package, and registration values
 remain in protected CLI and deployment state.
 
@@ -11,7 +11,7 @@ hand-edit, stage, commit, or delete them. Use the approved Agent 365/Admin Cente
 rehydration, validation, publication, licensing, instance creation, and installation.
 
 The protected local Seoul manifest and published package records are historical and cannot seed M8.
-Use `assets/color.png` and `assets/outline.png` as the Japan Expert source icons in the clean
+Use `assets/color.png` and `assets/outline.png` as the Japan Tourist Assistant source icons in the clean
 owner-scoped Agent 365 package workflow. The protected
 `../a365-tourist-agent-obo/.a365/ai-teammate` snapshot is historical output, not publication source.
 

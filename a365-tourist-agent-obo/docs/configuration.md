@@ -1,7 +1,7 @@
-# Japan Expert OBO Teams frontend configuration
+# Japan Tourist Assistant OBO Teams frontend configuration
 
 The source package binds to `/api/messages/obo` through `backend-contract.lock.json`. The committed
-pin names Japan Expert, `Asia/Tokyo`, `JPY`, `TokenValidation__Audiences__OnBehalfOf`, and
+pin names Japan Tourist Assistant, `Asia/Tokyo`, `JPY`, `TokenValidation__Audiences__OnBehalfOf`, and
 `configured-obo-child-agent-identity`; actual tenant identifiers remain in protected deployment and
 CLI-owned state.
 
@@ -21,7 +21,7 @@ The manifest variables preserve distinct identities:
 
 `teams/appPackage/build/` is not deployment source. Regenerate and validate a candidate only through
 the approved Teams/Agent 365 CLI workflow. Reject a dry run that reuses any Seoul Blueprint, child,
-channel application, endpoint registration, or generated package. M8 must create the new Japan Expert
+channel application, endpoint registration, or generated package. M8 must create the new Japan Tourist Assistant
 identity boundary while preserving `/api/messages/obo` and the two-child architecture.
 
 Structural source CI is offline. Live channel validation and any package, registration, consent, or

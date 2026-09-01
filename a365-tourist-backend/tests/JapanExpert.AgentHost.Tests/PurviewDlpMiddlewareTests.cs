@@ -65,7 +65,7 @@ public sealed class PurviewDlpMiddlewareTests
         using var scope = PurviewSerializationWorkaround.PushAgentMetadata(
             TestApplicationId.ToString(),
             TestTenantId.ToString(),
-            "Japan Expert Test",
+            "Japan Tourist Assistant Test",
             "1.0");
         var serializationUtils = packageAssembly.GetType(
             "Microsoft.Agents.AI.Purview.Serialization.PurviewSerializationUtils")!;
@@ -77,7 +77,7 @@ public sealed class PurviewDlpMiddlewareTests
         var agent = document.RootElement.GetProperty("agents")[0];
         Assert.AreEqual(TestApplicationId.ToString(), agent.GetProperty("blueprintId").GetString());
         Assert.AreEqual(TestTenantId.ToString(), agent.GetProperty("identifier").GetString());
-        Assert.AreEqual("Japan Expert Test", agent.GetProperty("name").GetString());
+        Assert.AreEqual("Japan Tourist Assistant Test", agent.GetProperty("name").GetString());
         Assert.AreEqual("1.0", agent.GetProperty("version").GetString());
     }
 
@@ -94,7 +94,7 @@ public sealed class PurviewDlpMiddlewareTests
         using var scope = PurviewSerializationWorkaround.PushAgentMetadata(
             TestApplicationId.ToString(),
             TestTenantId.ToString(),
-            "Japan Expert Test",
+            "Japan Tourist Assistant Test",
             "1.0");
 
         await client.GetResponseAsync(
@@ -312,7 +312,7 @@ public sealed class PurviewDlpMiddlewareTests
     private static IChatClient CreatePurviewClient(IChatClient inner, Uri graphBaseUri)
     {
         PurviewSerializationWorkaround.Apply();
-        var settings = new PurviewSettings("Japan Expert Test")
+        var settings = new PurviewSettings("Japan Tourist Assistant Test")
         {
             AppVersion = "1.0",
             TenantId = TestTenantId.ToString(),

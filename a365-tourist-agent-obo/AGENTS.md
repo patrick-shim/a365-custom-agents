@@ -1,4 +1,4 @@
-# Japan Expert OBO Teams Frontend Guide
+# Japan Tourist Assistant OBO Teams Frontend Guide
 
 > **LOCKED (2026-08-31).** This project is frozen at a verified-good baseline: the contract pin
 > matches the canonical backend contract and the icons are byte-identical across all three channels.
@@ -38,10 +38,10 @@ Never deploy generated historical output from `teams/appPackage/build/`.
 
 ## Active M8 status
 
-Rename this source package and icons to Japan Expert, preserve `/api/messages/obo`, and use only the
+Rename this source package and icons to Japan Tourist Assistant, preserve `/api/messages/obo`, and use only the
 new OBO audience and child proposed by the clean M8 Agent 365 workflow. Existing Seoul Blueprint,
 child, channel, package, generated state, and installation records are historical and must not be
-used as Japan Expert authority. Fix shared behavior only in `../a365-tourist-backend`.
+used as Japan Tourist Assistant authority. Fix shared behavior only in `../a365-tourist-backend`.
 
 Do not recreate backend directories, copy Direct Line code, or mutate routes, audiences, identities,
 consent, Purview, or package registration without the milestone gate and explicit approval.

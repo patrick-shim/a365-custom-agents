@@ -1,7 +1,7 @@
-# Japan Expert OBO Direct Line frontend configuration
+# Japan Tourist Assistant OBO Direct Line frontend configuration
 
 The client binds to `/api/messages/obo` through `backend-contract.lock.json`. The committed pin names
-Japan Expert, `Asia/Tokyo`, `JPY`, `TokenValidation__Audiences__OnBehalfOf`, and
+Japan Tourist Assistant, `Asia/Tokyo`, `JPY`, `TokenValidation__Audiences__OnBehalfOf`, and
 `configured-obo-child-agent-identity`; actual tenant, channel, child, and secret values remain
 outside source.
 

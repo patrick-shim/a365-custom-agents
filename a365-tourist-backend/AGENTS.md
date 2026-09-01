@@ -1,4 +1,4 @@
-# Japan Expert Shared Backend Guide
+# Japan Tourist Assistant Shared Backend Guide
 
 > **LOCKED (2026-08-31).** This project is frozen at a verified-good baseline: 17/17 projects build
 > with 0 warnings and 0 errors, 335 tests pass, and `tools/Invoke-LocalCi.ps1 -Strict` reports 11
@@ -53,7 +53,7 @@ never log in, deploy, grant consent, or mutate tenant policy.
 
 ## Active M8 migration and deployment
 
-M8 renames the active product and .NET source to Japan Expert, retunes MCP services for Japan, and
+M8 renames the active product and .NET source to Japan Tourist Assistant, retunes MCP services for Japan, and
 owns the clean deployment plus new Agent 365 registrations. Preserve `/api/messages`,
 `/api/messages/obo`, their distinct audiences, one shared Blueprint with two child identities,
 fail-closed Purview, and the existing frontend/backend ownership boundary.
@@ -68,7 +68,7 @@ has exactly one correct audience, with `ServiceConnection` on the Agent 365 Mess
 All new backend resources belong only in the existing `rg-a365-custom-agents` resource group. Refer
 to the existing `a365-ai-foundry/default` project and `gpt-5.6-sol` deployment across resource groups;
 do not recreate Foundry. Seoul deployment and registration records under M0-M7 are historical only
-and cannot seed Japan Expert identities, packages, or deployment parameters.
+and cannot seed Japan Tourist Assistant identities, packages, or deployment parameters.
 
 Backend code, infrastructure, Docker assets, tests, tools, and deployment automation remain
 exclusive to this project. Frontend package and channel operations belong to the owning frontend.

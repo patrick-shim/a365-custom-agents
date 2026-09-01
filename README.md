@@ -1,10 +1,10 @@
-# Japan Expert agent workspace
+# Japan Tourist Assistant agent workspace
 
 > **LOCKED (2026-08-31).** This repository is frozen at a verified-good baseline. Do not modify any
 > file, dependency, pin, or Azure resource without an explicit, file-scoped instruction from the
 > repository owner. The authoritative rules are in [AGENTS.md](./AGENTS.md#change-lock).
 
-Japan Expert is a governed Microsoft travel agent for Japan. One shared C# backend serves three
+Japan Tourist Assistant is a governed Microsoft travel agent for Japan. One shared C# backend serves three
 channels: an OBO Teams app, an OBO Direct Line console client, and a Microsoft 365 AI Teammate.
 Microsoft Agent Framework owns orchestration, Agent 365 owns runtime identity and transport,
 Microsoft Purview protects prompt and response content fail-closed, and Japan travel data is served by
@@ -30,9 +30,9 @@ live AI Teammate turn has run yet.
 ```mermaid
 flowchart LR
   subgraph Channels
-    Teams[OBO Teams package<br/>Japan Expert]
+    Teams[OBO Teams package<br/>Japan Tourist Assistant]
     Direct[OBO Direct Line client]
-    Teammate[AI Teammate package<br/>Japan Expert Teammate]
+    Teammate[AI Teammate package<br/>Japan Tourist Assistant Teammate]
   end
 
   Teams -->|Teams channel| Bot[Azure Bot<br/>bot-japanexpert]
@@ -77,7 +77,7 @@ no workload holds a data-plane role or reads a provider secret.
 
 The `a365-tourist-*` directory names are stable repository ownership boundaries kept for
 compatibility. They are not product branding: active projects, namespaces, packages, prompts, Azure
-resources, and current documentation all use Japan Expert.
+resources, and current documentation all use Japan Tourist Assistant.
 
 `a365-tourist-agent-obo-teammate/`, if present, is a separate excluded project. Do not inspect,
 modify, stage, or commit it without specific human approval.
@@ -198,7 +198,7 @@ generates placeholder branding and its own default icons, so its printed "Custom
 step is mandatory, not optional.
 
 The Admin Center lists an uploaded agent by the manifest's `name.short`. The Teams app is
-`Japan Expert` and the AI Teammate agent is `Japan Expert (Teammate)` so administrators can tell them
+`Japan Tourist Assistant` and the AI Teammate agent is `Japan Tourist Assistant (Teammate)` so administrators can tell them
 apart. Generated packages are operational artifacts and stay out of Git.
 
 ## Validate
@@ -252,7 +252,7 @@ git diff --cached --name-only
 ## Milestones
 
 `a365-tourist-backend/docs/milestones/milestones.json` is the machine-readable source of truth and
-`docs/milestones/README.md` holds the human protocol. M8 is the active milestone: the Japan Expert
+`docs/milestones/README.md` holds the human protocol. M8 is the active milestone: the Japan Tourist Assistant
 migration, the Japan MCP retune, single-resource-group deployment, clean Agent 365 registration, and
 same-revision cross-channel acceptance. M0 through M7 are explicitly historical and grant no
 deployment or registration authority.
@@ -267,8 +267,8 @@ Key records:
 ## Copilot guidance
 
 Repository-wide rules are in [`.github/copilot-instructions.md`](.github/copilot-instructions.md).
-Registered specialists are [Japan Expert Agent Builder](.github/agents/japan-expert-agent-builder.agent.md),
-[Japan Expert Solution Reviewer](.github/agents/japan-expert-solution-reviewer.agent.md),
+Registered specialists are [Japan Tourist Assistant Agent Builder](.github/agents/japan-expert-agent-builder.agent.md),
+[Japan Tourist Assistant Solution Reviewer](.github/agents/japan-expert-solution-reviewer.agent.md),
 [MCP Service Builder](.github/agents/mcp-service-builder.agent.md), and
 [Tools Specialist](.github/agents/tools-specialist.agent.md).
 

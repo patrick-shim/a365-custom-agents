@@ -1,4 +1,4 @@
-// Japan Expert shared backend bootstrap.
+// Japan Tourist Assistant shared backend bootstrap.
 //
 // Scope contract (M8):
 //   * This template is resource-group scoped, so ARM cannot create a resource group from it.
@@ -42,7 +42,7 @@ var approvedDeploymentScope = approvedDeploymentScopes[toLower(resourceGroup().n
 // Naming and tagging
 // ---------------------------------------------------------------------------
 
-@description('Deterministic Japan Expert resource token. Lowercase alphanumeric only; every resource name defaults from this value.')
+@description('Deterministic Japan Tourist Assistant resource token. Lowercase alphanumeric only; every resource name defaults from this value.')
 @minLength(3)
 @maxLength(16)
 param resourceBaseName string = 'japanexpert'
@@ -417,7 +417,7 @@ param azureBotName string = 'bot-${resourceBaseName}'
 @description('Azure Bot display name shown to channel users.')
 @minLength(1)
 @maxLength(64)
-param azureBotDisplayName string = 'Japan Expert'
+param azureBotDisplayName string = 'Japan Tourist Assistant'
 
 @description('Azure Bot SKU.')
 @allowed([

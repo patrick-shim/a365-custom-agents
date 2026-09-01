@@ -1,4 +1,4 @@
-# Japan Expert Workspace Guide
+# Japan Tourist Assistant Workspace Guide
 
 > **LOCKED (2026-08-31).** This workspace is frozen at a verified-good baseline. Do not modify any
 > file, dependency, pin, or resource without an explicit, file-scoped instruction from the repository
@@ -54,33 +54,38 @@ not unlocks. When a task is authorized:
 Every user-visible and directory-object name derives from one product base name:
 
 ```
-<Country> Tourist Agent
+<Country> Tourist Assistant
 ```
 
-For this workspace the base name is `Japan Tourist Agent`.
+For this workspace the base name is `Japan Tourist Assistant`.
 
 | Surface | Name | Example |
 | --- | --- | --- |
-| OBO Teams app (`name.short` and `name.full`) | `<base> (OBO)` | `Japan Tourist Agent (OBO)` |
-| AI Teammate package (`name.short` and `name.full`) | `<base> (TEAMMATE)` | `Japan Tourist Agent (TEAMMATE)` |
-| Agent 365 Blueprint | `<base> Blueprint` | `Japan Tourist Agent Blueprint` |
-| Agent 365 child Agent Identity | `<base> Identity` | `Japan Tourist Agent Identity` |
-| OBO channel Entra application | `<base> OBO Channel` | `Japan Tourist Agent OBO Channel` |
-| Azure Bot `displayName` | `<base>` | `Japan Tourist Agent` |
+| OBO Teams app (`name.short` and `name.full`) | `<base> (OBO)` | `Japan Tourist Assistant (OBO)` |
+| AI Teammate package (`name.full`) | `<base> (Teammate)` | `Japan Tourist Assistant (Teammate)` |
+| AI Teammate package (`name.short`) | `<base> (Team)` | `Japan Tourist Assistant (Team)` |
+| Agent 365 Blueprint | `<base> Blueprint` | `Japan Tourist Assistant Blueprint` |
+| Agent 365 child Agent Identity | `<base> Identity` | `Japan Tourist Assistant Identity` |
+| OBO channel Entra application | `<base> OBO Channel` | `Japan Tourist Assistant OBO Channel` |
+| Azure Bot `displayName` | `<base>` | `Japan Tourist Assistant` |
+| Workspace directory | `<country>-tourist-agent` | `japan-tourist-agent` |
 
 Rules:
 
-- The channel suffix is upper case and parenthesised: `(OBO)` and `(TEAMMATE)`. Do not use other
-  spellings such as `Teammate`, `Expert`, or `Tour Assistant`.
-- `name.short` must stay within the Teams 30-character limit. `<base> (TEAMMATE)` is exactly 30
-  characters for a five-letter country, so a longer country name needs a shortened base.
+- The channel suffix is parenthesised and capitalised: `(OBO)` and `(Teammate)`. Do not use other
+  spellings such as `TEAMMATE`, `Expert`, `Tourist Agent`, or `Tour Assistant`.
+- The Teams manifest schema caps `name.short` at 30 characters and `name.full` at 100.
+  `<base> (Teammate)` is 34 characters, so the AI Teammate package carries the governed name in
+  `name.full` and the 30-character `<base> (Team)` in `name.short`. This is a schema limit, not a
+  style choice; restoring `(Teammate)` to `name.short` makes the package fail upload validation.
 - `agentIdentityDisplayName` and `agentBlueprintDisplayName` in each `a365.config.json` are the CLI
   inputs that produce the Blueprint and Identity names; keep them in step with the table.
 - Renaming a directory object changes its display name only. Never delete or recreate a Blueprint,
   Agent Identity, or channel application to rename it: the object IDs are referenced by the container
   app settings, the bot OAuth connection, and the Foundry role assignments.
-- Azure resource names, .NET namespaces, assembly names, and image repositories are separate
-  identifier schemes and are not governed by this table.
+- Azure resource names, Entra `identifierUris`, bot OAuth connection names, .NET namespaces, assembly
+  names, and image repositories are separate identifier schemes. They are deliberately **not**
+  governed by this table, because they are bound to deployed infrastructure and consent state.
 
 ## Source authority
 
@@ -125,9 +130,9 @@ generated Agent 365 state is not.
 
 ## Active M8 coordination
 
-M8 performs a clean product migration from Seoul Tourist to Japan Expert. Active source, .NET
+M8 performs a clean product migration from Seoul Tourist to Japan Tourist Assistant. Active source, .NET
 identifiers, current documentation, MCP behavior, package branding, icons, Azure resources, and
-Agent 365 registrations must become Japan Expert ground truth. M0-M7 remain explicitly historical.
+Agent 365 registrations must become Japan Tourist Assistant ground truth. M0-M7 remain explicitly historical.
 
 All new backend resources must be deployed only into the existing `rg-a365-custom-agents` resource
 group in the user-selected subscription. The existing `a365-ai-foundry` account, `default` project,
@@ -142,7 +147,7 @@ M8 work proceeds by owner:
 3. Fix only Direct Line client and acceptance surfaces in `a365-tourist-agent-obo-directline`.
 4. Fix only authoritative Agent 365 package/channel surfaces in `a365-tourist-agent-teammate`.
 5. Validate OBO Teams and Direct Line through `/api/messages/obo`, and AI Teammate through
-   `/api/messages`, against one healthy Japan Expert revision before declaring M8 complete.
+   `/api/messages`, against one healthy Japan Tourist Assistant revision before declaring M8 complete.
 
 Current state: the backend is deployed into `rg-a365-custom-agents`, and OBO Teams and OBO Direct Line
 both have live accepted turns covering Agent Identity resolution, fail-closed Purview, all four MCP

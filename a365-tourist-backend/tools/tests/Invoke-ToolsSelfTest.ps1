@@ -293,7 +293,7 @@ foreach ($deploymentCheck in @(
     'No resource group creation',
     'Approved resource group target',
     'Existing Foundry cross-group reference',
-    'Japan Expert resource naming',
+    'Japan Tourist Assistant resource naming',
     'Cost and secret-store boundary',
     'Retired Seoul deployment names',
     'Compiled update template parity',
@@ -337,7 +337,7 @@ Assert-ToolsCondition -Condition (
     $deploymentNames.Count -eq 16 -and
     @($deploymentNames | Where-Object { $_.ResolvedName.Length -gt $_.MaximumLength }).Count -eq 0 -and
     @($deploymentNames | Where-Object { $_.ResolvedName -notmatch 'japanexpert' }).Count -eq 0) `
-    -Message 'Every deterministic resource name is Japan Expert branded and within its Azure limit'
+    -Message 'Every deterministic resource name is Japan Tourist Assistant branded and within its Azure limit'
 
 $deploymentFixtureRoot = Join-Path ([IO.Path]::GetTempPath()) "japan-expert-deployment-fixture-$([guid]::NewGuid())"
 try {
@@ -441,7 +441,7 @@ try {
         },
         @{
             Name  = 'non-deterministic resource name default'
-            Check = 'Japan Expert resource naming'
+            Check = 'Japan Tourist Assistant resource naming'
             Path  = 'infra\main.bicep'
             Old   = 'param hostAppName string = ''ca-agent-${resourceBaseName}'''
             New   = 'param hostAppName string = ''ca-agent-unpinned'''
@@ -593,8 +593,8 @@ try {
             Name  = 'retired host setting in owned deployment documentation'
             Check = 'Foundry Responses protocol boundary'
             Path  = 'infra\README.md'
-            Old   = '# Japan Expert backend infrastructure'
-            New   = ('# Japan Expert backend infrastructure' + [Environment]::NewLine +
+            Old   = '# Japan Tourist Assistant backend infrastructure'
+            New   = ('# Japan Tourist Assistant backend infrastructure' + [Environment]::NewLine +
                 [Environment]::NewLine +
                 'Set AgentHost__AzureOpenAIEndpoint on the host.')
         },
@@ -644,8 +644,8 @@ try {
             Name  = 'retired Foundry data-plane role claim'
             Check = 'Foundry runtime access boundary'
             Path  = 'infra\main.bicep'
-            Old   = '// Japan Expert shared backend bootstrap.'
-            New   = ('// Japan Expert shared backend bootstrap.' + [Environment]::NewLine +
+            Old   = '// Japan Tourist Assistant shared backend bootstrap.'
+            New   = ('// Japan Tourist Assistant shared backend bootstrap.' + [Environment]::NewLine +
                 '// Grant Cognitive Services OpenAI User to each child identity.')
         }
     )

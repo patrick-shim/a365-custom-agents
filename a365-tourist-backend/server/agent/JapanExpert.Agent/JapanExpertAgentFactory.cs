@@ -15,7 +15,7 @@ public static class JapanExpertAgentFactory
 
         var options = new ChatClientAgentOptions
         {
-            Name = "Japan Expert",
+            Name = "Japan Tourist Assistant",
             ChatOptions = new ChatOptions
             {
                 Instructions = JapanExpertAgentInstructions.Create(),

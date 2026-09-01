@@ -23,7 +23,7 @@ public sealed class JapanExpertBrandingTests
     {
         var options = new PurviewDlpOptions();
 
-        Assert.AreEqual("Japan Expert", options.AppName);
+        Assert.AreEqual("Japan Tourist Assistant", options.AppName);
     }
 
     [TestMethod]
@@ -32,7 +32,7 @@ public sealed class JapanExpertBrandingTests
         using var settings = ReadHostSettings("appsettings.json");
 
         Assert.AreEqual(
-            "Japan Expert",
+            "Japan Tourist Assistant",
             settings.RootElement.GetProperty("PurviewDlp").GetProperty("AppName").GetString());
     }
 
@@ -70,9 +70,9 @@ public sealed class JapanExpertBrandingTests
     {
         var program = RepositoryPaths.ReadAgentHostFile("Program.cs");
 
-        StringAssert.Contains(program, "\"Japan Expert\"");
-        StringAssert.Contains(program, "Japan Expert processes conversation and tool content");
-        StringAssert.Contains(program, "Use of Japan Expert is subject to your organization's Microsoft 365 policies");
+        StringAssert.Contains(program, "\"Japan Tourist Assistant\"");
+        StringAssert.Contains(program, "Japan Tourist Assistant processes conversation and tool content");
+        StringAssert.Contains(program, "Use of Japan Tourist Assistant is subject to your organization's Microsoft 365 policies");
     }
 
     [TestMethod]
@@ -82,7 +82,7 @@ public sealed class JapanExpertBrandingTests
 
         StringAssert.Contains(application, "I can help plan a trip anywhere in Japan");
         StringAssert.Contains(application, "Tell me what you would like to plan in Japan.");
-        StringAssert.Contains(application, "agentName: \"Japan Expert\"");
+        StringAssert.Contains(application, "agentName: \"Japan Tourist Assistant\"");
         StringAssert.Contains(application, "Governed Japan travel planning assistant");
     }
 

@@ -1,4 +1,4 @@
-# Japan Expert OBO Direct Line frontend
+# Japan Tourist Assistant OBO Direct Line frontend
 
 > **LOCKED (2026-08-31).** Frozen at a verified-good baseline: 2/2 projects, 0 warnings, 0 errors, 5
 > tests passing, contract pin aligned. Build, test, and read freely; change nothing without explicit
@@ -10,7 +10,7 @@ state, backend runtime, infrastructure, or deployment automation.
 
 The contract pin fixes:
 
-- product `Japan Expert`, default time zone `Asia/Tokyo`, and default currency `JPY`;
+- product `Japan Tourist Assistant`, default time zone `Asia/Tokyo`, and default currency `JPY`;
 - route `/api/messages/obo`;
 - audience setting `TokenValidation__Audiences__OnBehalfOf`;
 - identity binding `configured-obo-child-agent-identity`.
@@ -38,11 +38,11 @@ the secret or a private key in source, arguments, shell history, logs, or config
 
 ## M8 status
 
-The client is renamed to `JapanExpert`, uses a Japan Expert process-secret boundary, and owns three
+The client is renamed to `JapanExpert`, uses a Japan Tourist Assistant process-secret boundary, and owns three
 reserved synthetic policy cases: Japan passport, Japanese residence card, and an industry credit-card
 test number.
 
-**Direct Line is live and accepted.** The Japan Expert Azure Bot, its Direct Line site, and the
+**Direct Line is live and accepted.** The Japan Tourist Assistant Azure Bot, its Direct Line site, and the
 `japan-expert-obo` OAuth connection exist, and governed turns return model answers with fail-closed
 Purview evaluation and all four MCP services healthy. A first-time user still receives an OAuth
 sign-in card, which is correct enforcement rather than a defect. The reserved three-case synthetic

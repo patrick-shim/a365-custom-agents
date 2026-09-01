@@ -1600,7 +1600,7 @@ function Test-JexDeploymentBoundary {
         .DESCRIPTION
         Asserts that the checked-in infrastructure can only deploy into the single approved backend
         resource group, references the existing Foundry account across resource groups instead of
-        recreating it, uses deterministic Japan Expert resource names, and no longer carries retired
+        recreating it, uses deterministic Japan Tourist Assistant resource names, and no longer carries retired
         Seoul deployment names. Every check reads local files only; no Azure call is made.
     #>
     [CmdletBinding()]
@@ -1760,7 +1760,7 @@ function Test-JexDeploymentBoundary {
         -not $_.WithinAzureLimit -or -not $_.InBootstrap -or -not $_.InUpdateTemplate
     })
     $namingValid = $nameFailures.Count -eq 0
-    $results.Add((New-JexValidationResult -Area 'Deployment' -Check 'Japan Expert resource naming' `
+    $results.Add((New-JexValidationResult -Area 'Deployment' -Check 'Japan Tourist Assistant resource naming' `
         -Status $(if ($namingValid) { 'Pass' } else { 'Fail' }) `
         -Message $(if ($namingValid) { "All $($nameFindings.Count) resource names default to deterministic $($policy.ResourceBaseName) values within their Azure length limits." } else { 'A resource name default is missing, inconsistent between templates, or outside its Azure length limit.' }) `
         -Remediation $(if ($namingValid) { '' } else { 'Restore the deterministic name parameter defaults in both deployment templates.' }) `
@@ -2116,7 +2116,7 @@ function Test-JexDeploymentBoundary {
     }
     $directLineSiteBranded = $mainBicep -match "param directLineSiteName string = '[^']*(japan-expert|japanexpert)[^']*'"
     if (-not $directLineSiteBranded) {
-        $botProblems.Add('the Direct Line site name default is not Japan Expert branded')
+        $botProblems.Add('the Direct Line site name default is not Japan Tourist Assistant branded')
     }
 
     $botBoundaryValid = $botProblems.Count -eq 0
@@ -2926,7 +2926,7 @@ function Test-JexPurviewReadiness {
 
         [string] $AccessTokenEnvironmentVariable = 'PURVIEW_GRAPH_ACCESS_TOKEN',
 
-        [string] $ProbeText = 'Japan Expert synthetic Purview validation probe.',
+        [string] $ProbeText = 'Japan Tourist Assistant synthetic Purview validation probe.',
 
         [switch] $ExpectBlock,
 
@@ -3167,7 +3167,7 @@ function Test-JexPurviewReadiness {
                     '@odata.type' = 'microsoft.graph.textContent'
                     data          = $ProbeText
                 }
-                name            = 'Japan Expert validation probe'
+                name            = 'Japan Tourist Assistant validation probe'
                 correlationId   = [guid]::NewGuid().ToString()
                 sequenceNumber  = 0
                 isTruncated     = $false
@@ -3179,7 +3179,7 @@ function Test-JexPurviewReadiness {
                     '@odata.type' = 'microsoft.graph.aiAgentInfo'
                     blueprintId   = $BlueprintId
                     identifier    = $AgentInstanceId
-                    name          = 'Japan Expert'
+                    name          = 'Japan Tourist Assistant'
                     version       = '1.0'
                 })
             }
@@ -3196,7 +3196,7 @@ function Test-JexPurviewReadiness {
                         ipAddress = '127.0.0.1'
                     }
                     protectedAppMetadata = [ordered]@{
-                        name = 'Japan Expert'
+                        name = 'Japan Tourist Assistant'
                         version = '1.0'
                         applicationLocation = [ordered]@{
                             '@odata.type' = 'microsoft.graph.policyLocationApplication'
@@ -3204,7 +3204,7 @@ function Test-JexPurviewReadiness {
                         }
                     }
                     integratedAppMetadata = [ordered]@{
-                        name = 'Japan Expert validation tools'
+                        name = 'Japan Tourist Assistant validation tools'
                         version = '1.0'
                     }
                 }

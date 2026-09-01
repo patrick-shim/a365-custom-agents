@@ -12,7 +12,7 @@ var delegatedScope = '${audience}/Mcp.Invoke'
 resource mcpApiApplication 'Microsoft.Graph/applications@v1.0' = {
   uniqueName: applicationName
   displayName: displayName
-  description: 'Single-tenant API for authenticated Japan Expert MCP workloads.'
+  description: 'Single-tenant API for authenticated Japan Tourist Assistant MCP workloads.'
   signInAudience: 'AzureADMyOrg'
   identifierUris: [
     audience
@@ -21,13 +21,13 @@ resource mcpApiApplication 'Microsoft.Graph/applications@v1.0' = {
     requestedAccessTokenVersion: 2
     oauth2PermissionScopes: [
       {
-        adminConsentDescription: 'Allow this Agent 365 identity to invoke protected Japan Expert MCP tools.'
-        adminConsentDisplayName: 'Invoke Japan Expert MCP tools'
+        adminConsentDescription: 'Allow this Agent 365 identity to invoke protected Japan Tourist Assistant MCP tools.'
+        adminConsentDisplayName: 'Invoke Japan Tourist Assistant MCP tools'
         id: mcpInvokeScopeId
         isEnabled: true
         type: 'Admin'
-        userConsentDescription: 'Allow this Agent 365 identity to invoke protected Japan Expert MCP tools.'
-        userConsentDisplayName: 'Invoke Japan Expert MCP tools'
+        userConsentDescription: 'Allow this Agent 365 identity to invoke protected Japan Tourist Assistant MCP tools.'
+        userConsentDisplayName: 'Invoke Japan Tourist Assistant MCP tools'
         value: 'Mcp.Invoke'
       }
     ]

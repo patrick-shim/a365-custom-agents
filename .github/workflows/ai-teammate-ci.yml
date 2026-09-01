@@ -32,7 +32,7 @@ jobs:
           $lock = Get-Content backend-contract.lock.json -Raw | ConvertFrom-Json
           if ($lock.contractId -ne 'japan-expert-shared-backend' -or
               $lock.contractVersion -ne '2.0.0' -or
-              $lock.productName -ne 'Japan Expert' -or
+              $lock.productName -ne 'Japan Tourist Assistant' -or
               $lock.defaultTimeZone -ne 'Asia/Tokyo' -or
               $lock.defaultCurrency -ne 'JPY' -or
               $lock.frontend -ne 'agentic-user' -or

@@ -4,7 +4,7 @@
   "version": "1.1.0",
   "id": "${{TEAMS_APP_ID}}",
   "developer": {
-    "name": "Japan Expert",
+    "name": "Japan Tourist Assistant",
     "websiteUrl": "https://${{DEVELOPER_DOMAIN}}",
     "privacyUrl": "https://${{DEVELOPER_DOMAIN}}/privacy",
     "termsOfUseUrl": "https://${{DEVELOPER_DOMAIN}}/terms"
@@ -14,8 +14,8 @@
     "outline": "outline.png"
   },
   "name": {
-    "short": "Japan Tourist Agent (OBO)",
-    "full": "Japan Tourist Agent (OBO)"
+    "short": "Japan Tourist Assistant (OBO)",
+    "full": "Japan Tourist Assistant (OBO)"
   },
   "description": {
     "short": "Plans Japan travel around your schedule and current local conditions.",

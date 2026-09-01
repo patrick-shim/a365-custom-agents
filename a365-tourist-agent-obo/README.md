@@ -1,4 +1,4 @@
-# Japan Expert OBO Teams frontend
+# Japan Tourist Assistant OBO Teams frontend
 
 > **LOCKED (2026-08-31).** Frozen at a verified-good baseline: contract pin aligned and icons
 > byte-identical across channels. Change nothing without explicit owner approval. See
@@ -22,7 +22,7 @@ and Azure deployment automation live in `../a365-tourist-backend`.
 
 The contract pin fixes:
 
-- product `Japan Expert`, default time zone `Asia/Tokyo`, and default currency `JPY`;
+- product `Japan Tourist Assistant`, default time zone `Asia/Tokyo`, and default currency `JPY`;
 - route `/api/messages/obo`;
 - audience setting `TokenValidation__Audiences__OnBehalfOf`;
 - identity binding `configured-obo-child-agent-identity`.
@@ -36,8 +36,8 @@ sanitized observability.
 
 ## M8 status
 
-The source package uses Japan Expert branding and the required Japanese-flag color and outline icons.
-The clean Agent 365 workflow created the shared `Japan Expert Blueprint`, the OBO child identity, and
+The source package uses Japan Tourist Assistant branding and the required Japanese-flag color and outline icons.
+The clean Agent 365 workflow created the shared `Japan Tourist Assistant Blueprint`, the OBO child identity, and
 a separate OBO channel application without reusing Seoul operational state.
 
 **OBO Teams is live and accepted.** A governed turn in Microsoft Teams completes Teams SSO token

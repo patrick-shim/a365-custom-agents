@@ -14,7 +14,7 @@ public sealed class JapanExpertAgentFactoryTests
 
         var agent = JapanExpertAgentFactory.Create(chatClient, []);
 
-        Assert.AreEqual("Japan Expert", agent.Name);
+        Assert.AreEqual("Japan Tourist Assistant", agent.Name);
     }
 
     [TestMethod]
@@ -32,7 +32,7 @@ public sealed class JapanExpertAgentFactoryTests
                 chatClient.LastOptions?.Instructions ?? string.Empty,
                 .. chatClient.LastMessages?.Select(message => message.Text) ?? []
             ]);
-        StringAssert.Contains(promptedInstructions, "You are Japan Expert");
+        StringAssert.Contains(promptedInstructions, "You are Japan Tourist Assistant");
         StringAssert.Contains(promptedInstructions, "Japan Standard Time (JST, UTC+9)");
         Assert.IsNotNull(chatClient.LastOptions?.Tools);
         Assert.HasCount(1, chatClient.LastOptions.Tools);

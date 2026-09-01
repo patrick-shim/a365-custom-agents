@@ -35,7 +35,7 @@ public sealed class FrankfurterExchangeRateProvider(
 
     private const string FreshnessNote =
         "European Central Bank reference rates are published once per working day around 16:00 CET "
-        + "and are not transaction rates. Conversion arithmetic is performed locally by Japan Expert.";
+        + "and are not transaction rates. Conversion arithmetic is performed locally by Japan Tourist Assistant.";
 
     private readonly FrankfurterOptions _options = options.Value;
 

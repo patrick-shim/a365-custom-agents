@@ -2,7 +2,7 @@ namespace JapanExpert.Tourism;
 
 /// <summary>
 /// Japan-only coordinate defaults, service-area bounds, and distance maths. The MCP contract
-/// refuses coordinates outside Japan so the Japan Expert tools cannot be repurposed as a global
+/// refuses coordinates outside Japan so the Japan Tourist Assistant tools cannot be repurposed as a global
 /// place search.
 /// </summary>
 public static class JapanGeography

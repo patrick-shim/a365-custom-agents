@@ -1,4 +1,4 @@
-# Japan Expert OBO Direct Line Frontend Guide
+# Japan Tourist Assistant OBO Direct Line Frontend Guide
 
 > **LOCKED (2026-08-31).** This project is frozen at a verified-good baseline: 2/2 projects build
 > with 0 warnings and 0 errors and 5 tests pass on .NET SDK `10.0.110`, with the contract pin matching
@@ -37,7 +37,7 @@ pins with the canonical backend contract.
 
 ## Active M8 status
 
-Rename the solution, projects, namespaces, client identity, tests, and prompts to Japan Expert while
+Rename the solution, projects, namespaces, client identity, tests, and prompts to Japan Tourist Assistant while
 preserving `/api/messages/obo`, OAuth completion, token renewal, and secret handling. A fresh Direct
 Line site and OBO registration must be used after the reviewed M8 dry run; Seoul channel state and
 evidence are historical only.

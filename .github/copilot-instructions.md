@@ -1,4 +1,4 @@
-# Japan Expert monorepo instructions
+# Japan Tourist Assistant monorepo instructions
 
 - **This repository is LOCKED (2026-08-31).** It is frozen at a verified-good baseline. Do not edit,
   rename, move, refactor, reformat, or tidy any file; do not add, remove, or upgrade packages; do not
@@ -6,7 +6,7 @@
   testing, and running `a365-tourist-backend/tools/` validation are always allowed. A change being
   obviously correct or an improvement is not authorization. Unlock only on an explicit, file-scoped
   instruction from the repository owner. See root `AGENTS.md` → "Change lock".
-- Follow the naming rules in root `AGENTS.md`: every user-visible and directory-object name derives from `<Country> Tourist Agent`, with `(OBO)` and `(TEAMMATE)` channel suffixes. Never delete or recreate a Blueprint, Agent Identity, or channel application in order to rename it.
+- Follow the naming rules in root `AGENTS.md`: every user-visible and directory-object name derives from `<Country> Tourist Assistant`, with `(OBO)` and `(Teammate)` channel suffixes. The Teams schema caps `name.short` at 30 characters, so the AI Teammate package uses `(Team)` there and keeps `(Teammate)` in `name.full`. Never delete or recreate a Blueprint, Agent Identity, or channel application in order to rename it.
 - Read root `AGENTS.md`, then the owning child `AGENTS.md` and milestone manifest before work.
 - `a365-tourist-backend` is the sole shared runtime, MCP, infrastructure, tests, tools, Docker, and
   Azure deployment authority.

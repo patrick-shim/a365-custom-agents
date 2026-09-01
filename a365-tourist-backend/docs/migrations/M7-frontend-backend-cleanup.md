@@ -1,7 +1,7 @@
 # M7 Frontend Backend Cleanup
 
 > Historical M7 cleanup record. The ownership boundaries it established remain current, while active
-> M8 owns Japan Expert source, deployment, and registration work.
+> M8 owns Japan Tourist Assistant source, deployment, and registration work.
 
 ## Authority
 

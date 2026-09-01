@@ -16,7 +16,7 @@ rotate it before deployment. Do not copy the exposed value into this backend pro
 
 ## Agent 365 ownership and runtime identity
 
-Japan Expert owns one Agent Identity Blueprint and two child identities:
+Japan Tourist Assistant owns one Agent Identity Blueprint and two child identities:
 
 | Frontend | Child identity | Endpoint | Runtime authority |
 | --- | --- | --- | --- |
@@ -203,9 +203,9 @@ approval. Bicep does not assign Blueprint/inheritable permissions to the host UA
 
 ## Deployment gates
 
-1. M8 creates a new `Japan Expert Blueprint` and OBO child without reading or reusing Seoul state.
+1. M8 creates a new `Japan Tourist Assistant Blueprint` and OBO child without reading or reusing Seoul state.
    The AI Teammate setup runs first; the OBO setup must find and reuse that new Blueprint by display
-   name rather than creating a second Japan Expert Blueprint.
+   name rather than creating a second Japan Tourist Assistant Blueprint.
 2. Agent 365 CLI 1.1.214 does not assign Foundry Azure RBAC. After each child exists, grant its
    effective runtime identity the Microsoft-documented built-in inference role, **Cognitive Services
    User**, on the existing `a365-ai-foundry` account. The role permits account key retrieval even
