@@ -100,6 +100,9 @@ a365 query-entra inheritance
 `Roles: WARN ... no app roles granted` is expected for delegated-only resources and does not affect
 `Effective inheritance: OK`.
 
+Never repair consent with `az ad app permission admin-consent`; it replaces the Blueprint's entire
+grant set rather than adding to it.
+
 ## Validate
 
 Run checks from the owning project root:
