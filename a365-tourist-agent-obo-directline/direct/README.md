@@ -14,11 +14,9 @@ Service authentication through the OAuth card and standard message-based magic-c
 - You have one Direct Line site secret. Keep it in an environment variable; do not put it in source,
   arguments, shell history, or logs.
 
-During M8, obtain `JAPAN_EXPERT_DIRECT_LINE_SECRET` only through an approved channel-operations
-workflow and set it only in the current process without printing it. Tenant or Purview operations
-require the M8 milestone permission, a reviewed dry run and rollback boundary, and explicit approval.
-Direct Line acceptance must prove zero unexplained route, audience, OAuth, token-renewal, policy, or
-response drift from the canonical deployed backend.
+Read `JAPAN_EXPERT_DIRECT_LINE_SECRET` from the Azure Bot's Direct Line channel keys and set it only
+in the current process, without printing it. Direct Line acceptance should prove zero unexplained
+route, audience, OAuth, token-renewal, policy, or response drift from the deployed backend.
 
 ## Run
 

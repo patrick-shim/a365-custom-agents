@@ -7,9 +7,10 @@ deployment paths:
 - `live-backend-container-apps-update.bicep` updates or rolls back the five existing Container Apps
   without touching shared infrastructure.
 
-> M8 is active. Everything below is a reviewed *plan*. It is not authorization to deploy, build
-> images, assign RBAC, register applications, grant consent, or run Agent 365 CLI workflows. Every
-> mutation still needs a fresh dry run, an explicit rollback boundary, and separate approval.
+> M8 is active. **Read the whole runbook before running any of it.** These commands create and
+> modify real Azure and Microsoft Entra objects. Steps 1-6 of the dry-run sequence are read-only;
+> everything after that mutates your tenant. Always run the structured what-if and confirm the
+> rollback boundary first.
 
 ## Deployment boundary
 
