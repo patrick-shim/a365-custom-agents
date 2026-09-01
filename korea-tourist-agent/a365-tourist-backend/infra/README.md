@@ -68,6 +68,16 @@ bootstrap phase can run before any application image exists. Agent 365 binding u
 `openWeatherApiKey`, `koreaEximbankAuthKey`, `forexRateApiKey` — all default to empty and are inactive
 in the current deployment.
 
+The optional Prompt Shields injection guard adds `promptShieldEnabled` (default `false`) and
+`promptShieldEndpoint` (defaulting to `https://<foundryAccountName>.cognitiveservices.azure.com`).
+A multi-service `AIServices` account publishes the Content Safety surface alongside inference, so
+enabling the guard provisions nothing new. It authenticates with the child identity's
+`https://cognitiveservices.azure.com/.default` token — a different resource from inference — which
+the same `Cognitive Services User` grant covers. Point `promptShieldEndpoint` at a dedicated
+`ContentSafety` account to run the guard independently of Foundry, including when inference is
+hosted outside Azure; that account then needs its own grant. The guard is fail-closed, so leave
+`promptShieldEnabled=false` until the child identity can reach the endpoint.
+
 ### `main.bicep` outputs
 
 `resourceGroupName`, `agentHostUrl`, `containerRegistryLoginServer`, `keyVaultName`,

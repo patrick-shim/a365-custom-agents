@@ -49,7 +49,8 @@ never log in, deploy, grant consent, or mutate tenant policy.
 M8 renames the active product and .NET source to Japan Tourist Assistant, retunes MCP services for Japan, and
 owns the clean deployment plus new Agent 365 registrations. Preserve `/api/messages`,
 `/api/messages/obo`, their distinct audiences, one shared Blueprint with two child identities,
-fail-closed Purview, and the existing frontend/backend ownership boundary.
+fail-closed Purview, fail-closed Prompt Shields injection screening across both the user prompt and
+tool results, and the existing frontend/backend ownership boundary.
 
 The backend is deployed into `rg-a365-custom-agents`, and OBO Teams and OBO Direct Line both have live
 accepted turns. AI Teammate has a built package but no live turn, so M8 stays active. Two runtime

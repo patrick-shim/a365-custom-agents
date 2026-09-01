@@ -407,10 +407,21 @@ endpoint and the deployment name only:
 | `AgentHost__FoundryProjectEndpoint` | derived as `https://<foundryAccountName>.services.ai.azure.com`, overridable with `foundryProjectEndpoint`; the host appends `/openai/v1` |
 | `AgentHost__FoundryModelDeployment` | `foundryModelDeploymentName`, default `gpt-5.6-sol` |
 | `AgentApplication__UserAuthorization__Handlers__agentic-foundry__Settings__Scopes__0` | `foundryTokenScope`, default `https://ai.azure.com/.default` |
+| `PromptShield__Enabled` | `promptShieldEnabled`, default `false` |
+| `PromptShield__Endpoint` | `promptShieldEndpoint`, defaulting to `https://<foundryAccountName>.cognitiveservices.azure.com` |
 
 Keyless inference uses the child identity's token for the `https://ai.azure.com/.default` resource.
 Microsoft's keyless-authentication guidance specifies the built-in `Cognitive Services User` role at
 the Foundry resource scope. That grant is an approved step outside this template; see the runbook.
+
+The optional Prompt Shields injection guard reuses that same account: a multi-service `AIServices`
+account publishes the Content Safety surface alongside inference, so enabling the guard provisions
+nothing new. It authenticates with the child identity's `https://cognitiveservices.azure.com/.default`
+token — a different resource from inference — which the same `Cognitive Services User` grant covers.
+Point `promptShieldEndpoint` at a dedicated `ContentSafety` account to run the guard independently of
+Foundry, including when inference is hosted outside Azure; that account then needs its own grant. The
+guard is fail-closed, so leave `promptShieldEnabled=false` until the child identity can reach the
+endpoint.
 
 The host builds the OpenAI-compatible base as `<foundry-account-endpoint>/openai/v1`; the OpenAI
 Responses client appends the `/responses` operation and the v1 API uses implicit versioning. The

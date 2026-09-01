@@ -36,6 +36,10 @@ produces a system that looks fine and fails in production:
 - Foundry, Graph, and MCP tokens are acquired per resource, per turn, bound to the child identity.
   Do not collapse them into one token or cache them across turns.
 - Purview evaluation is fail-closed. Do not add a fallback that lets an unevaluated turn through.
+- Prompt Shields injection screening is fail-closed and covers two surfaces: the user prompt and
+  tool **results**. Do not narrow it to one surface, and do not convert a block, transport error,
+  non-success status, or unparsable body into a permissive path. Tool results are the indirect
+  injection vector Purview does not inspect.
 - MCP services validate a delegated `Mcp.Invoke` token and stay on internal ingress.
 - MCP tool descriptions are part of the SHA-256 schema fingerprint. Editing a description without
   repinning the fingerprint fails the build, and that is deliberate.

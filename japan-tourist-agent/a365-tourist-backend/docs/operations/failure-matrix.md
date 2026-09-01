@@ -14,6 +14,8 @@ automatic retry; user-initiated retry remains possible unless policy blocks it.
 | Purview input/output | Block | No | Configured policy block message | Purview activity/DLP | Block tests and production evidence |
 | Purview service | Error/malformed decision | No | Fail-closed evaluation message | Host 1004 | Failure test |
 | Tool content | Block/evaluation failure | No | Policy block/fail-closed message | Host 1007/1008 | Tool protection tests |
+| Prompt Shields | Injection detected in user prompt or tool result | No | `JEX-SHIELD-001` / `JEX-SHIELD-002` | Host 1009, guard 1300 | Prompt Shields guard tests |
+| Prompt Shields service | Unreachable/non-success/unparsable/over segment limit | No | `JEX-SHIELD-003` | Host 1010 | Fail-closed guard tests |
 | Activity replay | Duplicate activity ID | No | Suppress before model/tools | Host 1103 | Coordinator tests |
 | Concurrent turn | Same conversation/frontend | No | Serialize state mutation | Host scope | Coordinator tests |
 | Direct Line client | Client-owned failures | No | See the "Error contract" in the Direct Line frontend's `docs/configuration.md` | Direct Line frontend | Focused protocol tests |

@@ -30,6 +30,9 @@ dotnet test KoreaExpertAgent.slnx
 | Purview block text | Purview activity and DLP alert | Expected policy enforcement | Do not bypass; review policy/rule evidence. |
 | Purview evaluation failure | Event 1004 | Graph/Purview failure or malformed decision | Treat as fail-closed; inspect status and exception type only. |
 | No model call after prompt | Purview activity exists, no inference child | Input was blocked or evaluation failed | Expected fail-closed behavior. |
+| `STA-SHIELD-001` | Event 1009 with `surface=UserPrompt`, guard 1300 | Prompt Shields classified the user's message as a jailbreak attempt | Expected enforcement. Review the turn; the payload is never logged. |
+| `STA-SHIELD-002` | Event 1009 with `surface=Document`, guard 1300 | Prompt Shields found an injected instruction inside a tool result | Treat the upstream data source as suspect; do not disable the guard to unblock. |
+| `STA-SHIELD-003` | Event 1010 with `exceptionType` | Content Safety unreachable, returned a non-success status or an unparsable body, or content exceeded `MaximumSegments` | Verify `PromptShield__Endpoint` and that the child identity holds a Content Safety data-plane role. Fail-closed by design. |
 | Duplicate activity | Event 1103 | Channel replay | No action unless repeated volume is abnormal. |
 | Direct Line `DL-PROTO-001` | Client exit 1 | Empty/malformed service response | Start a new conversation and verify endpoint/service health. |
 | Liveness healthy after restart but history absent | Process-local storage | Current single-replica `MemoryStorage` limitation | Do not scale out; durable storage is a release gate. |

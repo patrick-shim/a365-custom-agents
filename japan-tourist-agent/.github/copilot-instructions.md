@@ -2,7 +2,8 @@
 
 - **Preserve the enforced invariants.** The agent identity is never the host managed identity;
   Foundry, Graph, and MCP tokens are acquired per resource, per turn, bound to the child identity;
-  Purview evaluation is fail-closed; MCP services stay on internal ingress behind a delegated
+  Purview evaluation is fail-closed; Prompt Shields injection screening is fail-closed across both
+  the user prompt and tool results; MCP services stay on internal ingress behind a delegated
   `Mcp.Invoke` token; deployments reference image digests, never mutable tags. See root `AGENTS.md`
   → "Verified baseline". Reproduce `Invoke-LocalCi.ps1 -Strict` and `Test-Repository.ps1 -Strict`
   before and after any change.

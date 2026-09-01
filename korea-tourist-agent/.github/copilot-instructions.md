@@ -4,6 +4,9 @@
 - Read root `AGENTS.md`, then the owning child `AGENTS.md` and milestone manifest before work.
 - `a365-tourist-backend` is the sole shared runtime, MCP, infrastructure, tests, tools, Docker, and
   Azure deployment authority.
+- Preserve the fail-closed guards. Purview evaluates prompts and responses; Prompt Shields screens
+  the user prompt and tool **results** for injection. Neither may gain a permissive fallback, and
+  Prompt Shields must keep covering both surfaces.
 - OBO Teams and Direct Line use `/api/messages/obo`; AI Teammate uses `/api/messages`. Preserve their
   distinct audiences, the shared Blueprint, and the two-child identity model.
 - Never copy backend code into a frontend or generated frontend state into the backend.

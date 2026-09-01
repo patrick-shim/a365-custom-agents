@@ -15,10 +15,13 @@ travel data is served by four independently deployed MCP services.
 
 - **No API key in the inference path.** The host authenticates to Microsoft Foundry with a token
   bound to an Agent 365 child identity, resolved fresh on every turn.
-- **The agent acts as the signed-in user.** Three separate on-behalf-of exchanges per turn: Foundry,
-  Microsoft Graph, and the private MCP API.
+- **The agent acts as the signed-in user.** Up to four separate on-behalf-of exchanges per turn:
+  Foundry, Microsoft Graph, the private MCP API, and Content Safety when the injection guard is on.
 - **Fail-closed data protection.** If Purview cannot evaluate a prompt or response, the turn is
   rejected rather than allowed through unevaluated.
+- **Fail-closed prompt-injection screening.** Azure AI Content Safety Prompt Shields checks the
+  user's message *and* the text tools return, closing the indirect-injection gap that prompt and
+  response DLP does not cover. Off by default; needs no extra Azure resource to enable.
 - **The infrastructure identity is deliberately powerless.** The host managed identity holds
   `AcrPull` and nothing else — no Foundry, Purview, or MCP data permission.
 - **Tools are services, not functions.** Four MCP servers on internal ingress, each requiring a
@@ -73,6 +76,7 @@ sequenceDiagram
   participant H as Agent host
   participant E as Microsoft Entra
   participant P as Purview
+  participant S as Prompt Shields
   participant M as MCP services
   participant F as Foundry
 
@@ -80,11 +84,15 @@ sequenceDiagram
   B->>H: activity + user token
   H->>E: validate token audience for this channel
   H->>E: parent token via federated credential (fmi_path)
-  H->>E: child OBO exchange x3 (Foundry / Graph / Mcp.Invoke)
+  H->>E: child OBO exchange (Foundry / Graph / Mcp.Invoke / Content Safety)
+  H->>S: screen user prompt for injection (fail-closed)
+  S-->>H: allow or block
   H->>P: evaluate prompt (fail-closed)
   P-->>H: allow or block
   H->>M: discover and invoke tools
   M-->>H: grounded results
+  H->>S: screen tool results for indirect injection (fail-closed)
+  S-->>H: allow or block
   H->>F: model call with child token
   F-->>H: response
   H->>P: evaluate response (fail-closed)
