@@ -20,9 +20,9 @@ type ContainerAppSetting = {
 
 @description('The only approved backend resource group. The deployment fails if it targets any other group.')
 @allowed([
-  'rg-a365-custom-agents'
+  'a365-custom-agents'
 ])
-param targetResourceGroupName string = 'rg-a365-custom-agents'
+param targetResourceGroupName string = 'a365-custom-agents'
 
 // Deployment-time scope guard. The lookup below has exactly one key, so a deployment that targets
 // any other resource group fails during ARM validation with an error that names the approved group.

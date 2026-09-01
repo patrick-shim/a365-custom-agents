@@ -15,7 +15,7 @@ deployment paths:
 
 | Boundary | Value |
 | --- | --- |
-| Target resource group | existing `rg-a365-custom-agents` (never created by these templates) |
+| Target resource group | existing `a365-custom-agents` (never created by these templates) |
 | Template scope | `resourceGroup` in both entry templates |
 | Foundry account | existing `a365-ai-foundry` in `rg-ai-foundry`, referenced only |
 | Foundry project | existing `default` |
@@ -110,7 +110,7 @@ Premium features are not required. Changing the tier is a reviewed cost and capa
 
 ### Committed identifier policy
 
-Source may commit fixed non-secret names: the target resource group `rg-a365-custom-agents`, the
+Source may commit fixed non-secret names: the target resource group `a365-custom-agents`, the
 existing Foundry account `a365-ai-foundry`, its `default` project, its endpoint, and the
 `gpt-5.6-sol` model deployment. Source must never commit the subscription GUID, tenant or directory
 ID, an owner user principal name, any principal or object ID, or a full ARM resource ID. Those stay
@@ -118,7 +118,7 @@ command parameters or `<placeholder>` values, and the runbook below constructs a
 them at run time. `./tools/Test-Repository.ps1` fails the build if one is committed.
 
 `location` defaults to `resourceGroup().location` in the template and is pinned to `koreacentral` in
-the parameter file, because the existing `rg-a365-custom-agents` group and the existing
+the parameter file, because the existing `a365-custom-agents` group and the existing
 `a365-ai-foundry` account both live in Korea Central and every model call is a host-to-Foundry call.
 Overriding `location` to a Japan region is supported and is an approver decision; if you take it,
 re-run the quota and availability checks for that region and accept the cross-region model latency.
@@ -199,7 +199,7 @@ over HTTPS with a commit-safe User-Agent and no retired provider setting.
 
 Inside the template boundary, and therefore covered by ARM validation, what-if, and rollback:
 
-- All Azure resources listed above, in `rg-a365-custom-agents` only.
+- All Azure resources listed above, in `a365-custom-agents` only.
 - ACR `AcrPull` for the five workload identities. No workload holds any other data-plane role,
   because every active MCP data source is a credential-free public API.
 - The `api-japanexpert` Entra application and service principal exposing delegated `Mcp.Invoke`.
@@ -210,7 +210,7 @@ Inside the template boundary, and therefore covered by ARM validation, what-if, 
 ### Azure Bot and Direct Line
 
 The Agent 365 CLI does not create Azure Bot resources, so the bot and its channels belong to this
-template and land in `rg-a365-custom-agents` like every other resource. The bot is bound to the
+template and land in `a365-custom-agents` like every other resource. The bot is bound to the
 protected OBO route and to the OBO channel application:
 
 | Parameter | Default | Purpose |
@@ -374,7 +374,7 @@ explicit approval.
 
 ```powershell
 $subscriptionId = '<subscription-id>'
-$resourceGroup  = 'rg-a365-custom-agents'
+$resourceGroup  = 'a365-custom-agents'
 $foundryGroup   = 'rg-ai-foundry'
 
 az account show --subscription $subscriptionId --output json
@@ -465,7 +465,7 @@ az deployment group validate `
   --output json
 ```
 
-A validation error that names `rg-a365-custom-agents` means the command targeted the wrong group.
+A validation error that names `a365-custom-agents` means the command targeted the wrong group.
 Fix the command, never the guard.
 
 ### 6. Structured what-if
@@ -481,7 +481,7 @@ az deployment group what-if `
   --no-pretty-print
 ```
 
-Review before approval: every change is a create in `rg-a365-custom-agents`, there is no resource
+Review before approval: every change is a create in `a365-custom-agents`, there is no resource
 group create, no resource lands in `rg-ai-foundry`, no Foundry resource is modified, and every Entra
 object is expected. Reject unreviewed identity, RBAC, SKU, region, scale, ingress, route, audience,
 Blueprint, child-ID, or secret drift.
@@ -575,7 +575,7 @@ az containerapp revision list --name ca-agent-japanexpert --resource-group $reso
   and what-if it through the same commands, then deploy it. A revision-level rollback is
   `az containerapp ingress traffic set` back to the recorded healthy revision.
 - Infrastructure rollback for a first deployment: delete only the resources this deployment created
-  in `rg-a365-custom-agents`. Never delete the resource group, anything in `rg-ai-foundry`, or the
+  in `a365-custom-agents`. Never delete the resource group, anything in `rg-ai-foundry`, or the
   historical Seoul production boundary.
 - Directory rollback: delete only the `api-japanexpert` application and service principal created by
   this deployment.
@@ -696,6 +696,56 @@ a365 query-entra inheritance
 
 Never repair consent with `az ad app permission admin-consent`; it replaces the Blueprint's entire
 grant set rather than adding to it.
+
+## Rebuilding into a new resource group
+
+Both products share the single resource group `a365-custom-agents` in `koreacentral`. Every resource
+name is suffixed with `resourceBaseName`, so `japanexpert` and `koreaexpert` resources co-exist there
+with no collision.
+
+Deleting a resource group destroys the registry and its images, the Container Apps environment, the
+five container apps, the five user-assigned managed identities, Log Analytics, Application Insights,
+the Azure Bot, and any Key Vault. It does **not** touch Entra: the Blueprint, the child Agent
+Identities, the OBO channel application, and the custom MCP API application all survive, as do the
+shared Foundry account and its role assignments.
+
+The rebuild order matters, because two things break silently:
+
+1. **Federated identity credentials.** The Blueprint and the OBO channel application each hold a
+   credential whose `subject` is the *principal ID of the host user-assigned managed identity*. A new
+   resource group creates a new identity with a new principal ID, so both credentials must be
+   repointed. Until they are, the host cannot acquire Blueprint tokens and every turn fails at
+   `identity.resolve`. Read the new value from the deployment output and patch the credential in
+   place; do not delete and recreate the applications.
+2. **Ingress FQDNs.** A new Container Apps environment gets a new DNS suffix, so the agent host
+   domain changes. Update the Azure Bot messaging endpoint, the Teams package `validDomains`, and the
+   package `AGENT_HOST_DOMAIN`, then rebuild and re-upload the package.
+
+Also expect: Direct Line keys are regenerated, so any cached channel key is stale; the bot OAuth
+connection must be recreated with a fresh client secret; and a soft-deleted Key Vault of the same
+name must be purged before the name can be reused.
+
+Full order:
+
+```powershell
+$resourceGroup = 'a365-custom-agents'
+az group create --name $resourceGroup --location koreacentral
+
+# 1. Infrastructure on placeholder images.
+# 2. Build and push images with `az acr build`, then redeploy by digest.
+# 3. Read the new host identity principal ID from the deployment output.
+# 4. Repoint both federated identity credentials to that principal ID.
+# 5. Recreate the bot OAuth connection and confirm the Blueprint inheritance table is complete.
+# 6. Rebuild the channel packages against the new host domain.
+```
+
+Confirm before declaring the rebuild healthy:
+
+```powershell
+az deployment group show --resource-group $resourceGroup --name '<deployment-name>' `
+  --query properties.outputs.hostManagedIdentityPrincipalId.value --output tsv
+a365 query-entra inheritance
+```
 
 ## Security and prerequisites
 

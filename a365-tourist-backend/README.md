@@ -56,12 +56,12 @@ The dependency direction is deliberate:
 ## Active M8 migration
 
 M8 migrates active source and deployment authority to Japan Tourist Assistant. The fixed target is the existing
-`rg-a365-custom-agents` resource group. The existing `a365-ai-foundry/default` project and
+`a365-custom-agents` resource group. The existing `a365-ai-foundry/default` project and
 `gpt-5.6-sol` deployment are referenced in place through the Foundry Responses API and are never
 created by this repository. The host reaches the model through the Foundry **account** endpoint plus
 `/openai/v1`; the project-scoped `/api/projects/<name>` form does not publish that surface.
 
-The backend is deployed. The agent host and the four MCP services run in `rg-a365-custom-agents` on
+The backend is deployed. The agent host and the four MCP services run in `a365-custom-agents` on
 immutable image digests, with the Azure Bot, Teams channel, Direct Line site, and the
 `japan-expert-obo` OAuth connection in place. OBO Teams and OBO Direct Line have live, accepted turns
 covering Agent Identity resolution, fail-closed Purview, all four MCP services, and the Foundry model

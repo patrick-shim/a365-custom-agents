@@ -325,7 +325,7 @@ Assert-ToolsCondition -Condition (
 
 $deploymentPolicy = Get-JexDeploymentPolicy -RepositoryRoot $RepositoryRoot
 Assert-ToolsCondition -Condition (
-    $deploymentPolicy.ApprovedResourceGroup -eq 'rg-a365-custom-agents' -and
+    $deploymentPolicy.ApprovedResourceGroup -eq 'a365-custom-agents' -and
     $deploymentPolicy.FoundryResourceGroup -eq 'rg-ai-foundry' -and
     $deploymentPolicy.FoundryAccountName -eq 'a365-ai-foundry' -and
     $deploymentPolicy.ModelDeploymentName -eq 'gpt-5.6-sol' -and
@@ -851,7 +851,7 @@ try {
 $subscriptionId = '<subscription-id>'
 $tenantId = '<entra-tenant-id>'
 az role assignment create --assignee-object-id '<child-principal-id>' `
-  --scope "/subscriptions/$subscriptionId/resourceGroups/rg-a365-custom-agents/providers/Microsoft.CognitiveServices/accounts/a365-ai-foundry"
+  --scope "/subscriptions/$subscriptionId/resourceGroups/a365-custom-agents/providers/Microsoft.CognitiveServices/accounts/a365-ai-foundry"
 Contact the operator at ops@contoso.com for approval.
 '@
     Set-Content -LiteralPath (Join-Path $identifierSafeFixtureRoot 'roles.bicep') -Value @'

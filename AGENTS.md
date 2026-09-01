@@ -19,7 +19,7 @@ frozen at that baseline.
 | Tests | 340 passed, 0 failed, 0 skipped |
 | `a365-tourist-backend/tools/Invoke-LocalCi.ps1 -Strict` | 11 passed, 0 failed |
 | Contract pins and icons | Aligned across all three channels |
-| Deployment | Backend live in `rg-a365-custom-agents`; OBO Teams and OBO Direct Line accepted |
+| Deployment | Backend live in `a365-custom-agents`; OBO Teams and OBO Direct Line accepted |
 
 ### Prohibited without explicit approval
 
@@ -138,7 +138,7 @@ M8 performs a clean product migration from Seoul Tourist to Japan Tourist Assist
 identifiers, current documentation, MCP behavior, package branding, icons, Azure resources, and
 Agent 365 registrations must become Japan Tourist Assistant ground truth. M0-M7 remain explicitly historical.
 
-All new backend resources must be deployed only into the existing `rg-a365-custom-agents` resource
+All new backend resources must be deployed only into the existing `a365-custom-agents` resource
 group in the user-selected subscription. The existing `a365-ai-foundry` account, `default` project,
 and `gpt-5.6-sol` deployment are referenced in place and must not be recreated or moved. Subscription,
 tenant, identity, and package identifiers remain protected operational values and are never committed.
@@ -153,7 +153,7 @@ M8 work proceeds by owner:
 5. Validate OBO Teams and Direct Line through `/api/messages/obo`, and AI Teammate through
    `/api/messages`, against one healthy Japan Tourist Assistant revision before declaring M8 complete.
 
-Current state: the backend is deployed into `rg-a365-custom-agents`, and OBO Teams and OBO Direct Line
+Current state: the backend is deployed into `a365-custom-agents`, and OBO Teams and OBO Direct Line
 both have live accepted turns covering Agent Identity resolution, fail-closed Purview, all four MCP
 services, and the Foundry model call. AI Teammate has a built package but no live turn, so M8 stays
 active until step 5 is satisfied for all three channels.

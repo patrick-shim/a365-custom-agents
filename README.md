@@ -117,7 +117,7 @@ data-plane access is granted per child identity, never to the host managed ident
 
 ## Azure resources
 
-All backend resources live in the existing `rg-a365-custom-agents` resource group. The Foundry account
+All backend resources live in the existing `a365-custom-agents` resource group. The Foundry account
 `a365-ai-foundry`, its `default` project, and the `gpt-5.6-sol` deployment are referenced in place from
 their own resource group and are never created, moved, or recreated by this repository.
 
@@ -151,7 +151,7 @@ dotnet test JapanExpertAgent.slnx --configuration Release
 ./tools/Test-Deployment.ps1 -OutputFormat Json
 ```
 
-1. **Bootstrap infrastructure.** Deploy `infra/main.bicep` into `rg-a365-custom-agents` after ARM
+1. **Bootstrap infrastructure.** Deploy `infra/main.bicep` into `a365-custom-agents` after ARM
    validation and a structured what-if. This creates the registry, Container Apps environment, managed
    identity, Log Analytics, Application Insights, and the five apps on placeholder images.
 2. **Build and push immutable images.** Use `az acr build` for the host and MCP images, then resolve

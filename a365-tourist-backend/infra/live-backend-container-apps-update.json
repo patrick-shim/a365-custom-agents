@@ -36,9 +36,9 @@
   "parameters": {
     "targetResourceGroupName": {
       "type": "string",
-      "defaultValue": "rg-a365-custom-agents",
+      "defaultValue": "a365-custom-agents",
       "allowedValues": [
-        "rg-a365-custom-agents"
+        "a365-custom-agents"
       ],
       "metadata": {
         "description": "The only approved backend resource group. The deployment fails if it targets any other group."
