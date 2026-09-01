@@ -721,6 +721,14 @@ The rebuild order matters, because two things break silently:
    domain changes. Update the Azure Bot messaging endpoint, the Teams package `validDomains`, and the
    package `AGENT_HOST_DOMAIN`, then rebuild and re-upload the package.
 
+Moving the resources instead of rebuilding does not avoid either step. `validateMoveResources`
+accepts every other resource in the group, but rejects
+`Microsoft.ManagedIdentity/userAssignedIdentities` with `ResourceMoveNotSupported`: Azure does not
+support resource-group moves for user-assigned managed identities. The identities are exactly what
+the federated credentials and the `AcrPull` assignments bind to, so they have to be recreated either
+way, and a partial move would leave the old group alive just to host them. A clean redeployment from
+`main.bicep` is the simpler path.
+
 Also expect: Direct Line keys are regenerated, so any cached channel key is stale; the bot OAuth
 connection must be recreated with a fresh client secret; and a soft-deleted Key Vault of the same
 name must be purged before the name can be reused.
