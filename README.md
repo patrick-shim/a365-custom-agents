@@ -28,7 +28,7 @@ enterprise deployment has to be built:
   turn is rejected rather than allowed through.
 - **Prompt injection is screened fail-closed too.** Azure AI Content Safety Prompt Shields checks the
   user's message *and* the text tools return, closing the indirect-injection gap that prompt/response
-  DLP does not cover. Off by default; no extra Azure resource needed to turn it on.
+  DLP does not cover. On by default; no extra Azure resource needed.
 - **Tools are real services, not functions.** Four independently deployed MCP servers behind internal
   ingress, each requiring a delegated token.
 - **One backend, three channels.** A Teams app, a console client, and a Microsoft 365 AI Teammate all

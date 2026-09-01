@@ -36,8 +36,8 @@ of it cannot be deployed against someone else's tenant by accident.
   status, or an unparsable response all reject the turn. Prompt Shields authenticates with the same
   per-turn child Agent Identity token, so no Content Safety key exists anywhere in the deployment.
   It is a standalone text classifier that never sees the model, so it keeps working unchanged if
-  inference moves to a provider outside Azure. The guard ships disabled; see
-  `a365-tourist-backend/docs/configuration.md` for how to turn it on.
+  inference moves to a provider outside Azure. The guard is on by default; see
+  `a365-tourist-backend/docs/configuration.md` for the settings and the role it needs.
 - **MCP services are internal-ingress only** and validate a delegated `Mcp.Invoke` token. They are
   not reachable from the public internet.
 - **WorkIQ tool loading is disabled by an explicit gate.** Purview chat middleware protects textual

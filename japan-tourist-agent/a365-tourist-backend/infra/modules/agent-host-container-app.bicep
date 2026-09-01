@@ -17,8 +17,8 @@ param foundryModelDeploymentName string = 'gpt-5.6-sol'
 @minLength(1)
 param foundryTokenScope string = 'https://ai.azure.com/.default'
 
-@description('Enables the Azure AI Content Safety Prompt Shields guard. The guard is fail-closed: when enabled, a turn is rejected if the service cannot be reached.')
-param promptShieldEnabled bool = false
+@description('Enables the Azure AI Content Safety Prompt Shields guard. On by default and fail-closed: a turn is rejected if the service cannot be reached, so disabling this removes prompt-injection screening entirely.')
+param promptShieldEnabled bool = true
 
 @description('Content Safety account endpoint for Prompt Shields, for example https://<account>.cognitiveservices.azure.com. A multi-service AIServices account already publishes this surface; a dedicated ContentSafety account works equally well. Plain configuration, so the guard does not depend on Foundry.')
 param promptShieldEndpoint string = ''

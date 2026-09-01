@@ -68,15 +68,21 @@ bootstrap phase can run before any application image exists. Agent 365 binding u
 `openWeatherApiKey`, `koreaEximbankAuthKey`, `forexRateApiKey` — all default to empty and are inactive
 in the current deployment.
 
-The optional Prompt Shields injection guard adds `promptShieldEnabled` (default `false`) and
+The Prompt Shields injection guard adds `promptShieldEnabled` (default `true`) and
 `promptShieldEndpoint` (defaulting to `https://<foundryAccountName>.cognitiveservices.azure.com`).
 A multi-service `AIServices` account publishes the Content Safety surface alongside inference, so
-enabling the guard provisions nothing new. It authenticates with the child identity's
+the guard provisions nothing new. It authenticates with the child identity's
 `https://cognitiveservices.azure.com/.default` token — a different resource from inference — which
 the same `Cognitive Services User` grant covers. Point `promptShieldEndpoint` at a dedicated
 `ContentSafety` account to run the guard independently of Foundry, including when inference is
-hosted outside Azure; that account then needs its own grant. The guard is fail-closed, so leave
-`promptShieldEnabled=false` until the child identity can reach the endpoint.
+hosted outside Azure; that account then needs its own grant.
+
+The guard is on by default and fail-closed. Setting `promptShieldEnabled=false` removes
+prompt-injection screening from every turn, so treat it as a deliberate, temporary exception rather
+than a normal deployment option. The Blueprint must also carry an inheritable permission for
+Microsoft Cognitive Services (`7d312290-28c8-473c-a0ed-8e53749b6d6d`, `user_impersonation`); without
+it the child's OBO exchange for the Content Safety audience fails and every turn is rejected. Verify
+with `a365 query-entra inheritance`.
 
 ### `main.bicep` outputs
 

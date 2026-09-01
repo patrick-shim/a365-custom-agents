@@ -41,8 +41,8 @@ param foundryProjectName string = 'default'
 param foundryModelDeploymentName string = 'gpt-5.6-sol'
 param foundryProjectEndpoint string = ''
 
-@description('Enables the Azure AI Content Safety Prompt Shields guard on the agent host. The guard is fail-closed, so enable it only once the host identity can reach the Content Safety endpoint.')
-param promptShieldEnabled bool = false
+@description('Enables the Azure AI Content Safety Prompt Shields guard on the agent host. On by default. The guard is fail-closed, so setting this to false removes prompt-injection screening from every turn; the child identity needs a Content Safety data-plane role on the target endpoint.')
+param promptShieldEnabled bool = true
 
 @description('Content Safety endpoint for Prompt Shields. Defaults to the Content Safety surface of the referenced multi-service account, so no extra Azure resource is required. Set this to point at a dedicated ContentSafety account, including one used when inference runs outside Azure.')
 param promptShieldEndpoint string = ''

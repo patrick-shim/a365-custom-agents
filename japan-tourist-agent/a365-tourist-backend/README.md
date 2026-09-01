@@ -235,8 +235,8 @@ authenticates with a per-turn child Agent Identity token on
 and because Prompt Shields never sees the model it keeps working if inference moves outside Azure.
 
 No extra Azure resource is needed: the existing multi-service `AIServices` account already publishes
-the Content Safety surface. The guard ships disabled; see
-[docs/configuration.md](docs/configuration.md) for the settings and the role needed to enable it.
+the Content Safety surface. The guard is on by default; see
+[docs/configuration.md](docs/configuration.md) for the settings and the role it needs.
 
 Each protected turn receives a fresh Purview wrapper so protection-scope and ETag state is never
 shared across requests. The host registry retains created wrappers long enough for background audit

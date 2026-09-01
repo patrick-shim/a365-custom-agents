@@ -21,7 +21,7 @@ travel data is served by four independently deployed MCP services.
   rejected rather than allowed through unevaluated.
 - **Fail-closed prompt-injection screening.** Azure AI Content Safety Prompt Shields checks the
   user's message *and* the text tools return, closing the indirect-injection gap that prompt and
-  response DLP does not cover. Off by default; needs no extra Azure resource to enable.
+  response DLP does not cover. On by default and needs no extra Azure resource.
 - **The infrastructure identity is deliberately powerless.** The host managed identity holds
   `AcrPull` and nothing else — no Foundry, Purview, or MCP data permission.
 - **Tools are services, not functions.** Four MCP servers on internal ingress, each requiring a

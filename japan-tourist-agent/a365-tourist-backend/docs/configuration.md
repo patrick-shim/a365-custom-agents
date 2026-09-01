@@ -118,7 +118,7 @@ confidential-client FMI, OBO, or channel exchanges required here.
 | `PurviewDlp__ApplicationId` | Fallback Purview application location. Protected turns resolve the active frontend audience: Blueprint for Agentic User and the single-tenant channel app for OBO. |
 | `PurviewDlp__UseCompatibilityProxy` | Enables the loopback-only request compatibility layer required by `Microsoft.Agents.AI.Purview` 1.17.0-rc1. Production sets this to `true`. |
 | `PurviewDlp__CompatibilityProxyBaseUri` | Loopback-only proxy URI; default `http://127.0.0.1:8080/internal/purview/`. External callers receive 404. |
-| `PromptShield__Enabled` | Enables the fail-closed Prompt Shields prompt-injection guard. Ships `false`; see [Prompt injection defence](#prompt-injection-defence-prompt-shields). |
+| `PromptShield__Enabled` | Enables the fail-closed Prompt Shields prompt-injection guard. Defaults to `true`; local development turns it off because there is no Content Safety endpoint. See [Prompt injection defence](#prompt-injection-defence-prompt-shields). |
 | `PromptShield__Endpoint` | Content Safety endpoint, such as `https://<account>.cognitiveservices.azure.com`. Required when the guard is enabled; startup fails otherwise. |
 | `PromptShield__ApiVersion` | Prompt Shields API version; default `2024-09-01`. |
 | `PromptShield__MaximumSegmentCharacters` | Per-request character ceiling before content is split into segments; default `10000`. |
@@ -209,11 +209,35 @@ references publishes it. `infra/main.bicep` therefore defaults `promptShieldEndp
 a dedicated `ContentSafety` account instead — useful when inference runs outside Azure, since Prompt
 Shields is a standalone text classifier that never sees the model or its credential.
 
-To enable it, deploy with `promptShieldEnabled=true` and grant the child Agent Identity a role that
-covers the Content Safety data plane on the target account (`Cognitive Services User` is
-sufficient). The guard authenticates with a per-turn child Agent Identity token on the
+The guard is **on by default**. It needs two things in place, both of which this sample already
+configures:
+
+1. The child Agent Identity needs a role covering the Content Safety data plane on the target
+   account. `Cognitive Services User` grants `Microsoft.CognitiveServices/*` and is sufficient — the
+   same grant that authorizes Foundry inference.
+2. The Blueprint needs an **inheritable permission** for Microsoft Cognitive Services
+   (`7d312290-28c8-473c-a0ed-8e53749b6d6d`, `user_impersonation`). Content Safety is a different
+   resource from Foundry inference, so the entry that covers the model does not cover this. Without
+   it the child's OBO exchange fails `AADSTS65001` and, because the guard is fail-closed, every turn
+   is rejected. Add it with:
+
+   ```powershell
+   a365 setup permissions custom `
+     --resource-app-id 7d312290-28c8-473c-a0ed-8e53749b6d6d `
+     --scopes user_impersonation
+   ```
+
+   Confirm with `a365 query-entra inheritance`; Microsoft Cognitive Services must report
+   `Effective inheritance: OK`.
+
+The guard authenticates with a per-turn child Agent Identity token on the
 `https://cognitiveservices.azure.com/.default` scope — a different audience from Foundry inference —
 so there is no Content Safety key in configuration or in the container environment.
+
+Local development sets `PromptShield:Enabled` to `false` in `appsettings.Development.json` because
+there is no Content Safety endpoint there, and startup validation rejects an enabled guard with no
+endpoint. Deploying with `promptShieldEnabled=false` removes prompt-injection screening from every
+turn; treat it as a deliberate, temporary exception.
 
 ## Internal MCP authorization
 

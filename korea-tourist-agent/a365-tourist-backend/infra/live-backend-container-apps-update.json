@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "18197491843889801166"
+      "templateHash": "4870242726793533530"
     }
   },
   "definitions": {
@@ -86,9 +86,9 @@
     },
     "promptShieldEnabled": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Enables the Azure AI Content Safety Prompt Shields guard on the agent host. The guard is fail-closed, so enable it only once the child identity can reach the Content Safety endpoint."
+        "description": "Enables the Azure AI Content Safety Prompt Shields guard on the agent host. On by default. The guard is fail-closed, so setting this to false removes prompt-injection screening from every turn; the child identity needs a Content Safety data-plane role on the target endpoint."
       }
     },
     "promptShieldEndpoint": {
@@ -1216,7 +1216,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.46.1.21595",
-              "templateHash": "2411135031887824171"
+              "templateHash": "18001555925968632384"
             }
           },
           "definitions": {
@@ -1260,9 +1260,9 @@
             },
             "promptShieldEnabled": {
               "type": "bool",
-              "defaultValue": false,
+              "defaultValue": true,
               "metadata": {
-                "description": "Enables the Azure AI Content Safety Prompt Shields guard. The guard is fail-closed: when enabled, a turn is rejected if the service cannot be reached."
+                "description": "Enables the Azure AI Content Safety Prompt Shields guard. On by default and fail-closed: a turn is rejected if the service cannot be reached, so disabling this removes prompt-injection screening entirely."
               }
             },
             "promptShieldEndpoint": {
