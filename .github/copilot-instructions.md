@@ -6,6 +6,7 @@
   testing, and running `a365-tourist-backend/tools/` validation are always allowed. A change being
   obviously correct or an improvement is not authorization. Unlock only on an explicit, file-scoped
   instruction from the repository owner. See root `AGENTS.md` → "Change lock".
+- Follow the naming rules in root `AGENTS.md`: every user-visible and directory-object name derives from `<Country> Tourist Agent`, with `(OBO)` and `(TEAMMATE)` channel suffixes. Never delete or recreate a Blueprint, Agent Identity, or channel application in order to rename it.
 - Read root `AGENTS.md`, then the owning child `AGENTS.md` and milestone manifest before work.
 - `a365-tourist-backend` is the sole shared runtime, MCP, infrastructure, tests, tools, Docker, and
   Azure deployment authority.
