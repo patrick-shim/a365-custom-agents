@@ -11,8 +11,8 @@ travel data is served by four independently deployed MCP services.
 The backend is deployed once. Each frontend owns only its channel contract, package or client, and
 acceptance evidence. No frontend contains backend code.
 
-> Its sibling, [`korea-tourist-agent`](../korea-tourist-agent), is the same architecture for South
-> Korea with different data providers. Either one is a complete, standalone reference.
+> A sibling repository, **`korea-tourist-agent`**, is the same architecture for South Korea with
+> different data providers. Either one is a complete, standalone reference.
 
 ## What is actually guaranteed here
 
@@ -191,6 +191,35 @@ backend [configuration guide](a365-tourist-backend/docs/configuration.md).
 Agent identity is never the host managed identity. The host user-assigned managed identity federates
 into the Blueprint; the Blueprint's inheritable permissions flow to each child identity. Foundry
 data-plane access is granted per child identity, never to the host managed identity.
+
+### Blueprint inheritance, and the failure it causes
+
+A child Agent Identity holds **no OAuth2 grants of its own**. Every resource a turn calls needs
+*both* a grant on the Blueprint service principal **and** an `inheritablePermissions` entry at
+`kind=allAllowed`.
+
+```mermaid
+flowchart LR
+  BP["Blueprint application"] -->|grant on its service principal| G["OAuth2 grants"]
+  BP -->|inheritablePermissions<br/>kind=allAllowed| I["Inheritance entries"]
+  G --> EFF{{"Effective inheritance"}}
+  I --> EFF
+  EFF -->|flows to| C["Child Agent Identity<br/>0 grants of its own"]
+  C -->|/.default expands<br/>from inherited scopes| TOK["Per-resource token"]
+```
+
+`a365 setup all` configures only the first-party resources it knows about. It does **not** cover
+Azure Machine Learning (the Foundry audience), this backend's custom MCP API, or the Purview Graph
+scopes. Without those, `/.default` expands to an empty scope set, Entra returns `AADSTS65001`, and
+every turn fails at `identity.resolve` — even though the portal shows a valid-looking grant.
+
+```powershell
+a365 query-entra inheritance   # every resource must report "Effective inheritance: OK"
+```
+
+Never repair consent with `az ad app permission admin-consent`; it replaces the Blueprint's entire
+grant set rather than adding to it. The full sequence is in the
+[infrastructure runbook](a365-tourist-backend/infra/README.md).
 
 ## Azure resources
 
