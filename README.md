@@ -15,15 +15,21 @@ acceptance evidence. No frontend contains backend code.
 
 ## Live status
 
+Rebuilt on 2026-09-01 into the shared resource group `rg-a365-custom-agents` in `koreacentral`,
+alongside Korea Tourist Assistant. Every resource name is suffixed `japanexpert`, so the two products
+co-exist in one group without collision.
+
 | Channel | Route | Status |
 | --- | --- | --- |
-| OBO Teams | `/api/messages/obo` | Live and accepted in Microsoft Teams |
-| OBO Direct Line | `/api/messages/obo` | Live and accepted from the console client |
+| OBO Teams | `/api/messages/obo` | Deployed; awaiting sign-in and a recorded governed turn |
+| OBO Direct Line | `/api/messages/obo` | Deployed; bot responds and issues the sign-in card |
 | AI Teammate | `/api/messages` | Package built; awaiting Microsoft 365 licensing, upload, and install |
 
-The backend, both OBO channels, Purview enforcement, all four MCP services, and the Foundry model call
-are proven against one healthy production revision. AI Teammate acceptance is still open because no
-live AI Teammate turn has run yet.
+The host and all four MCP services are on revision `0000001` and healthy, `a365 query-entra
+inheritance` reports 7 of 7 resources effective, and both federated identity credentials point at the
+rebuilt host managed identity. The rebuild issued new Blueprint objects and a new OBO channel secret,
+so no cached user token exists and the first turn of each channel returns a sign-in card. Channel
+acceptance is open until a governed turn is replayed and recorded per channel.
 
 ## Architecture
 
@@ -117,7 +123,9 @@ data-plane access is granted per child identity, never to the host managed ident
 
 ## Azure resources
 
-All backend resources live in the existing `rg-a365-custom-agents` resource group. The Foundry account
+All backend resources live in the shared `rg-a365-custom-agents` resource group in `koreacentral`,
+alongside Korea Tourist Assistant. Every name below is suffixed `japanexpert` and Korea's are suffixed
+`koreaexpert`, so the two products co-exist in one group without collision. The Foundry account
 `a365-ai-foundry`, its `default` project, and the `gpt-5.6-sol` deployment are referenced in place from
 their own resource group and are never created, moved, or recreated by this repository.
 
