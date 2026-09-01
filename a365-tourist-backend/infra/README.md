@@ -26,10 +26,10 @@ The target group is a prerequisite, not something this template provisions:
 az group create --name rg-a365-custom-agents --location koreacentral
 ```
 
-> M7 is active. This is the only infrastructure and deployment source; the frontend projects are
-> channel-only frontends. The deployment commands below are historical and operational reference only;
-> they are not authorization to deploy, read tenant state, change identities, or run Agent 365 CLI
-> workflows from this backend.
+> **Read the whole runbook before running any of it.** This is the only infrastructure and deployment
+> source; the frontend projects are channel-only. The commands below create and modify real Azure and
+> Microsoft Entra objects. Run the compile, ARM validation, and structured what-if first, and confirm
+> the rollback boundary before any mutation.
 
 ## Files
 

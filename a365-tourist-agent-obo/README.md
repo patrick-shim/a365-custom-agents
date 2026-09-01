@@ -82,13 +82,11 @@ fails at `identity.resolve` with `STA-AUTH-001` even though the Blueprint holds 
 `Mcp.Invoke` grant. Never repair consent with `az ad app permission admin-consent`; it replaces the
 Blueprint's entire grant set.
 
-## M7 checkpoint
+## Deployment state
 
-The shared host is currently revision `0000028`, digest
-`sha256:161f9b8fa401012d5d87ccef1c215c23515709850496f585e0aca66f93b1f771`. The last documented OBO
-Teams live pass was revision `0000025`; do not claim same-revision alignment until Teams is replayed
-and recorded against `0000028`. Package or tenant changes require an approved CLI workflow, fresh dry
-run, explicit rollback boundary, and explicit approval.
+The shared host and all four MCP services run on revision `0000001` after the 2026-09-01 rebuild into
+`rg-a365-custom-agents`. A governed Teams turn is accepted on that revision. Package or tenant changes
+should go through the Agent 365 CLI workflow with a fresh dry run and an explicit rollback boundary.
 
 See [configuration](docs/configuration.md), the [M7 record](docs/milestones/M7-obo-alignment.md), and
 the [shared backend checkpoint](../a365-tourist-backend/docs/milestones/M7-end-to-end-alignment.md).
