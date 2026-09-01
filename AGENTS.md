@@ -2,6 +2,39 @@
 
 This workspace contains one canonical shared backend and three channel-only frontend projects.
 
+## Naming rules
+
+Every user-visible and directory-object name derives from one product base name:
+
+```
+<Country> Tourist Agent
+```
+
+For this workspace the base name is `Korea Tourist Agent`.
+
+| Surface | Name | Example |
+| --- | --- | --- |
+| OBO Teams app (`name.short` and `name.full`) | `<base> (OBO)` | `Korea Tourist Agent (OBO)` |
+| AI Teammate package (`name.short` and `name.full`) | `<base> (TEAMMATE)` | `Korea Tourist Agent (TEAMMATE)` |
+| Agent 365 Blueprint | `<base> Blueprint` | `Korea Tourist Agent Blueprint` |
+| Agent 365 child Agent Identity | `<base> Identity` | `Korea Tourist Agent Identity` |
+| OBO channel Entra application | `<base> OBO Channel` | `Korea Tourist Agent OBO Channel` |
+| Azure Bot `displayName` | `<base>` | `Korea Tourist Agent` |
+
+Rules:
+
+- The channel suffix is upper case and parenthesised: `(OBO)` and `(TEAMMATE)`. Do not use other
+  spellings such as `Teammate`, `Expert`, or `Tour Assistant`.
+- `name.short` must stay within the Teams 30-character limit. `<base> (TEAMMATE)` is exactly 30
+  characters for a five-letter country, so a longer country name needs a shortened base.
+- `agentIdentityDisplayName` and `agentBlueprintDisplayName` in each `a365.config.json` are the CLI
+  inputs that produce the Blueprint and Identity names; keep them in step with the table.
+- Renaming a directory object changes its display name only. Never delete or recreate a Blueprint,
+  Agent Identity, or channel application to rename it: the object IDs are referenced by the container
+  app settings, the bot OAuth connection, and the Foundry role assignments.
+- Azure resource names, .NET namespaces, assembly names, and image repositories are separate
+  identifier schemes and are not governed by this table.
+
 ## Source authority
 
 - `a365-tourist-backend` is the only source for shared host behavior, agent orchestration, MCP

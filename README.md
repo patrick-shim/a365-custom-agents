@@ -72,6 +72,34 @@ This is a dated operational checkpoint, not deployment authority. The detailed s
 in [the backend M7 runbook](a365-tourist-backend/docs/milestones/M7-end-to-end-alignment.md). OBO Teams
 and AI Teammate must still have same-revision acceptance recorded before M7 is declared complete.
 
+## Agent Identity Entra wiring
+
+The templates do not create Entra consent state. The child Agent Identity holds no grants of its own;
+it inherits them from the Blueprint, so every resource the agent calls at runtime needs an
+`inheritablePermissions` entry at `kind=allAllowed` **and** a grant on the Blueprint service principal.
+A turn performs three on-behalf-of exchanges - Azure Machine Learning (the Foundry audience),
+Microsoft Graph, and the custom `api-koreaexpert` MCP API - and each is requested with a `/.default`
+scope, which Entra expands only from inherited permissions.
+
+Missing the custom MCP API entry is the failure this repository hit: the Blueprint carried the
+tenant-wide `Mcp.Invoke` grant but had no inheritance entry, so `.default` expanded to an empty scope
+set and the exchange failed with `AADSTS65001` surfaced as `STA-AUTH-001`. Configure it with:
+
+```powershell
+cd a365-tourist-agent-obo
+a365 setup permissions custom --resource-app-id <mcp-api-app-id> --scopes Mcp.Invoke
+```
+
+Verify before declaring a deployment healthy - the summary must cover every resource, including
+`api-koreaexpert`:
+
+```powershell
+a365 query-entra inheritance
+```
+
+`Roles: WARN ... no app roles granted` is expected for delegated-only resources and does not affect
+`Effective inheritance: OK`.
+
 ## Validate
 
 Run checks from the owning project root:
