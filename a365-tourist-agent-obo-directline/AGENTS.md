@@ -1,11 +1,5 @@
 # Japan Tourist Assistant OBO Direct Line Frontend Guide
 
-> **LOCKED (2026-08-31).** This project is frozen at a verified-good baseline: 2/2 projects build
-> with 0 warnings and 0 errors and 5 tests pass on .NET SDK `10.0.110`, with the contract pin matching
-> the canonical backend contract. Do not edit the client, tests, prompts, or
-> `backend-contract.lock.json` without an explicit, file-scoped instruction from the repository owner.
-> Building and testing are always allowed. Full rules are in [../AGENTS.md](../AGENTS.md#change-lock).
-
 Read `docs/milestones/milestones.json` before work. This project contains only the Direct Line client
 and acceptance boundary for the shared OBO route.
 

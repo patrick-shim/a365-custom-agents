@@ -1,11 +1,15 @@
 # Japan Tourist Assistant monorepo instructions
 
-- **This repository is LOCKED (2026-08-31).** It is frozen at a verified-good baseline. Do not edit,
-  rename, move, refactor, reformat, or tidy any file; do not add, remove, or upgrade packages; do not
-  change version pins, `global.json`, `infra/`, `Dockerfile*`, or workflows. Reading, building,
-  testing, and running `a365-tourist-backend/tools/` validation are always allowed. A change being
-  obviously correct or an improvement is not authorization. Unlock only on an explicit, file-scoped
-  instruction from the repository owner. See root `AGENTS.md` → "Change lock".
+- **Preserve the enforced invariants.** The agent identity is never the host managed identity;
+  Foundry, Graph, and MCP tokens are acquired per resource, per turn, bound to the child identity;
+  Purview evaluation is fail-closed; MCP services stay on internal ingress behind a delegated
+  `Mcp.Invoke` token; deployments reference image digests, never mutable tags. See root `AGENTS.md`
+  → "Verified baseline". Reproduce `Invoke-LocalCi.ps1 -Strict` and `Test-Repository.ps1 -Strict`
+  before and after any change.
+- **When working on the upstream copy**, treat it as change-controlled: no file, dependency, pin, or
+  Azure resource changes without an explicit, file-scoped instruction from the repository owner.
+  Reading, building, testing, and running `a365-tourist-backend/tools/` validation are always
+  allowed. A change being obviously correct or an improvement is not authorization.
 - Follow the naming rules in root `AGENTS.md`: every user-visible and directory-object name derives from `<Country> Tourist Assistant`, with `(OBO)` and `(Teammate)` channel suffixes. The Teams schema caps `name.short` at 30 characters, so the AI Teammate package uses `(Team)` there and keeps `(Teammate)` in `name.full`. Never delete or recreate a Blueprint, Agent Identity, or channel application in order to rename it.
 - Read root `AGENTS.md`, then the owning child `AGENTS.md` and milestone manifest before work.
 - `a365-tourist-backend` is the sole shared runtime, MCP, infrastructure, tests, tools, Docker, and

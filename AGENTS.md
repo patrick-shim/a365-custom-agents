@@ -1,15 +1,12 @@
 # Japan Tourist Assistant Workspace Guide
 
-> **LOCKED (2026-08-31).** This workspace is frozen at a verified-good baseline. Do not modify any
-> file, dependency, pin, or resource without an explicit, file-scoped instruction from the repository
-> owner. Read [Change lock](#change-lock) before taking any action.
-
 This workspace contains one canonical shared backend and three channel-only frontend projects.
 
-## Change lock
+## Verified baseline
 
-This workspace is **locked**. It was rebuilt from scratch and fully validated on 2026-08-31, and is
-frozen at that baseline.
+If you forked this repository, **change it freely** — it is a reference implementation and it is
+yours. This section records the state the upstream baseline was validated at, so you can tell whether
+a failure you are seeing is something you introduced or something that was already there.
 
 | Baseline item | Verified value |
 | --- | --- |
@@ -18,16 +15,38 @@ frozen at that baseline.
 | `a365-tourist-agent-obo-directline/JapanExpert.OBO.DirectLine.slnx` | 2/2 projects, 0 warnings, 0 errors |
 | Tests | 340 passed, 0 failed, 0 skipped |
 | `a365-tourist-backend/tools/Invoke-LocalCi.ps1 -Strict` | 11 passed, 0 failed |
+| `a365-tourist-backend/tools/Test-Repository.ps1 -Strict` | 30 passed, 0 failed |
 | Contract pins and icons | Aligned across all three channels |
-| Deployment | Backend live in `rg-a365-custom-agents`; OBO Teams and OBO Direct Line accepted |
 
-### Prohibited without explicit approval
+Reproduce it before changing anything:
 
-Do not edit, rename, move, refactor, reformat, or tidy any file. Do not add, remove, or upgrade a
-package. Do not change a version pin, target framework, analyzer setting, or `global.json`. Do not
-modify `infra/`, `Dockerfile*`, or `.github/workflows/`. Do not mutate any Azure resource or Agent
-365 registration. Do not hand-edit, regenerate, or delete protected operational state. Do not stage,
-commit, revert, or clean the working tree on the owner's behalf.
+```powershell
+cd a365-tourist-backend
+./tools/Invoke-LocalCi.ps1 -Strict
+./tools/Test-Repository.ps1 -Strict
+```
+
+### Invariants worth preserving
+
+These are not style preferences. Each one is enforced by `Test-Repository.ps1`, and breaking one
+produces a system that looks fine and fails in production:
+
+- The agent identity is never the host managed identity. The host user-assigned managed identity
+  federates into the Blueprint; the Blueprint's inheritable permissions flow to each child identity.
+- Foundry, Graph, and MCP tokens are acquired per resource, per turn, bound to the child identity.
+  Do not collapse them into one token or cache them across turns.
+- Purview evaluation is fail-closed. Do not add a fallback that lets an unevaluated turn through.
+- MCP services validate a delegated `Mcp.Invoke` token and stay on internal ingress.
+- MCP tool descriptions are part of the SHA-256 schema fingerprint. Editing a description without
+  repinning the fingerprint fails the build, and that is deliberate.
+- Deployments reference image digests, never mutable tags.
+
+### If you are maintaining the upstream copy
+
+The upstream working copy is change-controlled: no file, dependency, pin, or Azure resource changes
+without an explicit, file-scoped instruction from the repository owner. Building, testing, and
+running `a365-tourist-backend/tools/` validation are always allowed. A change being obviously correct
+is not authorization.
 
 Opportunistic cleanup is the exact failure mode this lock exists to prevent. A change being
 obviously correct, harmless, idiomatic, or an improvement is not authorization.

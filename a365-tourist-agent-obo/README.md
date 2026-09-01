@@ -1,9 +1,5 @@
 # Japan Tourist Assistant OBO Teams frontend
 
-> **LOCKED (2026-08-31).** Frozen at a verified-good baseline: contract pin aligned and icons
-> byte-identical across channels. Change nothing without explicit owner approval. See
-> [../AGENTS.md](../AGENTS.md#change-lock).
-
 This project owns the source OBO Teams package and the non-secret contract pin for the canonical
 shared backend route `/api/messages/obo`. It contains no backend runtime or deployment assets.
 
@@ -70,6 +66,6 @@ Blueprint's entire grant set.
 
 See the project [instructions](AGENTS.md), [configuration](docs/configuration.md),
 [milestone protocol](docs/milestones/README.md),
-[M8 record](docs/milestones/M8-japan-tourist-assistant-obo.md), and
+[M8 record](docs/milestones/M8-japan-expert-obo.md), and
 [shared backend migration](../a365-tourist-backend/docs/milestones/M8-japan-expert-migration.md).
 The [M7 record](docs/milestones/M7-obo-alignment.md) is historical only.

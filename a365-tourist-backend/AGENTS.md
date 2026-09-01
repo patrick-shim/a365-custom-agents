@@ -1,12 +1,5 @@
 # Japan Tourist Assistant Shared Backend Guide
 
-> **LOCKED (2026-08-31).** This project is frozen at a verified-good baseline: 17/17 projects build
-> with 0 warnings and 0 errors, 335 tests pass, and `tools/Invoke-LocalCi.ps1 -Strict` reports 11
-> passed / 0 failed on .NET SDK `10.0.110`. Do not change source, pins, `infra/`, `Dockerfile*`,
-> tests, tools, or any Azure resource without an explicit, file-scoped instruction from the
-> repository owner. Building, testing, and running `tools/` validation are always allowed. Full rules
-> are in [../AGENTS.md](../AGENTS.md#change-lock).
-
 Read `docs/milestones/milestones.json` before any work and stay within the active milestone. Use
 repository-contained architecture, configuration, deployment, and validation guidance as the source
 of truth; use a Microsoft Foundry-specific skill only when one is actually available.

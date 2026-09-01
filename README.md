@@ -1,19 +1,33 @@
-# Japan Tourist Assistant agent workspace
+# Japan Tourist Assistant
 
-> **LOCKED (2026-08-31).** This repository is frozen at a verified-good baseline. Do not modify any
-> file, dependency, pin, or Azure resource without an explicit, file-scoped instruction from the
-> repository owner. The authoritative rules are in [AGENTS.md](./AGENTS.md#change-lock).
+A governed Microsoft agent that plans trips to Japan using live weather, places, and exchange-rate
+data — built the way an enterprise deployment has to be built, not the way a demo is.
 
-Japan Tourist Assistant is a governed Microsoft travel agent for Japan. One shared C# backend serves three
-channels: an OBO Teams app, an OBO Direct Line console client, and a Microsoft 365 AI Teammate.
-Microsoft Agent Framework owns orchestration, Agent 365 owns runtime identity and transport,
-Microsoft Purview protects prompt and response content fail-closed, and Japan travel data is served by
-four independently deployed MCP services.
+One shared C# backend serves three channels: an OBO Teams app, an OBO Direct Line console client, and
+a Microsoft 365 AI Teammate. Microsoft Agent Framework owns orchestration, Agent 365 owns runtime
+identity and transport, Microsoft Purview protects prompt and response content fail-closed, and Japan
+travel data is served by four independently deployed MCP services.
 
 The backend is deployed once. Each frontend owns only its channel contract, package or client, and
 acceptance evidence. No frontend contains backend code.
 
-## Live status
+> Its sibling, [`korea-tourist-agent`](../korea-tourist-agent), is the same architecture for South
+> Korea with different data providers. Either one is a complete, standalone reference.
+
+## What is actually guaranteed here
+
+- **No API key in the inference path.** The host authenticates to Microsoft Foundry with a token
+  bound to an Agent 365 child identity, resolved fresh on every turn.
+- **The agent acts as the signed-in user.** Three separate on-behalf-of exchanges per turn: Foundry,
+  Microsoft Graph, and the private MCP API.
+- **Fail-closed data protection.** If Purview cannot evaluate a prompt or response, the turn is
+  rejected rather than allowed through unevaluated.
+- **The infrastructure identity is deliberately powerless.** The host managed identity holds
+  `AcrPull` and nothing else — no Foundry, Purview, or MCP data permission.
+- **Tools are services, not functions.** Four MCP servers on internal ingress, each requiring a
+  delegated `Mcp.Invoke` token.
+
+## Status
 
 Rebuilt on 2026-09-01 into the shared resource group `rg-a365-custom-agents` in `koreacentral`,
 alongside Korea Tourist Assistant. Every resource name is suffixed `japanexpert`, so the two products
@@ -73,6 +87,61 @@ flowchart LR
 Only the agent host has external ingress. The four MCP apps use internal ingress and validate the
 shared delegated `Mcp.Invoke` scope. Every MCP data source is a credential-free public HTTPS API, so
 no workload holds a data-plane role or reads a provider secret.
+
+## One turn, end to end
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant U as Signed-in user
+  participant B as Azure Bot
+  participant H as Agent host
+  participant E as Microsoft Entra
+  participant P as Purview
+  participant M as MCP services
+  participant F as Foundry
+
+  U->>B: message
+  B->>H: activity + user token
+  H->>E: validate token audience for this channel
+  H->>E: parent token via federated credential (fmi_path)
+  H->>E: child OBO exchange x3 (Foundry / Graph / Mcp.Invoke)
+  H->>P: evaluate prompt (fail-closed)
+  P-->>H: allow or block
+  H->>M: discover and invoke tools
+  M-->>H: grounded results
+  H->>F: model call with child token
+  F-->>H: response
+  H->>P: evaluate response (fail-closed)
+  H-->>U: governed answer
+```
+
+Every step is enforced. A failure anywhere fails the turn rather than degrading it.
+
+## Prerequisites
+
+| Requirement | Notes |
+| --- | --- |
+| .NET SDK | Pinned in `global.json`; the exact feature band is required |
+| Azure subscription | Contributor on the target resource group |
+| Entra roles | Agent ID Developer for the Blueprint; Global Administrator for tenant-wide consent |
+| `a365` CLI | Blueprint, identity, permissions, packaging |
+| `az` CLI | With the Bicep extension |
+| Microsoft Foundry | Existing account with a chat-capable model deployment |
+| PowerShell 7+ | The validation tools are PowerShell |
+
+You can build, test, and read everything offline. Only live deployment needs a tenant.
+
+## Quick start
+
+```powershell
+cd a365-tourist-backend
+./tools/Invoke-LocalCi.ps1 -Strict     # build, tests, local host and MCP health probes
+./tools/Test-Repository.ps1 -Strict    # architecture and security boundary checks
+```
+
+Both should pass before you change anything. Readiness reporting `degraded` locally is expected: the
+sample uses process-local session storage, so the host declares itself unsafe to scale out.
 
 ## Projects and ownership
 
@@ -148,9 +217,9 @@ The authoritative, reviewed runbook is
 sequence, deterministic names, committed identifier policy, mutation boundary, and rollback
 boundaries. The phases below are the map; follow the runbook for exact parameters.
 
-Every cloud or tenant mutation requires the active milestone to allow it, a reviewed dry run, an
-explicit rollback boundary, and separate explicit approval. Deployment uses the single-revision
-production path only: no canary, traffic split, or parallel environment.
+Deployment uses the single-revision production path only: no canary, traffic split, or parallel
+environment. Treat every cloud or tenant mutation as needing a reviewed dry run and an explicit
+rollback boundary before you run it.
 
 ```powershell
 cd a365-tourist-backend
@@ -270,7 +339,7 @@ deployment or registration authority.
 Key records:
 
 - [M8 shared backend migration and deployment](a365-tourist-backend/docs/milestones/M8-japan-expert-migration.md)
-- [M8 OBO Teams](a365-tourist-agent-obo/docs/milestones/M8-japan-tourist-assistant-obo.md)
+- [M8 OBO Teams](a365-tourist-agent-obo/docs/milestones/M8-japan-expert-obo.md)
 - [M8 Direct Line](a365-tourist-agent-obo-directline/docs/milestones/M8-japan-expert-direct-line.md)
 - [M8 AI Teammate](a365-tourist-agent-teammate/docs/milestones/M8-japan-expert-ai-teammate.md)
 
@@ -284,3 +353,14 @@ Registered specialists are [Japan Tourist Assistant Agent Builder](.github/agent
 
 Read [`AGENTS.md`](AGENTS.md) and the owning child `AGENTS.md` before changing code, deployment state,
 or channel assets.
+
+## Secrets and safety
+
+No secret is committed. Client secrets, tenant and subscription identifiers, and generated Agent 365
+state are produced at deployment time and excluded by `.gitignore`. Documentation uses placeholders
+such as `<tenant-id>`; `Test-Repository.ps1` fails the build if a real subscription, tenant,
+principal, mailbox, or resource identifier is committed. See [SECURITY.md](SECURITY.md).
+
+## License
+
+[MIT](LICENSE).

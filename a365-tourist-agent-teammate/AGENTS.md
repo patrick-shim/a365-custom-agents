@@ -1,16 +1,5 @@
 # Japan Tourist Assistant AI Teammate Frontend Guide
 
-> **LOCKED (2026-08-31).** This project is frozen at a verified-good baseline: the contract pin and
-> SDK pin match the canonical backend contract and the icons are byte-identical across all three
-> channels. Do not edit `backend-contract.lock.json`, `global.json`, or the icons, and do not
-> hand-edit protected CLI-owned state such as `a365.config.json`, `a365.generated.config.json`,
-> `manifest/`, or `.config/`, without an explicit, file-scoped instruction from the repository owner.
-> Full rules are in [../AGENTS.md](../AGENTS.md#change-lock).
->
-> This project's M8 acceptance is still open: no live AI Teammate turn has run against
-> `/api/messages`. That remaining work is an operational Agent 365 workflow and still requires its
-> own explicit approval; the lock is not an authorization to perform it.
-
 Read `docs/milestones/milestones.json` before work. This project contains only the authoritative AI
 Teammate channel boundary for the shared backend.
 
