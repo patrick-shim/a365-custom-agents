@@ -308,6 +308,56 @@ Also expect: Direct Line keys are regenerated, so any cached channel key is stal
 connection must be recreated with a fresh client secret; and a soft-deleted Key Vault of the same
 name must be purged before the name can be reused.
 
+### When the Entra objects are recreated as well
+
+Deleting the Blueprint and the child Agent Identity is a much larger change than deleting the group,
+and four things do **not** come back on their own. All four were hit during the 2026-09-01 rebuild.
+
+1. **`a365 setup all` does not produce a complete inheritance table.** It configures only the
+   first-party resources it knows about - Microsoft Graph, Agent 365 Tools, the Observability API,
+   and the Power Platform API. That leaves `a365 query-entra inheritance` at 4 of 4, and a turn
+   that cannot reach Foundry or the MCP services. Three more resources must be added by hand, and
+   the Messaging Bot API needs a grant as well as inheritance:
+
+   ```powershell
+   $azureMachineLearning = '18a66f5f-dbdf-4c17-9dd7-1634712a9cbe'
+   $microsoftGraph = '00000003-0000-0000-c000-000000000000'
+
+   a365 setup permissions custom --resource-app-id $azureMachineLearning --scopes user_impersonation
+   a365 setup permissions custom --resource-app-id '<mcp-api-application-id>' --scopes Mcp.Invoke
+   a365 setup permissions custom --resource-app-id $microsoftGraph `
+     --scopes Content.Process.User,ProtectionScopes.Compute.User,ContentActivity.Write
+   a365 setup permissions bot
+   ```
+
+   `a365 setup permissions bot` configures inheritance but may leave the blueprint service principal
+   without an `AgentData.ReadWrite` grant, which `a365 query-entra inheritance` reports as
+   `Effective inheritance: NONE`. Add the missing grant with a Graph `POST /oauth2PermissionGrants`.
+   The target is 7 of 7.
+
+2. **The OBO channel application still points at the deleted Blueprint.** Its
+   `requiredResourceAccess` names the old application ID and the old `access_agent_as_user`
+   scope ID, and its tenant-wide grant references the old service principal. Patch the
+   application to the new Blueprint's application and scope IDs, then create a fresh
+   `AllPrincipals` grant for `access_agent_as_user`. Its Teams SSO surface - the
+   `api://botid-<appId>` identifier URI, the `access_as_user` scope, and the pre-authorized
+   Microsoft first-party clients - survives untouched, which is why reusing the channel
+   application avoids a Teams reinstall.
+
+3. **Blueprint service principals can no longer hold Azure role assignments.** Entra types them
+   `#microsoft.graph.agentIdentityBlueprintPrincipal`, and `az role assignment create` rejects them
+   with `Principals of type ... cannot validly be used in role assignments`. Grant
+   `Cognitive Services User` to the **child** Agent Identity only. Let
+   `modules/foundry-role-assignments.bicep` own that assignment; creating it by hand first makes the
+   next deployment fail with `RoleAssignmentExists`, because Azure rejects a duplicate
+   principal/role/scope triple even under a different assignment name.
+
+4. **Leave the `api-<base>expert` application in place.** It is created through the
+   `microsoftGraphV1` Bicep extension with `uniqueName`, so a redeployment re-adopts the existing
+   application and keeps its ID. Deleting it puts the `uniqueName` and the `identifierUri` into the
+   30-day soft-delete window, and the redeployment then conflicts until both are purged from
+   `directory/deletedItems`.
+
 Full order:
 
 ```powershell
