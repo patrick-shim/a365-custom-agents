@@ -1,117 +1,208 @@
-# Korea Tourist Assistant workspace
+# Korea Tourist Assistant
 
-This monorepo is the source boundary for one shared Korea Tourist Assistant backend and three channel-only
-frontends. The backend is deployed once; each frontend owns only its channel contract, package or
-client, and acceptance workflow.
+A governed Microsoft agent that plans trips to South Korea using live weather, places, and
+exchange-rate data — built the way an enterprise deployment has to be built, not the way a demo is.
+
+One shared C# backend serves three channels: an on-behalf-of Teams app, a Direct Line console client,
+and a Microsoft 365 AI Teammate. Microsoft Agent Framework owns orchestration, Agent 365 owns runtime
+identity and transport, Microsoft Purview protects prompt and response content fail-closed, and Korea
+travel data is served by four independently deployed MCP services.
+
+> Its sibling, [`japan-tourist-agent`](../japan-tourist-agent), is the same architecture for Japan
+> with different data providers. Either one is a complete, standalone reference.
+
+## What is actually guaranteed here
+
+- **No API key in the inference path.** The host authenticates to Microsoft Foundry with a token
+  bound to an Agent 365 child identity, resolved fresh on every turn.
+- **The agent acts as the signed-in user.** Three separate on-behalf-of exchanges per turn: Foundry,
+  Microsoft Graph, and the private MCP API.
+- **Fail-closed data protection.** If Purview cannot evaluate a prompt or response, the turn is
+  rejected rather than allowed through unevaluated.
+- **The infrastructure identity is deliberately powerless.** The host managed identity holds
+  `AcrPull` and nothing else — no Foundry, Purview, or MCP data permission.
+- **Tools are services, not functions.** Four MCP servers on internal ingress, each requiring a
+  delegated `Mcp.Invoke` token.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  subgraph Channels
+    Teams["OBO Teams package<br/>Korea Tourist Assistant (OBO)"]
+    Direct["OBO Direct Line client"]
+    Teammate["AI Teammate package<br/>Korea Tourist Assistant (Teammate)"]
+  end
+
+  Teams -->|Teams channel| Bot["Azure Bot"]
+  Direct -->|Direct Line v3| Bot
+  Bot -->|/api/messages/obo| Host["Agent host<br/>Container App"]
+  Bot --> OAuth["Aadv2 OAuth connection"]
+  Teammate -->|/api/messages| Host
+
+  subgraph Identity["Agent 365 identity"]
+    Blueprint["One shared Blueprint"]
+    Blueprint --> OboChild["OBO child Agent Identity"]
+    Blueprint --> TeammateChild["AI Teammate child identities"]
+  end
+  Host -.resolves per turn.-> Identity
+
+  Host --> Purview["Microsoft Purview<br/>fail-closed prompt and response DLP"]
+  Host --> Foundry["Existing Foundry account<br/>Responses API, keyless"]
+  Host --> Attractions["Attractions MCP"]
+  Host --> Weather["Weather MCP"]
+  Host --> Stay["Accommodation MCP"]
+  Host --> Currency["Currency MCP"]
+
+  Attractions & Stay --> Maps["Azure Maps<br/>managed identity"]
+  Weather --> OpenMeteo["Open-Meteo"]
+  Currency --> Frank["Frankfurter pinned to ECB"]
+```
+
+Active providers need **no API keys**: Azure Maps uses managed identity, Open-Meteo and
+Frankfurter/ECB are free public APIs. Korea Eximbank, ForexRateAPI, OpenWeather, and a KTO TourAPI
+adapter are compiled and tested but not wired into the active deployment.
+
+## One turn, end to end
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant U as Signed-in user
+  participant B as Azure Bot
+  participant H as Agent host
+  participant E as Microsoft Entra
+  participant P as Purview
+  participant M as MCP services
+  participant F as Foundry
+
+  U->>B: message
+  B->>H: activity + user token
+  H->>E: validate token audience for this channel
+  H->>E: parent token via federated credential (fmi_path)
+  H->>E: child OBO exchange x3 (Foundry / Graph / Mcp.Invoke)
+  H->>P: evaluate prompt (fail-closed)
+  P-->>H: allow or block
+  H->>M: discover and invoke tools
+  M-->>H: grounded results
+  H->>F: model call with child token
+  F-->>H: response
+  H->>P: evaluate response (fail-closed)
+  H-->>U: governed answer
+```
+
+Every step is enforced. A failure anywhere fails the turn rather than degrading it.
 
 ## Projects and routes
 
-| Project | Owner boundary | Backend route |
+| Project | Owns | Backend route |
 | --- | --- | --- |
-| [`a365-tourist-backend`](a365-tourist-backend) | Shared runtime, MCP, infrastructure, tests, tools, and deployment | `/api/messages`, `/api/messages/obo` |
-| [`a365-tourist-agent-obo`](a365-tourist-agent-obo) | OBO Teams package source and protected operational state | `/api/messages/obo` |
-| [`a365-tourist-agent-obo-directline`](a365-tourist-agent-obo-directline) | Direct Line console client, focused tests, and synthetic SIT list | `/api/messages/obo` |
-| [`a365-tourist-agent-teammate`](a365-tourist-agent-teammate) | AI Teammate package boundary and protected CLI state | `/api/messages` |
+| [`a365-tourist-backend`](a365-tourist-backend) | Runtime, MCP services, infrastructure, tests, tools, deployment | `/api/messages`, `/api/messages/obo` |
+| [`a365-tourist-agent-obo`](a365-tourist-agent-obo) | Teams package source and contract pin | `/api/messages/obo` |
+| [`a365-tourist-agent-obo-directline`](a365-tourist-agent-obo-directline) | Console client for testing without Teams | `/api/messages/obo` |
+| [`a365-tourist-agent-teammate`](a365-tourist-agent-teammate) | Microsoft 365 AI Teammate package | `/api/messages` |
 
-The two protected host modes share one Agent 365 Blueprint and one deployed backend, but they keep
-separate child Agent Identities, token audiences, packages, session keys, and CLI state:
+The two protected host modes share one Blueprint and one deployed backend, but keep separate child
+Agent Identities, token audiences, packages, and session state:
 
 | Mode | Route | Audience configuration | Identity binding |
 | --- | --- | --- | --- |
 | `agentic-user` | `/api/messages` | `TokenValidation__Audiences__AgenticUser` | `dynamic-child-agent-identity` |
 | `on-behalf-of` | `/api/messages/obo` | `TokenValidation__Audiences__OnBehalfOf` | `configured-obo-child-agent-identity` |
 
-OBO Teams and OBO Direct Line both reach the same `/api/messages/obo` route. Direct Line arrives
-through an OBO Azure Bot using Direct Line v3 and the `korea-tourist-assistant-obo` OAuth connection; Teams
-arrives through its published package. Because they share a route, audience, and child identity, they
-also share DLP behavior — but each still owns its own acceptance evidence.
+Teams and Direct Line both reach `/api/messages/obo`, so they share DLP behaviour — but each records
+its own acceptance evidence, because the channel, package installation, and token acquisition paths
+differ.
 
-`a365-tourist-agent-obo-teammate/`, if present, is a separate excluded project. Do not inspect,
-modify, stage, or commit it without specific human approval. It is excluded by the final entry in the
-root [.gitignore](.gitignore).
+## Prerequisites
+
+| Requirement | Notes |
+| --- | --- |
+| .NET SDK | Pinned in `global.json`; the exact feature band is required |
+| Azure subscription | Contributor on the target resource group |
+| Entra roles | Agent ID Developer for the Blueprint; Global Administrator for tenant-wide consent |
+| `a365` CLI | Blueprint, identity, permissions, packaging |
+| `az` CLI | With the Bicep extension |
+| Microsoft Foundry | Existing account with a chat-capable model deployment |
+| PowerShell 7+ | The validation tools are PowerShell |
+
+You can build, test, and read everything offline. Only live deployment needs a tenant.
+
+## Quick start
+
+```powershell
+cd a365-tourist-backend
+./tools/Invoke-LocalCi.ps1 -Strict     # build, tests, local host and MCP health probes
+./tools/Test-Repository.ps1 -Strict    # architecture and security boundary checks
+```
+
+Both should pass before you change anything. `Invoke-LocalCi.ps1` runs 11 gates: tool self-test,
+build, solution tests, three host health probes, four MCP health probes, and process cleanup. The
+backend builds with 0 warnings and 0 errors under `TreatWarningsAsErrors`.
+
+Readiness reporting `degraded` locally is expected: the sample uses process-local session storage, so
+the host declares itself unsafe to scale out.
+
+## Deploy
+
+The full runbook is [`a365-tourist-backend/infra/README.md`](a365-tourist-backend/infra/README.md).
+The shape of it:
+
+1. **Create the resource group.** The templates never create it and refuse to deploy anywhere else.
+2. **Deploy infrastructure** on placeholder images — registry, Container Apps environment, managed
+   identities, Log Analytics, Application Insights, and the MCP API application.
+3. **Build and push images** with `az acr build`, then redeploy by digest. Deployments reference
+   digests, never mutable tags.
+4. **Create the Agent 365 identity** with `a365 setup all` from the owning frontend project.
+5. **Complete the Entra wiring.** This is outside the templates and is the step most often missed —
+   see below.
+6. **Deploy the bot phase** and build the channel packages.
+
+### The Entra wiring that no template can do for you
+
+A child Agent Identity holds **no OAuth2 grants of its own**. It inherits them from the Blueprint, so
+every resource a turn calls needs *both* a grant on the Blueprint service principal **and** an
+`inheritablePermissions` entry at `kind=allAllowed`.
+
+`a365 setup all` configures only the first-party resources it knows about. It does **not** cover
+Azure Machine Learning (the Foundry audience), this backend's custom MCP API, or the Purview Graph
+scopes. Without those, `/.default` expands to an empty scope set, Entra returns `AADSTS65001`, and
+every turn fails at `identity.resolve` — even though the portal shows a valid-looking grant.
+
+```powershell
+a365 query-entra inheritance   # every resource must report "Effective inheritance: OK"
+```
+
+Never repair consent with `az ad app permission admin-consent`; it replaces the Blueprint's entire
+grant set rather than adding to it.
 
 ## Contract alignment
 
 [`a365-tourist-backend/contracts/frontend-backend-contract.json`](a365-tourist-backend/contracts/frontend-backend-contract.json)
-is the authoritative, non-secret integration contract — `contractId: korea-expert-shared-backend`,
-`contractVersion: 1.0.0`. It declares both frontend bindings, the three health endpoints
+is the authoritative non-secret integration contract — `contractId: korea-expert-shared-backend`,
+`contractVersion: 2.0.0`. It declares both frontend bindings, the three health endpoints
 (`/api/health`, `/api/health/live`, `/api/health/ready`), and the MCP boundary: four services,
 streamable-HTTP transport, delegated `Mcp.Invoke` authorization.
 
 Each frontend repeats its matching subset in a committed `backend-contract.lock.json`. Unlike the
-generated Agent 365 state around them, these lock files **are** non-secret source and are expected to
-be in version control. `contract-alignment-ci.yml` compares all three against the backend contract and
+generated Agent 365 state around them, these lock files **are** non-secret source and belong in
+version control. `contract-alignment-ci.yml` compares all three against the backend contract and
 fails the build on any drift.
 
 ## Continuous integration
 
-Five workspace workflows in [.github/workflows](.github/workflows), all `windows-latest` with
+Five workflows in [.github/workflows](.github/workflows), all `windows-latest` with
 `permissions: contents: read` and no cloud login:
 
 | Workflow | Timeout | Scope |
 | --- | --- | --- |
-| `backend-ci.yml` | 25 min | .NET SDK `10.0.110`, then full backend local CI in Release |
+| `backend-ci.yml` | 25 min | Pinned .NET SDK, then full backend local CI in Release |
 | `ai-teammate-ci.yml` | 10 min | AI Teammate contract pin |
 | `obo-teams-ci.yml` | 10 min | OBO Teams contract pin |
 | `direct-line-ci.yml` | 10 min | Direct Line build, tests, and committed-credential rejection |
 | `contract-alignment-ci.yml` | 5 min | Cross-project contract equality |
 
-## Current deployment checkpoint
-
-Rebuilt on 2026-09-01 into the shared resource group `rg-a365-custom-agents` in `koreacentral`,
-alongside Japan Tourist Assistant. Every resource name is suffixed `koreaexpert`, so the two products
-co-exist in one group without collision.
-
-- Shared host `ca-agent-koreaexpert`: revision `0000001`, healthy, 100% traffic, `/api/health` 200.
-- All four MCP services on revision `0000001` and healthy.
-- Agent 365 objects were recreated from scratch: Blueprint `Korea Tourist Assistant BP`, child
-  identity `Korea Tourist Assistant ID`, and a new agent registration.
-- `a365 query-entra inheritance` reports 7 of 7 resources effective, including `api-koreaexpert`.
-- Both federated identity credentials point at the rebuilt host managed identity.
-
-**OBO Teams is accepted on this revision.** A governed turn completes Teams SSO, Agent Identity
-resolution with `child=False, user=True` on the delegated Foundry exchange, fail-closed Purview
-evaluation through Microsoft Graph `dataSecurityAndGovernance`, all four MCP discovery calls, and
-the Foundry model call. Agent 365 observability export returns HTTP 200, and the interval carries
-zero `STA-` failures. AI Teammate acceptance is still open because no live AI Teammate turn has run.
-
-This is a dated operational checkpoint, not deployment authority. The detailed sanitized record is
-in [the backend M7 runbook](a365-tourist-backend/docs/milestones/M7-end-to-end-alignment.md).
-
-## Agent Identity Entra wiring
-
-The templates do not create Entra consent state. The child Agent Identity holds no grants of its own;
-it inherits them from the Blueprint, so every resource the agent calls at runtime needs an
-`inheritablePermissions` entry at `kind=allAllowed` **and** a grant on the Blueprint service principal.
-A turn performs three on-behalf-of exchanges - Azure Machine Learning (the Foundry audience),
-Microsoft Graph, and the custom `api-koreaexpert` MCP API - and each is requested with a `/.default`
-scope, which Entra expands only from inherited permissions.
-
-Missing the custom MCP API entry is the failure this repository hit: the Blueprint carried the
-tenant-wide `Mcp.Invoke` grant but had no inheritance entry, so `.default` expanded to an empty scope
-set and the exchange failed with `AADSTS65001` surfaced as `STA-AUTH-001`. Configure it with:
-
-```powershell
-cd a365-tourist-agent-obo
-a365 setup permissions custom --resource-app-id <mcp-api-app-id> --scopes Mcp.Invoke
-```
-
-Verify before declaring a deployment healthy - the summary must cover every resource, including
-`api-koreaexpert`:
-
-```powershell
-a365 query-entra inheritance
-```
-
-`Roles: WARN ... no app roles granted` is expected for delegated-only resources and does not affect
-`Effective inheritance: OK`.
-
-Never repair consent with `az ad app permission admin-consent`; it replaces the Blueprint's entire
-grant set rather than adding to it.
-
 ## Validate
-
-Run checks from the owning project root:
 
 ```powershell
 cd a365-tourist-backend
@@ -122,31 +213,18 @@ cd ../a365-tourist-agent-obo-directline
 dotnet test KoreaExpert.OBO.DirectLine.slnx --configuration Release
 ```
 
-`Invoke-LocalCi.ps1` runs 11 gates: tool self-test, build, solution tests, three host health probes,
-four MCP health probes, and process cleanup. Both solutions currently build with 0 warnings and
-0 errors under `TreatWarningsAsErrors`; the backend suite passes 135 tests and the Direct Line suite
-passes 5, with none failed or skipped.
+`Test-Repository.ps1` is worth reading even if you never run it. It enforces the architecture rather
+than describing it: the two-stage child identity exchange, per-resource token binding, the MCP token
+audience boundary, canonical MCP schema fingerprints, fail-closed Purview, HTTPS-only MCP endpoints
+in non-local configurations, and committed-secret hygiene.
 
-The OBO Teams workflow validates its committed contract and source manifest. The AI Teammate workflow
-validates its committed contract and rejects generated Agent 365 state in a clean checkout. Live
-channel, package, tenant, and Purview acceptance is separate and requires the active M7 authorization,
-a reviewed dry run and rollback boundary, and explicit approval for mutations.
+## Secrets and safety
 
-## Git safety
+No secret is committed. Client secrets, tenant and subscription identifiers, and generated Agent 365
+state are produced at deployment time and excluded by `.gitignore`. Documentation uses placeholders
+such as `<tenant-id>`; the validation suite fails the build if a real identifier is committed. See
+[SECURITY.md](SECURITY.md).
 
-The root repository intentionally excludes build output, local keys, `.env` files, `.azure`, `.a365`,
-CLI-owned configuration, generated manifests/ZIPs, and tenant-bound evidence. These files may exist
-locally and must be preserved, but they are not source and must never be committed. Review ignored
-paths and the staged file list before each commit:
+## License
 
-```powershell
-git status --short --ignored
-git diff --cached --name-only
-```
-
-Never commit `*.key`, `*.pem`, `*.pfx`, `*.p12`, `.env*` other than `.env.example`, or
-`appsettings.Local.json`. Bearer tokens and API keys belong in process environment variables only —
-never in source, command arguments, shell history, logs, or an appsettings file.
-
-See [AGENTS.md](AGENTS.md) and each child `AGENTS.md` before changing code, deployment state, or
-channel assets.
+[MIT](LICENSE).
