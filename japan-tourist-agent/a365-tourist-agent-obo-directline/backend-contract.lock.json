@@ -1,7 +1,7 @@
 {
   "contractId": "japan-expert-shared-backend",
   "contractVersion": "2.0.0",
-  "productName": "Japan Tourist Assistant",
+  "productName": "Japan Tourist Expert",
   "defaultTimeZone": "Asia/Tokyo",
   "defaultCurrency": "JPY",
   "frontend": "on-behalf-of",

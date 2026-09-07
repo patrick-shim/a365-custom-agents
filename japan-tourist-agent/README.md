@@ -1,4 +1,4 @@
-# Japan Tourist Assistant
+# Japan Tourist Expert
 
 A governed Microsoft agent that plans trips to Japan using live weather, places, and exchange-rate
 data — built the way an enterprise deployment has to be built, not the way a demo is.
@@ -33,7 +33,7 @@ acceptance evidence. No frontend contains backend code.
 ## Status
 
 Rebuilt on 2026-09-01 into the shared resource group `rg-a365-custom-agents` in `koreacentral`,
-alongside Korea Tourist Assistant. Every resource name is suffixed `japanexpert`, so the two products
+alongside Korea Tourist Expert. Every resource name is suffixed `japanexpert`, so the two products
 co-exist in one group without collision.
 
 | Channel | Route | Status |
@@ -55,9 +55,9 @@ AI Teammate turn has run.
 ```mermaid
 flowchart LR
   subgraph Channels
-    Teams[OBO Teams package<br/>Japan Tourist Assistant]
+    Teams["OBO Teams package<br/>Japan Tourist Expert (OBO)"]
     Direct[OBO Direct Line client]
-    Teammate[AI Teammate package<br/>Japan Tourist Assistant Teammate]
+    Teammate["AI Teammate package<br/>Japan Tourist Expert (Teammate)"]
   end
 
   Teams -->|Teams channel| Bot[Azure Bot<br/>bot-japanexpert]
@@ -162,7 +162,7 @@ sample uses process-local session storage, so the host declares itself unsafe to
 
 The `a365-tourist-*` directory names are stable repository ownership boundaries kept for
 compatibility. They are not product branding: active projects, namespaces, packages, prompts, Azure
-resources, and current documentation all use Japan Tourist Assistant.
+resources, and current documentation all use Japan Tourist Expert.
 
 `a365-tourist-agent-obo-teammate/`, if present, is a separate excluded project. Do not inspect,
 modify, stage, or commit it without specific human approval.
@@ -216,9 +216,10 @@ flowchart LR
   C -->|/.default expands<br/>from inherited scopes| TOK["Per-resource token"]
 ```
 
-`a365 setup all` configures only the first-party resources it knows about. It does **not** cover
-Azure Machine Learning (the Foundry audience), this backend's custom MCP API, or the Purview Graph
-scopes. Without those, `/.default` expands to an empty scope set, Entra returns `AADSTS65001`, and
+Default `a365 setup all` configuration does not cover every required permission. Declare Azure
+Machine Learning (the Foundry audience), this backend's custom MCP API, and Cognitive Services in
+both frontend `customBlueprintPermissions` arrays, and separately verify the Purview Graph scopes.
+Without the required grants and inheritance, `/.default` expands to an empty scope set, Entra returns `AADSTS65001`, and
 every turn fails at `identity.resolve` — even though the portal shows a valid-looking grant.
 
 ```powershell
@@ -232,7 +233,7 @@ grant set rather than adding to it. The full sequence is in the
 ## Azure resources
 
 All backend resources live in the shared `rg-a365-custom-agents` resource group in `koreacentral`,
-alongside Korea Tourist Assistant. Every name below is suffixed `japanexpert` and Korea's are suffixed
+alongside Korea Tourist Expert. Every name below is suffixed `japanexpert` and Korea's are suffixed
 `koreaexpert`, so the two products co-exist in one group without collision. The Foundry account
 `a365-ai-foundry`, its `default` project, and the `gpt-5.6-sol` deployment are referenced in place from
 their own resource group and are never created, moved, or recreated by this repository.
@@ -273,7 +274,11 @@ dotnet test JapanExpertAgent.slnx --configuration Release
 2. **Build and push immutable images.** Use `az acr build` for the host and MCP images, then resolve
    each tag to a digest. Deployments reference digests, never mutable tags.
 3. **Deploy the images.** Re-run the template with the resolved digests.
-4. **Create Agent 365 identity.** Run `a365 setup all` from the owning frontend project. This creates
+4. **Declare permissions, then create/reuse Agent 365 identity.** Before any setup rerun, put the
+   same `customBlueprintPermissions` in both frontend user configs; follow the
+   [required example and deletion warning](a365-tourist-backend/docs/configuration.md#preserve-custom-blueprint-permissions-before-setup).
+   CLI 1.1.214 can remove undeclared custom grants even with `--no-endpoint`.
+   Run `a365 setup all` from the owning frontend project. This creates
    or reuses the single shared Blueprint, its inheritable permissions, and the child identity. It also
    prints a Blueprint client secret; treat it as exposed and revoke it if it is not needed.
 5. **Deploy the Bot phase.** The phase-gated Bot module creates `bot-japanexpert`, the Teams channel,
@@ -283,9 +288,9 @@ dotnet test JapanExpertAgent.slnx --configuration Release
      channel application;
    - a service principal for the OBO channel application;
    - `inheritablePermissions` with `allAllowed` for **every** resource the agent calls, including
-     Azure Machine Learning for the Foundry audience and the custom MCP API. `a365 setup all` does
-     **not** cover the custom MCP API, so add that one explicitly with
-     `a365 setup permissions custom --resource-app-id <mcp-api-application-id> --scopes Mcp.Invoke`.
+     Azure Machine Learning for the Foundry audience and the custom MCP API. Declare the custom
+     resources in both frontend `customBlueprintPermissions` arrays before setup; one-off
+     `a365 setup permissions custom` repairs alone do not survive reconciliation.
      A child identity holds no grants of its own, so a missing entry makes the per-turn `/.default`
      exchange expand to an empty scope set and the turn fails at `identity.resolve` with
      `JEX-AUTH-001`. Confirm with `a365 query-entra inheritance`, which must report every resource
@@ -313,9 +318,10 @@ Both packages use the source-owned Japanese-flag icons and the Japanese red acce
 generates placeholder branding and its own default icons, so its printed "Customize before packaging"
 step is mandatory, not optional.
 
-The Admin Center lists an uploaded agent by the manifest's `name.short`. The Teams app is
-`Japan Tourist Assistant` and the AI Teammate agent is `Japan Tourist Assistant (Teammate)` so administrators can tell them
-apart. Generated packages are operational artifacts and stay out of Git.
+The Admin Center lists an uploaded agent by the manifest's `name.short`: `Japan Tourist Expert (OBO)`
+for Teams and `Japan Tourist Expert (Team)` for AI Teammate. The latter keeps
+`Japan Tourist Expert (Teammate)` in `name.full`; its 31 characters exceed the short-name limit.
+Generated packages are operational artifacts and stay out of Git.
 
 ## Validate
 
@@ -368,7 +374,7 @@ git diff --cached --name-only
 ## Milestones
 
 `a365-tourist-backend/docs/milestones/milestones.json` is the machine-readable source of truth and
-`docs/milestones/README.md` holds the human protocol. M8 is the active milestone: the Japan Tourist Assistant
+`docs/milestones/README.md` holds the human protocol. M8 is the active milestone: the Japan Tourist Expert
 migration, the Japan MCP retune, single-resource-group deployment, clean Agent 365 registration, and
 same-revision cross-channel acceptance. M0 through M7 are explicitly historical and grant no
 deployment or registration authority.
@@ -383,8 +389,8 @@ Key records:
 ## Copilot guidance
 
 Repository-wide rules are in [`.github/copilot-instructions.md`](.github/copilot-instructions.md).
-Registered specialists are [Japan Tourist Assistant Agent Builder](.github/agents/japan-expert-agent-builder.agent.md),
-[Japan Tourist Assistant Solution Reviewer](.github/agents/japan-expert-solution-reviewer.agent.md),
+Registered specialists are [Japan Tourist Expert Agent Builder](.github/agents/japan-expert-agent-builder.agent.md),
+[Japan Tourist Expert Solution Reviewer](.github/agents/japan-expert-solution-reviewer.agent.md),
 [MCP Service Builder](.github/agents/mcp-service-builder.agent.md), and
 [Tools Specialist](.github/agents/tools-specialist.agent.md).
 

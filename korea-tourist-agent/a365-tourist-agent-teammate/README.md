@@ -1,4 +1,9 @@
-# Korea Tourist Assistant AI Teammate frontend
+# Korea Tourist Expert AI Teammate frontend
+
+Use `Korea Tourist Expert (Teammate)` for the full package name (31 characters) and
+`Korea Tourist Expert (Team)` for `name.short` (27 characters, within the Teams 30-character limit).
+The directory display names are `Korea Tourist Expert BP` for the Blueprint and
+`Korea Tourist Expert ID` for the Agent Identity.
 
 This project owns the authoritative Microsoft 365 AI Teammate package boundary and the non-secret
 contract pin for the canonical shared backend route `/api/messages`. Shared runtime, MCP,

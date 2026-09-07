@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.46.1.21595",
-      "templateHash": "2183078666686325975"
+      "templateHash": "13730733290381399"
     }
   },
   "definitions": {
@@ -50,7 +50,7 @@
       "minLength": 3,
       "maxLength": 16,
       "metadata": {
-        "description": "Deterministic Japan Tourist Assistant resource token. Lowercase alphanumeric only."
+        "description": "Deterministic Japan Tourist Expert resource token. Lowercase alphanumeric only."
       }
     },
     "containerAppEnvironmentName": {

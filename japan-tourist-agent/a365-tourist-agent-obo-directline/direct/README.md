@@ -1,6 +1,6 @@
-# Japan Tourist Assistant Direct Line Console Client
+# Japan Tourist Expert Direct Line Console Client
 
-The .NET 10 console app in `JapanExpert.Direct` talks to the Japan Tourist Assistant OBO Azure Bot through
+The .NET 10 console app in `JapanExpert.Direct` talks to the Japan Tourist Expert OBO Azure Bot through
 Direct Line v3.
 It does not use Teams or Microsoft 365 Copilot. It starts a Direct Line conversation, sends user
 messages, renders agent replies, renews expiring conversation tokens, and completes Bot Token

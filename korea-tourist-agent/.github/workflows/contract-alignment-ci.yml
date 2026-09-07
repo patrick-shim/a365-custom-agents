@@ -47,6 +47,9 @@ jobs:
             $expected = $expected[0]
             if ($lock.contractId -ne $contract.contractId -or
                 $lock.contractVersion -ne $contract.contractVersion -or
+                $lock.productName -ne $contract.product.name -or
+                $lock.defaultTimeZone -ne $contract.product.defaultTimeZone -or
+                $lock.defaultCurrency -ne $contract.product.defaultCurrency -or
                 $lock.frontend -ne $expected.name -or
                 $lock.route -ne $expected.route -or
                 $lock.audienceConfiguration -ne $expected.audienceConfiguration -or

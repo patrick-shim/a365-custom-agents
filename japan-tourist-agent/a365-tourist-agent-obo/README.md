@@ -1,4 +1,4 @@
-# Japan Tourist Assistant OBO Teams frontend
+# Japan Tourist Expert OBO Teams frontend
 
 This project owns the source OBO Teams package and the non-secret contract pin for the canonical
 shared backend route `/api/messages/obo`. It contains no backend runtime or deployment assets.
@@ -18,7 +18,7 @@ and Azure deployment automation live in `../a365-tourist-backend`.
 
 The contract pin fixes:
 
-- product `Japan Tourist Assistant`, default time zone `Asia/Tokyo`, and default currency `JPY`;
+- product `Japan Tourist Expert`, default time zone `Asia/Tokyo`, and default currency `JPY`;
 - route `/api/messages/obo`;
 - audience setting `TokenValidation__Audiences__OnBehalfOf`;
 - identity binding `configured-obo-child-agent-identity`.
@@ -32,8 +32,8 @@ sanitized observability.
 
 ## M8 status
 
-The source package uses Japan Tourist Assistant branding and the required Japanese-flag color and outline icons.
-The clean Agent 365 workflow created the shared `Japan Tourist Assistant Blueprint`, the OBO child identity, and
+The source package uses Japan Tourist Expert (OBO) branding and the required Japanese-flag color and outline icons.
+The clean Agent 365 workflow created the shared Blueprint, now named `Japan Tourist Expert BP`, the OBO child identity, and
 a separate OBO channel application without reusing Seoul operational state.
 
 **OBO Teams is live and accepted.** A governed turn in Microsoft Teams completes Teams SSO token

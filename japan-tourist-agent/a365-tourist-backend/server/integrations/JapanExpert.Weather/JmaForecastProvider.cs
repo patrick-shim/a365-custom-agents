@@ -28,7 +28,7 @@ public sealed class JmaForecastProvider(
         "Source: Japan Meteorological Agency. Retrieved from the configurable JMA bosai forecast "
         + "JSON endpoint, which JMA does not publish as a documented API, and accepted only after a "
         + "strict schema and freshness guard. Japanese forecast text is preserved verbatim; English "
-        + "summaries are a Japan Tourist Assistant transformation of JMA text and weather telop codes.";
+        + "summaries are a Japan Tourist Expert transformation of JMA text and weather telop codes.";
 
     private static readonly TimeSpan JapanOffset = TimeSpan.FromHours(9);
     private readonly JmaOptions _options = options.Value;

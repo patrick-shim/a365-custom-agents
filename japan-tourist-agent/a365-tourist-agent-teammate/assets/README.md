@@ -1,4 +1,4 @@
-# Japan Tourist Assistant package icons
+# Japan Tourist Expert package icons
 
 - `color.png`: 192 x 192, solid white background, Japan-red (`#BC002D`) disc inside the 120 x 120
   safe region.

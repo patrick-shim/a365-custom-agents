@@ -32,7 +32,7 @@ jobs:
           $lock = Get-Content backend-contract.lock.json -Raw | ConvertFrom-Json
           if ($lock.contractId -ne 'japan-expert-shared-backend' -or
               $lock.contractVersion -ne '2.0.0' -or
-              $lock.productName -ne 'Japan Tourist Assistant' -or
+              $lock.productName -ne 'Japan Tourist Expert' -or
               $lock.defaultTimeZone -ne 'Asia/Tokyo' -or
               $lock.defaultCurrency -ne 'JPY' -or
               $lock.frontend -ne 'on-behalf-of' -or
@@ -89,11 +89,11 @@ jobs:
           if ($outline.Width -ne 32 -or $outline.Height -ne 32) {
             throw 'OBO outline icon must be 32x32.'
           }
-          if ($manifest.name.short -ne 'Japan Tourist Assistant' -or
-              $manifest.name.full -ne 'Japan Tourist Assistant travel assistant' -or
-              $manifest.developer.name -ne 'Japan Tourist Assistant' -or
+          if ($manifest.name.short -ne 'Japan Tourist Expert (OBO)' -or
+              $manifest.name.full -ne 'Japan Tourist Expert (OBO)' -or
+              $manifest.developer.name -ne 'Japan Tourist Expert' -or
               $manifest.accentColor -ne '#BC002D') {
-            throw 'OBO manifest must use Japan Tourist Assistant branding.'
+            throw 'OBO manifest must use Japan Tourist Expert (OBO) branding.'
           }
 
       - name: Reject committed OBO operational state

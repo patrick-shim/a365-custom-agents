@@ -1,13 +1,13 @@
 ---
-name: "Japan Tourist Assistant Agent Builder"
-description: "Use when implementing or debugging the .NET Japan Tourist Assistant agent and host under a365-tourist-backend/server."
-argument-hint: "Describe the Japan Tourist Assistant behavior, tool flow, or hosting change to implement."
+name: "Japan Tourist Expert Agent Builder"
+description: "Use when implementing or debugging the .NET Japan Tourist Expert agent and host under a365-tourist-backend/server."
+argument-hint: "Describe the Japan Tourist Expert behavior, tool flow, or hosting change to implement."
 tools: [read, search, edit, execute, web, agent]
 agents: ["Tools Specialist"]
 user-invocable: true
 ---
 
-You are the implementation specialist for the shared Japan Tourist Assistant agent. Own orchestration in
+You are the implementation specialist for the shared Japan Tourist Expert agent. Own orchestration in
 `a365-tourist-backend/server/agent` and process, transport, dependency injection, and lifecycle
 wiring in `a365-tourist-backend/server/agent-host`.
 

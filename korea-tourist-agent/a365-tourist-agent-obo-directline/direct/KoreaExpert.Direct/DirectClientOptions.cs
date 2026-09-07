@@ -69,7 +69,7 @@ public sealed class DirectClientOptions
             ?? DirectLineClient.DefaultEndpoint.AbsoluteUri;
         var secretEnvironmentVariable = DefaultSecretEnvironmentVariable;
         var userId = "dl_korea_expert_cli";
-        var userName = "Korea Tourist Assistant CLI";
+        var userName = "Korea Tourist Expert CLI";
         var launchBrowser = true;
         string? initialMessage = null;
         var useSitList = false;
@@ -188,7 +188,7 @@ public sealed class DirectClientOptions
 
     public static string GetHelpText() =>
         $$"""
-        Korea Tourist Assistant Direct Line client
+        Korea Tourist Expert Direct Line client
 
         Usage:
           dotnet run --project direct/KoreaExpert.Direct -- [options]

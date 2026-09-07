@@ -38,7 +38,7 @@ owning frontend projects.
 ./tools/Test-Prerequisites.ps1
 ./tools/Test-Repository.ps1
 
-# Deployment boundary: resource-group scope, existing Foundry reference, and Japan Tourist Assistant naming
+# Deployment boundary: resource-group scope, existing Foundry reference, and Japan Tourist Expert naming
 ./tools/Test-Deployment.ps1
 ./tools/Test-Deployment.ps1 -OutputFormat Json -Strict
 
@@ -86,7 +86,7 @@ The script calls `Get-FeatureConfiguration -FeatureScenario KnowYourData` and ac
 semantic match that includes the Application enforcement plane with upload and download text. It
 does not rely on one tenant-localized display name and never changes the policy. The historical M7
 checkpoint passed 12/12 checks, including 15/15 categorized behavior tests; M8 requires fresh
-Japan Tourist Assistant acceptance evidence before any equivalent current claim.
+Japan Tourist Expert acceptance evidence before any equivalent current claim.
 
 The Purview probe token needs Microsoft Graph `Content.Process.User` or `Content.Process.All`. Prefer
 least privilege and a dedicated test user/application scope. A direct `-ProbePolicy` call proves a
@@ -142,7 +142,7 @@ offline and read-only. They parse `infra/**` and assert that:
   resource group than the existing Foundry group;
 - the existing Foundry account is referenced across resource groups and never created, with its
   project and model deployment pinned as parameter defaults;
-- all 16 resource names default to deterministic Japan Tourist Assistant values inside their Azure length limits
+- all 16 resource names default to deterministic Japan Tourist Expert values inside their Azure length limits
   and stay identical between the bootstrap and update templates;
 - the registry defaults to Basic, all four public-provider MCP apps are capped at one replica, and the
   Key Vault surface equals what first-party source actually reads, so with no secret client in the

@@ -1,4 +1,4 @@
-# Japan Tourist Assistant OBO Direct Line Frontend Guide
+# Japan Tourist Expert OBO Direct Line Frontend Guide
 
 Read `docs/milestones/milestones.json` before work. This project contains only the Direct Line client
 and acceptance boundary for the shared OBO route.
@@ -31,7 +31,7 @@ pins with the canonical backend contract.
 
 ## Active M8 status
 
-Rename the solution, projects, namespaces, client identity, tests, and prompts to Japan Tourist Assistant while
+Keep the `JapanExpert` solution, project, and namespace identifiers; label the client and prompts Japan Tourist Expert while
 preserving `/api/messages/obo`, OAuth completion, token renewal, and secret handling. A fresh Direct
 Line site and OBO registration must be used after the reviewed M8 dry run; Seoul channel state and
 evidence are historical only.

@@ -1,4 +1,4 @@
-# Japan Tourist Assistant OBO Teams Frontend Guide
+# Japan Tourist Expert OBO Teams Frontend Guide
 
 Read `docs/milestones/milestones.json` before work. This project contains only the OBO Teams channel
 boundary for the shared backend.
@@ -32,10 +32,10 @@ Never deploy generated historical output from `teams/appPackage/build/`.
 
 ## Active M8 status
 
-Rename this source package and icons to Japan Tourist Assistant, preserve `/api/messages/obo`, and use only the
+Label this source package Japan Tourist Expert (OBO), preserve `/api/messages/obo`, and use only the
 new OBO audience and child proposed by the clean M8 Agent 365 workflow. Existing Seoul Blueprint,
 child, channel, package, generated state, and installation records are historical and must not be
-used as Japan Tourist Assistant authority. Fix shared behavior only in `../a365-tourist-backend`.
+used as Japan Tourist Expert authority. Fix shared behavior only in `../a365-tourist-backend`.
 
 Do not recreate backend directories, copy Direct Line code, or mutate routes, audiences, identities,
 consent, Purview, or package registration without the milestone gate and explicit approval.

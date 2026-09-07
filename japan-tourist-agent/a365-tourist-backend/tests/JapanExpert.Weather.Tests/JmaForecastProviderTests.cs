@@ -118,7 +118,7 @@ public sealed class JmaForecastProviderTests
         StringAssert.Contains(forecast.Source.Name, "Japan Meteorological Agency");
         Assert.AreEqual(JmaForecastProvider.AttributionUrl, forecast.Source.AttributionUrl);
         StringAssert.Contains(forecast.Source.Notice, "strict schema and freshness guard");
-        StringAssert.Contains(forecast.Source.Notice, "Japan Tourist Assistant transformation");
+        StringAssert.Contains(forecast.Source.Notice, "Japan Tourist Expert transformation");
         Assert.AreEqual(WeatherTestFactory.Now, forecast.Source.RetrievedAt);
     }
 

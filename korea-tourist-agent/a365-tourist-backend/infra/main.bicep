@@ -15,8 +15,8 @@ type Agent365AgentPrincipalIds = {
 param environmentName string
 
 // Both products deploy into the single shared resource group `rg-a365-custom-agents` in koreacentral.
-// Every resource name is suffixed with `resourceBaseName`, so Japan Tourist Assistant and Korea
-// Tourist Assistant co-exist there without collision. The shared Microsoft Foundry account lives in
+// Every resource name is suffixed with `resourceBaseName`, so Japan Tourist Expert and Korea
+// Tourist Expert co-exist there without collision. The shared Microsoft Foundry account lives in
 // its own resource group and is reused across both products.
 @minLength(1)
 param targetResourceGroupName string = 'rg-a365-custom-agents'
@@ -29,6 +29,11 @@ var approvedDeploymentScope = approvedDeploymentScopes[toLower(resourceGroup().n
 @minLength(3)
 @maxLength(20)
 param resourceBaseName string = 'koreaexpert'
+
+@description('Globally unique vault name. Override when a deleted vault in another subscription still reserves the default name.')
+@minLength(3)
+@maxLength(24)
+param keyVaultName string = 'kv-${resourceBaseName}'
 
 @minLength(1)
 param location string = resourceGroup().location
@@ -87,7 +92,7 @@ param oboOAuthConnectionName string = 'korea-tourist-assistant-obo'
 // deployed when deployAzureBot is true and every channel prerequisite has been supplied.
 param deployAzureBot bool = false
 param azureBotName string = 'bot-${resourceBaseName}'
-param azureBotDisplayName string = 'Korea Tourist Assistant'
+param azureBotDisplayName string = 'Korea Tourist Expert (OBO)'
 param azureBotSkuName string = 'F0'
 param deployDirectLineChannel bool = true
 param deployTeamsChannel bool = true
@@ -200,7 +205,7 @@ module containerRegistry './modules/container-registry.bicep' = {
 module keyVault './modules/key-vault.bicep' = {
   name: 'key-vault'
   params: {
-    vaultName: 'kv-${resourceBaseName}'
+    vaultName: keyVaultName
     location: location
     tenantId: tenantId
     workspaceResourceId: logAnalytics.outputs.id
@@ -298,7 +303,7 @@ module roleAssignments './modules/role-assignments.bicep' = {
   name: 'role-assignments'
   params: {
     registryName: 'cr${resourceBaseName}'
-    vaultName: 'kv-${resourceBaseName}'
+    vaultName: keyVaultName
     mapsAccountName: 'maps-${resourceBaseName}'
     deployerObjectId: deployerObjectId
     hostPrincipalId: hostManagedIdentity.outputs.principalId

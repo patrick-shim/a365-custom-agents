@@ -1,6 +1,6 @@
 ---
-name: "Japan Tourist Assistant Solution Reviewer"
-description: "Use when reviewing the Japan Tourist Assistant solution for correctness, security, Agent 365 integration risks, MCP contract mismatches, Teams boundary issues, or missing tests."
+name: "Japan Tourist Expert Solution Reviewer"
+description: "Use when reviewing the Japan Tourist Expert solution for correctness, security, Agent 365 integration risks, MCP contract mismatches, Teams boundary issues, or missing tests."
 argument-hint: "Describe the change, component, diff, or risk area to review."
 tools: [read, search, execute, web, agent]
 agents: ["Tools Specialist"]

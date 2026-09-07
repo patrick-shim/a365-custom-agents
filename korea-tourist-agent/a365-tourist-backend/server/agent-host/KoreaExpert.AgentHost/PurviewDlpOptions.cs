@@ -12,7 +12,7 @@ public sealed class PurviewDlpOptions
     public bool Enabled { get; init; } = true;
 
     [Required]
-    public string AppName { get; init; } = "Korea Tourist Assistant";
+    public string AppName { get; init; } = "Korea Tourist Expert";
 
     [Required]
     public string AppVersion { get; init; } = "1.0";

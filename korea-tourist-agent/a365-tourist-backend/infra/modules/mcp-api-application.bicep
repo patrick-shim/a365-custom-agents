@@ -12,7 +12,7 @@ var delegatedScope = '${audience}/Mcp.Invoke'
 resource mcpApiApplication 'Microsoft.Graph/applications@v1.0' = {
   uniqueName: applicationName
   displayName: displayName
-  description: 'Single-tenant API for authenticated Korea Tourist Assistant MCP workloads.'
+  description: 'Single-tenant API for authenticated Korea Tourist Expert MCP workloads.'
   signInAudience: 'AzureADMyOrg'
   identifierUris: [
     audience
@@ -21,13 +21,13 @@ resource mcpApiApplication 'Microsoft.Graph/applications@v1.0' = {
     requestedAccessTokenVersion: 2
     oauth2PermissionScopes: [
       {
-        adminConsentDescription: 'Allow this Agent 365 identity to invoke protected Korea Tourist Assistant MCP tools.'
-        adminConsentDisplayName: 'Invoke Korea Tourist Assistant MCP tools'
+        adminConsentDescription: 'Allow this Agent 365 identity to invoke protected Korea Tourist Expert MCP tools.'
+        adminConsentDisplayName: 'Invoke Korea Tourist Expert MCP tools'
         id: mcpInvokeScopeId
         isEnabled: true
         type: 'Admin'
-        userConsentDescription: 'Allow this Agent 365 identity to invoke protected Korea Tourist Assistant MCP tools.'
-        userConsentDisplayName: 'Invoke Korea Tourist Assistant MCP tools'
+        userConsentDescription: 'Allow this Agent 365 identity to invoke protected Korea Tourist Expert MCP tools.'
+        userConsentDisplayName: 'Invoke Korea Tourist Expert MCP tools'
         value: 'Mcp.Invoke'
       }
     ]

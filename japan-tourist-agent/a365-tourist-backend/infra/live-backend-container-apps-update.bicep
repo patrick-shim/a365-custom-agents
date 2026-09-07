@@ -1,4 +1,4 @@
-// Japan Tourist Assistant existing-backend update and rollback wrapper.
+// Japan Tourist Expert existing-backend update and rollback wrapper.
 //
 // Scope contract (M8):
 //   * Resource-group scoped, so ARM cannot create a resource group from it.
@@ -31,7 +31,7 @@ var approvedDeploymentScopes = {
 }
 var approvedDeploymentScope = approvedDeploymentScopes[toLower(resourceGroup().name)]
 
-@description('Deterministic Japan Tourist Assistant resource token. Lowercase alphanumeric only.')
+@description('Deterministic Japan Tourist Expert resource token. Lowercase alphanumeric only.')
 @minLength(3)
 @maxLength(16)
 param resourceBaseName string = 'japanexpert'

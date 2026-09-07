@@ -5,12 +5,12 @@ using System.Text.RegularExpressions;
 namespace JapanExpert.ExchangeRates;
 
 /// <summary>
-/// ISO 4217 helpers for the Japan Tourist Assistant currency contract, including the zero-decimal
+/// ISO 4217 helpers for the Japan Tourist Expert currency contract, including the zero-decimal
 /// currencies (Japanese yen among them) that must not be rounded to two decimal places.
 /// </summary>
 public static partial class CurrencyCodes
 {
-    /// <summary>Default travel currency for the Japan Tourist Assistant product.</summary>
+    /// <summary>Default travel currency for the Japan Tourist Expert product.</summary>
     public const string DefaultTravelCurrency = "JPY";
 
     /// <summary>Base currency published by the European Central Bank reference rates.</summary>

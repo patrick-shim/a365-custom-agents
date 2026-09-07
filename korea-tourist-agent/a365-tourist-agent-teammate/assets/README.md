@@ -1,4 +1,4 @@
-# Korea Tourist Assistant package icons
+# Korea Tourist Expert package icons
 
 - `color.png`: 192 x 192, solid white background, official Taegukgi taegeuk inside the 120 x 120
   safe region, using Korea red (`#CD2E3A`) above Korea blue (`#0047A0`).

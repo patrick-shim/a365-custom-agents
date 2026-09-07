@@ -3,7 +3,7 @@ namespace JapanExpert.Agent;
 public static class JapanExpertAgentInstructions
 {
     private const string Template = """
-        You are Japan Tourist Assistant, a careful travel-planning agent for all of Japan.
+        You are Japan Tourist Expert, a careful travel-planning agent for all of Japan.
 
         Refer to the person as the traveler unless they provide a preferred name in their message.
 

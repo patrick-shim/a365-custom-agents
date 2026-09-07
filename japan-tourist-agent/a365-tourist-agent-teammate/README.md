@@ -1,4 +1,4 @@
-# Japan Tourist Assistant AI Teammate frontend
+# Japan Tourist Expert AI Teammate frontend
 
 This project owns the authoritative Microsoft 365 AI Teammate package boundary and the non-secret
 contract pin for the canonical shared backend route `/api/messages`. Shared runtime, MCP,
@@ -14,7 +14,7 @@ infrastructure, Docker, tests, tools, and Azure deployment live only in
 | `manifest/`, package ZIP, workspace detection file | Protected generated operational state |
 
 Protected Seoul state remains on the operator workstation but is intentionally excluded from Git and
-is not M8 input. Rehydrate a new Japan Tourist Assistant package through the approved Agent 365 workflow and
+is not M8 input. Rehydrate a new Japan Tourist Expert (Teammate) package through the approved Agent 365 workflow and
 source-owned icon assets. The historical `.a365/ai-teammate` snapshot in
 `../a365-tourist-agent-obo` is never publication authority.
 
@@ -22,7 +22,7 @@ source-owned icon assets. The historical `.a365/ai-teammate` snapshot in
 
 The contract pin fixes:
 
-- product `Japan Tourist Assistant`, default time zone `Asia/Tokyo`, and default currency `JPY`;
+- product `Japan Tourist Expert`, default time zone `Asia/Tokyo`, and default currency `JPY`;
 - route `/api/messages`;
 - audience setting `TokenValidation__Audiences__AgenticUser`;
 - identity binding `dynamic-child-agent-identity`.
@@ -39,15 +39,17 @@ with the canonical backend contract.
 
 ## M8 status
 
-The source-safe package boundary carries Japan Tourist Assistant branding and Japanese-flag icons. The clean
-Agent 365 run reused the single shared `Japan Tourist Assistant Blueprint` without reading or reusing Seoul
+The source-safe package boundary carries Japan Tourist Expert (Teammate) branding and Japanese-flag icons. The clean
+Agent 365 run reused the single shared Blueprint, now named `Japan Tourist Expert BP`, without reading or reusing Seoul
 endpoint, identity, permission, package, instance, or installation state, and no second blueprint was
 created.
 
 `a365 publish --aiteammate` produced the package. The CLI ships placeholder branding and its own
-default icons, so the generated package was completed with Japan Tourist Assistant naming, the Japanese red
+default icons, so the generated package was completed with Japan Tourist Expert naming, the Japanese red
 accent, and the source-owned icons. The Admin Center lists an uploaded agent by `name.short`, which is
-`Japan Tourist Assistant (Teammate)` so administrators can distinguish it from the `Japan Tourist Assistant` Teams app.
+`Japan Tourist Expert (Teammate)` so administrators can distinguish it from the `Japan Tourist Expert (OBO)` Teams app.
+The full Teammate name has 31 characters; use `Japan Tourist Expert (Team)` (27 characters) in
+`name.short` to satisfy the Teams 30-character limit.
 
 Microsoft 365 licensing, Admin Center upload, instance creation, and installation are still
 outstanding and require separate approval. Each effective child identity created at installation also

@@ -16,7 +16,8 @@ rotate it before deployment. Do not copy the exposed value into this backend pro
 
 ## Agent 365 ownership and runtime identity
 
-The Korea Tourist Assistant product owns one Agent Identity Blueprint and two child identities:
+The Korea Tourist Expert product owns one Agent Identity Blueprint (`Korea Tourist Expert BP`)
+and two child identities (display name `Korea Tourist Expert ID`):
 
 | Frontend | Child identity | Endpoint | Runtime authority |
 | --- | --- | --- | --- |
@@ -222,6 +223,42 @@ Local development sets `PromptShield:Enabled` to `false` in `appsettings.Develop
 there is no Content Safety endpoint there, and startup validation rejects an enabled guard with no
 endpoint. Deploying with `promptShieldEnabled=false` removes prompt-injection screening from every
 turn; treat it as a deliberate, temporary exception.
+
+## Preserve custom Blueprint permissions before setup
+
+**Agent 365 CLI 1.1.214 setup is not permission-preserving by default.** Even
+`a365 setup blueprint --no-endpoint` reuses a Blueprint by display name but removes "stale custom
+permissions" absent from the invoking user config. Before any setup rerun for
+`Korea Tourist Expert BP`, the approved operator must declare the same `customBlueprintPermissions`
+in **both** OBO and AI Teammate frontend `a365.config.json` files. The key is
+`customBlueprintPermissions`, **not** `customResourceScopes`.
+
+Merge this fragment with the existing protected config; replace the MCP placeholder with the
+existing MCP resource application ID. Preserve other required permissions and identity values.
+
+```json
+{
+  "customBlueprintPermissions": [
+    {
+      "resourceAppId": "<MCP_RESOURCE_APPLICATION_ID>",
+      "scopes": ["Mcp.Invoke"]
+    },
+    {
+      "resourceAppId": "18a66f5f-dbdf-4c17-9dd7-1634712a9cbe",
+      "scopes": ["user_impersonation"]
+    },
+    {
+      "resourceAppId": "7d312290-28c8-473c-a0ed-8e53749b6d6d",
+      "scopes": ["user_impersonation"]
+    }
+  ]
+}
+```
+
+The last two resources are Azure Machine Learning (Foundry) and Microsoft Cognitive Services
+(Content Safety). One-off grant restoration is not durable without these declarations in both
+configs. Review the dry run and verify all three resources' grants and inheritance after setup.
+Keep tenant-specific config files ignored; do not copy them or generated state into source.
 
 ## Internal MCP authorization
 

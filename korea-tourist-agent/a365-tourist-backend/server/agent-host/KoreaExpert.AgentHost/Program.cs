@@ -251,15 +251,15 @@ app.MapHealthChecks(
         })
     .AllowAnonymous();
 app.MapGet("/", () => Results.Text(
-    "Korea Tourist Assistant",
+    "Korea Tourist Expert",
     "text/plain"))
     .AllowAnonymous();
 app.MapGet("/privacy", () => Results.Text(
-    "The Korea Tourist Assistant processes conversation and tool content under your organization's Microsoft 365 and Microsoft Purview policies. Contact your tenant administrator for retention, access, and deletion requests.",
+    "The Korea Tourist Expert processes conversation and tool content under your organization's Microsoft 365 and Microsoft Purview policies. Contact your tenant administrator for retention, access, and deletion requests.",
     "text/plain"))
     .AllowAnonymous();
 app.MapGet("/terms", () => Results.Text(
-    "Use of the Korea Tourist Assistant is subject to your organization's Microsoft 365 policies. Travel, weather, place, and exchange-rate results are informational and should be independently verified.",
+    "Use of the Korea Tourist Expert is subject to your organization's Microsoft 365 policies. Travel, weather, place, and exchange-rate results are informational and should be independently verified.",
     "text/plain"))
     .AllowAnonymous();
 readinessState.MarkReady(hasDurableStorage: false);

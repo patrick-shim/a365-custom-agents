@@ -31,7 +31,8 @@ jobs:
         run: |
           $lock = Get-Content backend-contract.lock.json -Raw | ConvertFrom-Json
           if ($lock.contractId -ne 'korea-expert-shared-backend' -or
-              $lock.contractVersion -ne '1.0.0' -or
+              $lock.contractVersion -ne '2.0.0' -or
+              $lock.productName -ne 'Korea Tourist Expert' -or
               $lock.frontend -ne 'on-behalf-of' -or
               $lock.route -ne '/api/messages/obo' -or
               $lock.audienceConfiguration -ne 'TokenValidation__Audiences__OnBehalfOf' -or
@@ -60,6 +61,12 @@ jobs:
           if (@($manifest.validDomains) -notcontains 'token.botframework.com' -or
               @($manifest.validDomains) -notcontains 'login.microsoftonline.com') {
             throw 'OBO manifest is missing required authentication domains.'
+          }
+
+          if ($manifest.name.short -ne 'Korea Tourist Expert (OBO)' -or
+              $manifest.name.full -ne 'Korea Tourist Expert (OBO)' -or
+              $manifest.developer.name -ne 'Korea Tourist Expert') {
+            throw 'OBO manifest must use Korea Tourist Expert (OBO) branding.'
           }
 
       - name: Reject committed OBO operational state

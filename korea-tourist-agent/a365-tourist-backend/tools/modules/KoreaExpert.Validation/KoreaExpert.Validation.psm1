@@ -1091,11 +1091,11 @@ function Test-StaRepositoryConfiguration {
 
     $readmePath = Join-Path $root 'README.md'
     $readmeFirstLine = if (Test-Path -LiteralPath $readmePath) { Get-Content -LiteralPath $readmePath -TotalCount 1 } else { '' }
-    $readmeValid = $readmeFirstLine -eq '# Korea Tourist Assistant Backend'
+    $readmeValid = $readmeFirstLine -eq '# Korea Tourist Expert Backend'
     $results.Add((New-StaValidationResult -Area 'Repository' -Check 'README identity' `
         -Status $(if ($readmeValid) { 'Pass' } else { 'Fail' }) `
         -Message $(if ($readmeValid) { 'README describes the repository.' } else { 'README is stale or contains a merge artifact.' }) `
-        -Remediation $(if ($readmeValid) { '' } else { 'Replace README.md with the Korea Tourist Assistant Backend documentation.' })))
+        -Remediation $(if ($readmeValid) { '' } else { 'Replace README.md with the Korea Tourist Expert Backend documentation.' })))
 
     if ($null -ne $milestone -and $milestone.Current.id -eq 'M0') {
         $implementationFiles = @(
@@ -1362,7 +1362,7 @@ function Test-StaPurviewReadiness {
 
         [string] $AccessTokenEnvironmentVariable = 'PURVIEW_GRAPH_ACCESS_TOKEN',
 
-        [string] $ProbeText = 'Korea Tourist Assistant synthetic Purview validation probe.',
+        [string] $ProbeText = 'Korea Tourist Expert synthetic Purview validation probe.',
 
         [switch] $ExpectBlock,
 
@@ -1606,7 +1606,7 @@ function Test-StaPurviewReadiness {
                     '@odata.type' = 'microsoft.graph.textContent'
                     data          = $ProbeText
                 }
-                name            = 'Korea Tourist Assistant validation probe'
+                name            = 'Korea Tourist Expert validation probe'
                 correlationId   = [guid]::NewGuid().ToString()
                 sequenceNumber  = 0
                 isTruncated     = $false
@@ -1618,7 +1618,7 @@ function Test-StaPurviewReadiness {
                     '@odata.type' = 'microsoft.graph.aiAgentInfo'
                     blueprintId   = $BlueprintId
                     identifier    = $AgentInstanceId
-                    name          = 'Korea Tourist Assistant'
+                    name          = 'Korea Tourist Expert'
                     version       = '1.0'
                 })
             }
@@ -1635,7 +1635,7 @@ function Test-StaPurviewReadiness {
                         ipAddress = '127.0.0.1'
                     }
                     protectedAppMetadata = [ordered]@{
-                        name = 'Korea Tourist Assistant'
+                        name = 'Korea Tourist Expert'
                         version = '1.0'
                         applicationLocation = [ordered]@{
                             '@odata.type' = 'microsoft.graph.policyLocationApplication'
@@ -1643,7 +1643,7 @@ function Test-StaPurviewReadiness {
                         }
                     }
                     integratedAppMetadata = [ordered]@{
-                        name = 'Korea Tourist Assistant validation tools'
+                        name = 'Korea Tourist Expert validation tools'
                         version = '1.0'
                     }
                 }

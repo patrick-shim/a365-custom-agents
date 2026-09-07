@@ -674,7 +674,7 @@ public sealed partial class JapanExpertApplication : AgentApplication
                 userName: caller?.Name ?? string.Empty));
         var agentDetails = new AgentDetails(
             agentId: turnTokens.AgentId,
-            agentName: "Japan Tourist Assistant",
+            agentName: "Japan Tourist Expert",
             agentDescription: "Governed Japan travel planning assistant",
             agentBlueprintId: agentBlueprintId,
             tenantId: turnTokens.TenantId);

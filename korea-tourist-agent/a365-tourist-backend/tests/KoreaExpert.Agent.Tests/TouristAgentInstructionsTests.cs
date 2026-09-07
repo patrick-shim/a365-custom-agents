@@ -10,6 +10,7 @@ public sealed class TouristAgentInstructionsTests
     {
         var instructions = TouristAgentInstructions.Create();
 
+        StringAssert.Contains(instructions, "You are Korea Tourist Expert,");
         Assert.IsFalse(instructions.Contains("ignore previous instructions", StringComparison.OrdinalIgnoreCase));
         StringAssert.Contains(instructions, "Refer to the person as the traveler");
     }

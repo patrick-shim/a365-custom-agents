@@ -1,4 +1,4 @@
-# Korea Tourist Assistant infrastructure
+# Korea Tourist Expert infrastructure
 
 This directory contains two backend-owned deployment paths:
 
@@ -7,16 +7,16 @@ This directory contains two backend-owned deployment paths:
 - `live-backend-container-apps-update.bicep` is the resource-group-scope wrapper for updating the
   five existing Container Apps without recreating shared infrastructure.
 
-Korea Tourist Assistant deploys into the shared resource group `rg-a365-custom-agents` in
-`koreacentral`, alongside Japan Tourist Assistant in the same subscription. Every resource name
+Korea Tourist Expert deploys into the shared resource group `rg-a365-custom-agents` in
+`koreacentral`, alongside Japan Tourist Expert in the same subscription. Every resource name
 derives from `resourceBaseName` (`koreaexpert`), and Japan's names derive from `japanexpert`, so the
 two products co-exist in one group with no collision and each can be redeployed on its own.
 `main.bicep` never creates the resource group, and it refuses to deploy into any group other than
 `targetResourceGroupName`.
 
 The existing `a365-ai-foundry` account, its `default` project, and the `gpt-5.6-sol` deployment in
-`rg-ai-foundry` are shared with Japan Tourist Assistant and referenced in place. This template never creates,
-moves, or changes Foundry, and Korea Tourist Assistant does not provision a Foundry account of its own.
+`rg-ai-foundry` are shared with Japan Tourist Expert and referenced in place. This template never creates,
+moves, or changes Foundry, and Korea Tourist Expert does not provision a Foundry account of its own.
 
 ### Create the resource group first
 
@@ -56,6 +56,11 @@ All 21 modules are `.bicep` files under `modules/`:
 | Workloads | `agent-host-container-app`, `attractions-mcp-container-app`, `weather-mcp-container-app`, `accommodation-mcp-container-app`, `currency-mcp-container-app` |
 
 ### `main.bicep` parameters
+
+`keyVaultName` defaults to `kv-<resourceBaseName>`. Override it when recovering into another
+subscription if the original vault is soft-deleted: its globally unique name remains reserved.
+Use a new name rather than purging the old vault just to unblock deployment. The override also
+applies to the vault role assignments.
 
 `environmentName`, `location`, `sessionId`, `deployedBy`, and `createdAt` come from
 `main.parameters.json`; `deployerObjectId` and `tenantId` are supplied at invocation. The five image
@@ -226,8 +231,12 @@ on-behalf-of exchanges - Azure Machine Learning for the Foundry audience, Micros
 custom `api-koreaexpert` MCP API - and each requests a `/.default` scope, which Entra expands only
 from inherited permissions.
 
-`a365 setup all` configures the first-party resources it knows about. It does **not** know about the
-custom MCP API this backend creates, so that one entry must be added explicitly. Without it the
+Before any setup rerun, follow the [durable custom-permission config example](../docs/configuration.md#preserve-custom-blueprint-permissions-before-setup)
+in **both** frontend user configs. CLI 1.1.214 can remove undeclared custom grants even with
+`setup blueprint --no-endpoint`; the key is `customBlueprintPermissions`, not `customResourceScopes`.
+
+Default `a365 setup all` configuration does not include this backend's custom MCP API, so declare
+that resource explicitly alongside AzureML and Cognitive Services. Without it the
 Blueprint can hold a valid tenant-wide `Mcp.Invoke` grant while `.default` still expands to an empty
 scope set and Entra returns `AADSTS65001` naming the child identity.
 
@@ -329,10 +338,11 @@ name must be purged before the name can be reused.
 Deleting the Blueprint and the child Agent Identity is a much larger change than deleting the group,
 and four things do **not** come back on their own. All four were hit during the 2026-09-01 rebuild.
 
-1. **`a365 setup all` does not produce a complete inheritance table.** It configures only the
+1. **Default `a365 setup all` configuration does not produce a complete inheritance table.** It configures only the
    first-party resources it knows about - Microsoft Graph, Agent 365 Tools, the Observability API,
    and the Power Platform API. That leaves `a365 query-entra inheritance` at 4 of 4, and a turn
-   that cannot reach Foundry or the MCP services. Three more resources must be added by hand, and
+   that cannot reach Foundry or the MCP services. Declare the three additional resources in both
+   frontend `customBlueprintPermissions` arrays before setup (see the example above), and
    the Messaging Bot API needs a grant as well as inheritance:
 
    ```powershell

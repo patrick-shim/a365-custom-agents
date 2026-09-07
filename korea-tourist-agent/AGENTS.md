@@ -1,4 +1,4 @@
-# Korea Tourist Assistant Workspace Guide
+# Korea Tourist Expert Workspace Guide
 
 This workspace contains one canonical shared backend and three channel-only frontend projects.
 
@@ -7,37 +7,37 @@ This workspace contains one canonical shared backend and three channel-only fron
 Every user-visible and directory-object name derives from one product base name:
 
 ```
-<Country> Tourist Assistant
+<Country> Tourist Expert
 ```
 
-For this workspace the base name is `Korea Tourist Assistant`.
+For this workspace the base name is `Korea Tourist Expert`.
 
 | Surface | Name | Example |
 | --- | --- | --- |
-| OBO Teams app (`name.short` and `name.full`) | `<base> (OBO)` | `Korea Tourist Assistant (OBO)` |
-| AI Teammate package (`name.full`) | `<base> (Teammate)` | `Korea Tourist Assistant (Teammate)` |
-| AI Teammate package (`name.short`) | `<base> (Team)` | `Korea Tourist Assistant (Team)` |
-| Agent 365 Blueprint | `<base> BP` | `Korea Tourist Assistant BP` |
-| Agent 365 child Agent Identity | `<base> ID` | `Korea Tourist Assistant ID` |
-| OBO channel Entra application | `<base> OBO Channel` | `Korea Tourist Assistant OBO Channel` |
-| Azure Bot `displayName` | `<base>` | `Korea Tourist Assistant` |
+| OBO Teams app (`name.short` and `name.full`) | `<base> (OBO)` | `Korea Tourist Expert (OBO)` |
+| AI Teammate package (`name.full`) | `<base> (Teammate)` | `Korea Tourist Expert (Teammate)` |
+| AI Teammate package (`name.short`) | `<base> (Team)` | `Korea Tourist Expert (Team)` |
+| Agent 365 Blueprint | `<base> BP` | `Korea Tourist Expert BP` |
+| Agent 365 child Agent Identity | `<base> ID` | `Korea Tourist Expert ID` |
+| OBO channel Entra application | `<base> OBO Channel` | `Korea Tourist Expert OBO Channel` |
+| Azure Bot `displayName` | `<base>` | `Korea Tourist Expert` |
 | Workspace directory | `<country>-tourist-agent` | `korea-tourist-agent` |
 | Azure resource group | shared by both products | `rg-a365-custom-agents` (koreacentral) |
 
 Rules:
 
 - The channel suffix is parenthesised and capitalised: `(OBO)` and `(Teammate)`. Do not use other
-  spellings such as `TEAMMATE`, `Expert`, `Tourist Agent`, or `Tour Assistant`.
+  spellings such as `TEAMMATE` or `Tourist Assistant`; always spell `Tourist` correctly.
 - The Teams manifest schema caps `name.short` at 30 characters and `name.full` at 100.
-  `<base> (Teammate)` is 34 characters, so the AI Teammate package carries the governed name in
-  `name.full` and the 30-character `<base> (Team)` in `name.short`. This is a schema limit, not a
+  `<base> (Teammate)` is 31 characters, so the AI Teammate package carries the governed name in
+  `name.full` and the 27-character `<base> (Team)` in `name.short`. This is a schema limit, not a
   style choice; restoring `(Teammate)` to `name.short` makes the package fail upload validation.
 - `agentIdentityDisplayName` and `agentBlueprintDisplayName` in each `a365.config.json` are the CLI
   inputs that produce the Blueprint and Identity names; keep them in step with the table.
 - `a365 publish` rewrites `manifest/manifest.json` and seeds `name.short` and `name.full` from
-  `agentBlueprintDisplayName`, which yields the 33-character `Korea Tourist Assistant Blueprint`
-  and overflows `name.short`. The CLI reports this as `EXCEEDS 30 chars`. After every publish,
-  restore the two names from the table and repackage `manifest.zip` from the manifest directory.
+  `agentBlueprintDisplayName`, which is `Korea Tourist Expert BP`, not a package name. After every
+  publish, restore the two package names from the table and repackage `manifest.zip` from the
+  manifest directory; do not carry the Blueprint suffix into the package name.
 - Renaming a directory object changes its display name only. Never delete or recreate a Blueprint,
   Agent Identity, or channel application to rename it: the object IDs are referenced by the container
   app settings, the bot OAuth connection, and the Foundry role assignments.

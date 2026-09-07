@@ -674,7 +674,7 @@ public sealed partial class KoreaExpertApplication : AgentApplication
                 userName: caller?.Name ?? string.Empty));
         var agentDetails = new AgentDetails(
             agentId: turnTokens.AgentId,
-            agentName: "Korea Tourist Assistant",
+            agentName: "Korea Tourist Expert",
             agentDescription: "Governed Korea travel planning assistant",
             agentBlueprintId: agentBlueprintId,
             tenantId: turnTokens.TenantId);

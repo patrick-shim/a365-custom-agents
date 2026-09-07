@@ -1,6 +1,6 @@
-# Korea Tourist Assistant monorepo instructions
+# Korea Tourist Expert monorepo instructions
 
-- Follow the naming rules in root `AGENTS.md`: every user-visible and directory-object name derives from `<Country> Tourist Assistant`, with `(OBO)` and `(Teammate)` channel suffixes. The Teams schema caps `name.short` at 30 characters, so the AI Teammate package uses `(Team)` there and keeps `(Teammate)` in `name.full`. Never delete or recreate a Blueprint, Agent Identity, or channel application in order to rename it.
+- Follow the naming rules in root `AGENTS.md`: every user-visible and directory-object name derives from `<Country> Tourist Expert`, with `(OBO)` and `(Teammate)` channel suffixes. The Teams schema caps `name.short` at 30 characters, so the AI Teammate package uses `(Team)` there and keeps `(Teammate)` in `name.full`. Never delete or recreate a Blueprint, Agent Identity, or channel application in order to rename it.
 - Read root `AGENTS.md`, then the owning child `AGENTS.md` and milestone manifest before work.
 - `a365-tourist-backend` is the sole shared runtime, MCP, infrastructure, tests, tools, Docker, and
   Azure deployment authority.

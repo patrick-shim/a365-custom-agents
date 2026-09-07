@@ -1,4 +1,4 @@
-// Least-privilege role assignments for the Japan Tourist Assistant backend.
+// Least-privilege role assignments for the Japan Tourist Expert backend.
 //
 // Every assignment in this module is scoped to a resource in this template's own resource group.
 // The active MCP data sources are credential-free public APIs, so no workload holds a data-plane

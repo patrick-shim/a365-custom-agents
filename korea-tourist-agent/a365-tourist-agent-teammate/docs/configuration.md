@@ -1,4 +1,11 @@
-# AI Teammate configuration
+# Korea Tourist Expert AI Teammate configuration
+
+**Before any Agent 365 setup rerun:** CLI 1.1.214 can remove custom permissions missing from the
+invoking config, even with `setup blueprint --no-endpoint`. Both this frontend and OBO must declare
+the same MCP, AzureML, and Cognitive Services `customBlueprintPermissions` for the shared
+`Korea Tourist Expert BP`. Use the [required config example](../../a365-tourist-backend/docs/configuration.md#preserve-custom-blueprint-permissions-before-setup);
+`customResourceScopes` is not the supported key. Have the approved operator reconcile both ignored
+user configs before setup; never commit tenant-bound values.
 
 The frontend binds to `/api/messages` through `backend-contract.lock.json`. The committed source pin
 names `TokenValidation__Audiences__AgenticUser` and `dynamic-child-agent-identity`; actual Blueprint,

@@ -10,7 +10,7 @@ using ModelContextProtocol.Server;
 namespace JapanExpert.Mcp.Tools.Tests;
 
 /// <summary>
-/// Locks the Japan Tourist Assistant MCP tool surface: names, descriptions, and generated input schemas.
+/// Locks the Japan Tourist Expert MCP tool surface: names, descriptions, and generated input schemas.
 /// The agent host validates the exact tool-name set before exposing tools to the model, so a
 /// rename here is a breaking contract change and must fail this test first.
 /// </summary>

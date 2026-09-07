@@ -1,9 +1,9 @@
-# Japan Tourist Assistant backend infrastructure
+# Japan Tourist Expert backend infrastructure
 
 This directory is the only backend deployment source. It contains two resource-group-scoped
 deployment paths:
 
-- `main.bicep` creates the Japan Tourist Assistant backend resources and the protected MCP resource API.
+- `main.bicep` creates the Japan Tourist Expert backend resources and the protected MCP resource API.
 - `live-backend-container-apps-update.bicep` updates or rolls back the five existing Container Apps
   without touching shared infrastructure.
 
@@ -33,7 +33,7 @@ Two independent controls keep the deployment inside one resource group:
    at any other group fails ARM validation with an error that names the approved group, before a
    single resource is evaluated.
 
-`./tools/Test-Deployment.ps1` asserts all of this offline, plus Japan Tourist Assistant naming, the absence of
+`./tools/Test-Deployment.ps1` asserts all of this offline, plus Japan Tourist Expert naming, the absence of
 retired Seoul deployment names, and compiled-template parity.
 
 ## Architecture
@@ -218,7 +218,7 @@ protected OBO route and to the OBO channel application:
 | --- | --- | --- |
 | `deployAzureBot` | `false` | Phase gate. Turn on only when the OBO channel application exists. |
 | `azureBotName` | `bot-japanexpert` | Bot resource name and globally unique handle. |
-| `azureBotDisplayName` | `Japan Tourist Assistant` | Name shown to channel users. |
+| `azureBotDisplayName` | `Japan Tourist Expert` | Name shown to channel users. |
 | `azureBotSkuName` | `F0` | Azure Bot SKU. |
 | `deployDirectLineChannel` | `true` | Direct Line channel for the OBO Direct Line console client. |
 | `deployTeamsChannel` | `true` | Microsoft Teams channel for the OBO Teams package. |
@@ -297,7 +297,7 @@ simplification:
 | Object | Purpose | Owner |
 | --- | --- | --- |
 | OBO channel application | Azure Bot `msaAppId`, inbound activity audience, Teams manifest bot ID, outbound Bot Connector credential | operator or frontend, registered outside this template |
-| Japan Tourist Assistant Blueprint | parent identity that exposes the delegated ingress scope | Agent 365 CLI |
+| Japan Tourist Expert BP | parent identity that exposes the delegated ingress scope | Agent 365 CLI |
 | OBO child Agent Identity | performs the child-bound token exchange | Agent 365 CLI |
 | `japan-tourist-assistant-obo` OAuth connection | Bot Token Service sign-in that returns the exchangeable user assertion | backend Bot phase |
 
@@ -323,7 +323,7 @@ by the Bot's channel application, with `tenantId` and
 `tokenExchangeUrl=api://botid-<channel-app-id>`. M8 follows that shape without collapsing identities:
 the connection client is the separate OBO channel application, while the configured OBO child remains
 the downstream token-exchange identity. The connection scope is not guessed or hard-coded; it is the
-delegated ingress scope read back from the newly registered Japan Tourist Assistant Blueprint after the Agent 365
+delegated ingress scope read back from the newly registered Japan Tourist Expert BP after the Agent 365
 workflow. The channel application must have delegated permission to that scope before the Bot phase.
 
 The OAuth connection is created only in the phase-gated Bot module. Its client secret crosses both
@@ -686,8 +686,12 @@ on-behalf-of exchanges - Azure Machine Learning for the Foundry audience, Micros
 custom `api-japanexpert` MCP API - and each requests a `/.default` scope, which Entra expands only
 from inherited permissions.
 
-`a365 setup all` configures the first-party resources it knows about. It does **not** know about the
-custom MCP API this backend creates, so that one entry must be added explicitly. Without it the
+Before any setup rerun, follow the [durable custom-permission config example](../docs/configuration.md#preserve-custom-blueprint-permissions-before-setup)
+in **both** frontend user configs. CLI 1.1.214 can remove undeclared custom grants even with
+`setup blueprint --no-endpoint`; the key is `customBlueprintPermissions`, not `customResourceScopes`.
+
+Default `a365 setup all` configuration does not include this backend's custom MCP API, so declare
+that resource explicitly alongside AzureML and Cognitive Services. Without it the
 Blueprint can hold a valid tenant-wide `Mcp.Invoke` grant while `.default` still expands to an empty
 scope set and Entra returns `AADSTS65001` naming the child identity. This was the documented M8
 failure; see the [M8 migration record](../docs/milestones/M8-japan-expert-migration.md).
@@ -755,10 +759,11 @@ name must be purged before the name can be reused.
 Deleting the Blueprint and the child Agent Identity is a much larger change than deleting the group,
 and four things do **not** come back on their own. All four were hit during the 2026-09-01 rebuild.
 
-1. **`a365 setup all` does not produce a complete inheritance table.** It configures only the
+1. **Default `a365 setup all` configuration does not produce a complete inheritance table.** It configures only the
    first-party resources it knows about - Microsoft Graph, Agent 365 Tools, the Observability API,
    and the Power Platform API. That leaves `a365 query-entra inheritance` at 4 of 4, and a turn
-   that cannot reach Foundry or the MCP services. Three more resources must be added by hand, and
+   that cannot reach Foundry or the MCP services. Declare the three additional resources in both
+   frontend `customBlueprintPermissions` arrays before setup (see the example above), and
    the Messaging Bot API needs a grant as well as inheritance:
 
    ```powershell
@@ -856,5 +861,5 @@ a365 query-entra inheritance
 M0-M7 deployed the Seoul Tourist product into a different resource group with `seoultour` resource
 names, and its recorded revisions and digests live in
 [`docs/milestones/M7-end-to-end-alignment.md`](../docs/milestones/M7-end-to-end-alignment.md). That
-record is historical only. It is not Japan Tourist Assistant deployment authority, and no Seoul name, identity,
+record is historical only. It is not Japan Tourist Expert deployment authority, and no Seoul name, identity,
 package, or parameter file may seed an M8 deployment.

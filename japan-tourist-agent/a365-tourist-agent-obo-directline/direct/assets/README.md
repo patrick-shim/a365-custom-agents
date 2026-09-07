@@ -1,4 +1,4 @@
-# Japan Tourist Assistant Direct Line icons
+# Japan Tourist Expert Direct Line icons
 
 - `japan-expert.ico` is the 256 x 256 Windows executable icon referenced by
   `JapanExpert.Direct.csproj`; it uses the same white field and Japan-red disc as `color.png`.

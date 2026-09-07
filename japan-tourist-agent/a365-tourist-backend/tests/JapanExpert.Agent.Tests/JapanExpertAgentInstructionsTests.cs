@@ -36,7 +36,7 @@ public sealed class JapanExpertAgentInstructionsTests
     {
         var instructions = JapanExpertAgentInstructions.Create();
 
-        StringAssert.Contains(instructions, "Japan Tourist Assistant");
+        StringAssert.Contains(instructions, "Japan Tourist Expert");
         StringAssert.Contains(instructions, "all of Japan");
         StringAssert.Contains(instructions, "Hokkaido to Okinawa");
         StringAssert.Contains(instructions, "Do not assume the traveler means Tokyo");

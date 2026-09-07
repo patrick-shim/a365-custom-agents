@@ -16,7 +16,7 @@ rotate it before deployment. Do not copy the exposed value into this backend pro
 
 ## Agent 365 ownership and runtime identity
 
-Japan Tourist Assistant owns one Agent Identity Blueprint and two child identities:
+Japan Tourist Expert owns one Agent Identity Blueprint and two child identities:
 
 | Frontend | Child identity | Endpoint | Runtime authority |
 | --- | --- | --- | --- |
@@ -239,6 +239,42 @@ there is no Content Safety endpoint there, and startup validation rejects an ena
 endpoint. Deploying with `promptShieldEnabled=false` removes prompt-injection screening from every
 turn; treat it as a deliberate, temporary exception.
 
+## Preserve custom Blueprint permissions before setup
+
+**Agent 365 CLI 1.1.214 setup is not permission-preserving by default.** Even
+`a365 setup blueprint --no-endpoint` reuses a Blueprint by display name but removes "stale custom
+permissions" absent from the invoking user config. Before any setup rerun for
+`Japan Tourist Expert BP`, the approved operator must declare the same `customBlueprintPermissions`
+in **both** OBO and AI Teammate frontend `a365.config.json` files. The key is
+`customBlueprintPermissions`, **not** `customResourceScopes`.
+
+Merge this fragment with the existing protected config; replace the MCP placeholder with the
+existing MCP resource application ID. Preserve other required permissions and identity values.
+
+```json
+{
+  "customBlueprintPermissions": [
+    {
+      "resourceAppId": "<MCP_RESOURCE_APPLICATION_ID>",
+      "scopes": ["Mcp.Invoke"]
+    },
+    {
+      "resourceAppId": "18a66f5f-dbdf-4c17-9dd7-1634712a9cbe",
+      "scopes": ["user_impersonation"]
+    },
+    {
+      "resourceAppId": "7d312290-28c8-473c-a0ed-8e53749b6d6d",
+      "scopes": ["user_impersonation"]
+    }
+  ]
+}
+```
+
+The last two resources are Azure Machine Learning (Foundry) and Microsoft Cognitive Services
+(Content Safety). One-off grant restoration is not durable without these declarations in both
+configs. Review the dry run and verify all three resources' grants and inheritance after setup.
+Keep tenant-specific config files ignored; do not copy them or generated state into source.
+
 ## Internal MCP authorization
 
 All four MCP services use the same single-tenant resource API audience and require the delegated
@@ -265,9 +301,9 @@ approval. Bicep does not assign Blueprint/inheritable permissions to the host UA
 
 ## Deployment gates
 
-1. M8 creates a new `Japan Tourist Assistant Blueprint` and OBO child without reading or reusing Seoul state.
+1. M8 creates `Japan Tourist Expert BP` and the OBO child `Japan Tourist Expert ID` without reading or reusing Seoul state.
    The AI Teammate setup runs first; the OBO setup must find and reuse that new Blueprint by display
-   name rather than creating a second Japan Tourist Assistant Blueprint.
+   name rather than creating a second Japan Tourist Expert BP.
 2. Agent 365 CLI 1.1.214 does not assign Foundry Azure RBAC. After each child exists, grant its
    effective runtime identity the Microsoft-documented built-in inference role, **Cognitive Services
    User**, on the existing `a365-ai-foundry` account. The role permits account key retrieval even

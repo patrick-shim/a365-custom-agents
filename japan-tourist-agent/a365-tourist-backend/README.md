@@ -1,4 +1,4 @@
-# Japan Tourist Assistant Backend
+# Japan Tourist Expert Backend
 
 A Microsoft-first C# shared backend for a Japan travel expert. Microsoft Agent Framework owns
 orchestration, Agent 365 owns runtime identity and transport, Microsoft Purview protects prompt and
@@ -81,13 +81,13 @@ human protocol in [docs/milestones/README.md](docs/milestones/README.md).
 - **M5, blocked:** its historical rollout record remains preserved.
 - **M6, complete:** non-destructive extraction of this OBO-seeded backend and its frontend contract.
 - **M7, blocked:** historical Seoul cross-channel alignment and production checkpoint.
-- **M8, active:** Japan Tourist Assistant source migration, Japan MCP retune, single-resource-group deployment,
+- **M8, active:** Japan Tourist Expert source migration, Japan MCP retune, single-resource-group deployment,
   clean Agent 365 registration, and same-revision cross-channel acceptance.
 
 The three channel frontends consume two protected host modes: AI Teammate uses `/api/messages`, while
 OBO Teams and OBO Direct Line share `/api/messages/obo`. The two modes share one Blueprint and backend
 but have separate child Agent Identities, token audiences, packages, session keys, and CLI state. M8
-preserves those boundaries while creating new Japan Tourist Assistant identities rather than reusing Seoul
+preserves those boundaries while creating new Japan Tourist Expert identities rather than reusing Seoul
 state. Custom MCP arguments/results remain behind the fail-closed Purview guard.
 WorkIQ remains disabled because Agent 365 Tooling 1.0 targets an MCP preview API incompatible with the
 MCP 2.1 client.
@@ -109,7 +109,7 @@ MCP 2.1 client.
   [M6 separation](docs/milestones/M6-repository-separation.md),
   [M6 deployment handoff](docs/milestones/M6-backend-deployment-test-handoff.md), and
   [M7 historical alignment](docs/milestones/M7-end-to-end-alignment.md), and
-  [M8 Japan Tourist Assistant migration](docs/milestones/M8-japan-expert-migration.md).
+  [M8 Japan Tourist Expert migration](docs/milestones/M8-japan-expert-migration.md).
 - Repository transition:
   [M7 frontend/backend cleanup](docs/migrations/M7-frontend-backend-cleanup.md).
 

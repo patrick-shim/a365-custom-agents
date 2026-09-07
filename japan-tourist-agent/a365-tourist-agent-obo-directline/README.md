@@ -1,4 +1,4 @@
-# Japan Tourist Assistant OBO Direct Line frontend
+# Japan Tourist Expert OBO Direct Line frontend
 
 This project owns the Direct Line console client, focused tests, and synthetic SIT list for the
 canonical shared backend route `/api/messages/obo`. It contains no Teams package, Agent 365 CLI
@@ -6,7 +6,7 @@ state, backend runtime, infrastructure, or deployment automation.
 
 The contract pin fixes:
 
-- product `Japan Tourist Assistant`, default time zone `Asia/Tokyo`, and default currency `JPY`;
+- product `Japan Tourist Expert`, default time zone `Asia/Tokyo`, and default currency `JPY`;
 - route `/api/messages/obo`;
 - audience setting `TokenValidation__Audiences__OnBehalfOf`;
 - identity binding `configured-obo-child-agent-identity`.
@@ -34,11 +34,11 @@ the secret or a private key in source, arguments, shell history, logs, or config
 
 ## M8 status
 
-The client is renamed to `JapanExpert`, uses a Japan Tourist Assistant process-secret boundary, and owns three
+The client is renamed to `JapanExpert`, uses a Japan Tourist Expert process-secret boundary, and owns three
 reserved synthetic policy cases: Japan passport, Japanese residence card, and an industry credit-card
 test number.
 
-**Direct Line is live and accepted.** The Japan Tourist Assistant Azure Bot, its Direct Line site, and the
+**Direct Line is live and accepted.** The Japan Tourist Expert Azure Bot, its Direct Line site, and the
 `japan-tourist-assistant-obo` OAuth connection exist, and governed turns return model answers with fail-closed
 Purview evaluation and all four MCP services healthy. A first-time user still receives an OAuth
 sign-in card, which is correct enforcement rather than a defect. The reserved three-case synthetic

@@ -1,4 +1,6 @@
-# Korea Tourist Assistant OBO Teams frontend
+# Korea Tourist Expert OBO Teams frontend
+
+Use `Korea Tourist Expert (OBO)` for both `name.short` and `name.full` in the source Teams package.
 
 This project owns the source OBO Teams package and the non-secret contract pin for the canonical
 shared backend route `/api/messages/obo`. It contains no backend runtime or deployment assets.

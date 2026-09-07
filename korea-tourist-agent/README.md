@@ -1,4 +1,4 @@
-# Korea Tourist Assistant
+# Korea Tourist Expert
 
 A governed Microsoft agent that plans trips to South Korea using live weather, places, and
 exchange-rate data — built the way an enterprise deployment has to be built, not the way a demo is.
@@ -32,9 +32,9 @@ travel data is served by four independently deployed MCP services.
 ```mermaid
 flowchart LR
   subgraph Channels
-    Teams["OBO Teams package<br/>Korea Tourist Assistant (OBO)"]
+    Teams["OBO Teams package<br/>Korea Tourist Expert (OBO)"]
     Direct["OBO Direct Line client"]
-    Teammate["AI Teammate package<br/>Korea Tourist Assistant (Teammate)"]
+    Teammate["AI Teammate package<br/>Korea Tourist Expert (Teammate)"]
   end
 
   Teams -->|Teams channel| Bot["Azure Bot"]
@@ -161,7 +161,11 @@ The shape of it:
    identities, Log Analytics, Application Insights, and the MCP API application.
 3. **Build and push images** with `az acr build`, then redeploy by digest. Deployments reference
    digests, never mutable tags.
-4. **Create the Agent 365 identity** with `a365 setup all` from the owning frontend project.
+4. **Declare permissions, then create/reuse the Agent 365 identity** with `a365 setup all` from the
+   owning frontend project. Before any setup rerun, put the same `customBlueprintPermissions` in
+   both frontend user configs; follow the
+   [required example and deletion warning](a365-tourist-backend/docs/configuration.md#preserve-custom-blueprint-permissions-before-setup).
+   CLI 1.1.214 can remove undeclared custom grants even with `--no-endpoint`.
 5. **Complete the Entra wiring.** This is outside the templates and is the step most often missed —
    see below.
 6. **Deploy the bot phase** and build the channel packages.
@@ -182,9 +186,10 @@ flowchart LR
   C -->|/.default expands<br/>from inherited scopes| TOK["Per-resource token"]
 ```
 
-`a365 setup all` configures only the first-party resources it knows about. It does **not** cover
-Azure Machine Learning (the Foundry audience), this backend's custom MCP API, or the Purview Graph
-scopes. Without those, `/.default` expands to an empty scope set, Entra returns `AADSTS65001`, and
+Default `a365 setup all` configuration does not cover every required permission. Declare Azure
+Machine Learning (the Foundry audience), this backend's custom MCP API, and Cognitive Services in
+both frontend `customBlueprintPermissions` arrays, and separately verify the Purview Graph scopes.
+Without the required grants and inheritance, `/.default` expands to an empty scope set, Entra returns `AADSTS65001`, and
 every turn fails at `identity.resolve` — even though the portal shows a valid-looking grant.
 
 ```powershell

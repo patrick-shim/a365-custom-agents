@@ -71,7 +71,7 @@ jobs:
                 [int] ($bitmap.Height / 2))
               if ($bitmap.Width -ne 256 -or $bitmap.Height -ne 256 -or
                   $center.R -ne 188 -or $center.G -ne 0 -or $center.B -ne 45) {
-                throw 'Direct Line application icon must use the 256x256 Japan Tourist Assistant flag artwork.'
+                throw 'Direct Line application icon must use the 256x256 Japan Tourist Expert flag artwork.'
               }
             }
             finally {
@@ -88,7 +88,7 @@ jobs:
           $lock = Get-Content backend-contract.lock.json -Raw | ConvertFrom-Json
           if ($lock.contractId -ne 'japan-expert-shared-backend' -or
               $lock.contractVersion -ne '2.0.0' -or
-              $lock.productName -ne 'Japan Tourist Assistant' -or
+              $lock.productName -ne 'Japan Tourist Expert' -or
               $lock.defaultTimeZone -ne 'Asia/Tokyo' -or
               $lock.defaultCurrency -ne 'JPY' -or
               $lock.frontend -ne 'on-behalf-of' -or

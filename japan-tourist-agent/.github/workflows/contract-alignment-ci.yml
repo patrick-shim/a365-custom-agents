@@ -85,7 +85,7 @@ jobs:
               (Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash
             } | Sort-Object -Unique)
             if ($hashes.Count -ne 1) {
-              throw "Japan Tourist Assistant icon assets are inconsistent: $($icons -join ', ')"
+              throw "Japan Tourist Expert icon assets are inconsistent: $($icons -join ', ')"
             }
           }
           Add-Type -AssemblyName System.Drawing.Common
@@ -96,7 +96,7 @@ jobs:
             if ($color.Width -ne 192 -or $color.Height -ne 192 -or
                 $center.R -ne 188 -or $center.G -ne 0 -or $center.B -ne 45 -or
                 $corner.R -ne 255 -or $corner.G -ne 255 -or $corner.B -ne 255) {
-              throw 'Japan Tourist Assistant color icon must be a white field with a Japan-red disc.'
+              throw 'Japan Tourist Expert color icon must be a white field with a Japan-red disc.'
             }
           }
           finally {
@@ -109,7 +109,7 @@ jobs:
             if ($outline.Width -ne 32 -or $outline.Height -ne 32 -or
                 $center.R -ne 255 -or $center.G -ne 255 -or $center.B -ne 255 -or
                 $center.A -ne 255 -or $corner.A -ne 0) {
-              throw 'Japan Tourist Assistant outline icon must be a white disc on transparency.'
+              throw 'Japan Tourist Expert outline icon must be a white disc on transparency.'
             }
           }
           finally {

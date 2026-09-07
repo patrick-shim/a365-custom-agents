@@ -6,8 +6,8 @@ protection.
 
 | Workspace | Assistant | Geography | Data sources |
 | --- | --- | --- | --- |
-| [`japan-tourist-agent`](./japan-tourist-agent) | Japan Tourist Assistant | Japan | JMA forecasts and alerts, OpenStreetMap, Frankfurter/ECB rates |
-| [`korea-tourist-agent`](./korea-tourist-agent) | Korea Tourist Assistant | South Korea | Open-Meteo, Azure Maps, Frankfurter/ECB rates |
+| [`japan-tourist-agent`](./japan-tourist-agent) | Japan Tourist Expert | Japan | JMA forecasts and alerts, OpenStreetMap, Frankfurter/ECB rates |
+| [`korea-tourist-agent`](./korea-tourist-agent) | Korea Tourist Expert | South Korea | Open-Meteo, Azure Maps, Frankfurter/ECB rates |
 
 The two are siblings, not a fork and a copy. They share one architecture and one set of guarantees,
 and differ only in geography, data providers, and branding. **Read either one; pick the one whose
